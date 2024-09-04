@@ -10,150 +10,196 @@
         .func main
 
 main:
-        PUSH {LR}
-        BAL print
+        PUSH {LR}			@ Pushes Link Register so it can Pop it
+        BAL print			@ Branches to print and Links to its current location
 
 _start:	
+	LDR 	R2, =iterations		@ Loads address of variables
+	MOV 	R1, #0			
+	STR 	R1, [R2, #4]		@ Sets Minutes Variable to Zero
+	b 	print
 
-	@mov	r2, #120		@ load 18 into r2 (outer loop count)
-	LDR 	R2, =iterations
-	MOV 	R1, #0
-	STR 	R1, [R2, #4]
+l1:	LDR	R1, =8900000		@ R1 = 8,900,000 
+l2:	SUBS	R1, R1, #1		@ R1 = R1 – 1, decrement R1 
+	BNE	l2			@ repeat it until R1 = 0 
+	B 	_h1
 
-l1:	ldr	r1, =8900000	@ r1 = 8,700,000 (inner loop count) 
-l2:	subs	r1, r1, #1		@ r1 = r1 – 1, decrement r1 (inner loop) 
-	bne	l2			@ repeat it until r1 = 0 
-	b 	_h1
-	@subs	r2, r2, #1		@ r2 = r2 – 1, decrement r2 (outer loop) 
-	@bne	l1			@ repeat it until r2 = 0 
-
+@ The _h1 function increments the centisecond variable until it reaches 10 and then branches to _h2.
 _h1:
-        LDR R1, =iterations
-        LDR R1, [R1, #20]
-        ADDS R1, #0x1			@ Iterate the Count
-        LDR R2, =iterations
-        STR R1, [R2, #20]            @ Stores the value in R1 into the memory address in R2
+        LDR 	R1, =iterations		@ Loads the Address of the Variables into R1
+        LDR 	R1, [R1, #20]		@ Loads the Centisecond Variable into R1
+        ADDS 	R1, #0x1		@ Increments R1
+        LDR 	R2, =iterations		
+        STR 	R1, [R2, #20]           @ Stores the incremented value of R1 into the Centiseconds Variable
         
-	CMP R1, #10
-        BEQ _h2
+	CMP 	R1, #10			@ Compares to see if R1 and  10 are equal
+        BEQ 	_h2			@ If so, branches to _h2.
         
-        b 	print
+        B	print			@ Prints
 
-
+@ The _h2 function resets the centisecond variable, increments the decisecond variable until it reaches 10, and then branches to _s1.
 _h2:
-	MOV R1, #0
-	STR R1, [R2, #20]
+	MOV 	R1, #0			
+	STR 	R1, [R2, #20]		@ Stores the value Zero in the Centiseconds Variable
 	
-	LDR R1, =iterations
-        LDR R1, [R1, #16]
-        ADDS R1, #0x1			@ Iterate the Count
-        LDR R2, =iterations
-        STR R1, [R2, #16]            @ Stores the value in R1 into the memory address in R2
+	LDR 	R1, =iterations
+        LDR 	R1, [R1, #16]		@ Loads the Decisecond into R1
+        ADDS 	R1, #0x1
+        LDR 	R2, =iterations
+        STR 	R1, [R2, #16]           @ Stores the incremented value of R1 into the Deciseconds Variable
         
-	CMP R1, #10
-        BEQ _s1
+	CMP 	R1, #10
+        BEQ 	_s1
 	
 	B	print
 
+@ The _s1 function resets the decisecond variable, increments the second variable until it reaches 10, and then branches to _s2.
 _s1:
 
-	MOV R1, #0
-	STR R1, [R2, #16]
+	MOV 	R1, #0
+	STR 	R1, [R2, #16]		@ Stores the value Zero in the Deciseconds Variable
 	
-	LDR R1, =iterations
-        LDR R1, [R1, #12]
-        ADDS R1, #0x1			@ Iterate the Count
-        LDR R2, =iterations
-        STR R1, [R2, #12]            @ Stores the value in R1 into the memory address in R2
+	LDR 	R1, =iterations
+        LDR 	R1, [R1, #12]		@ Loads the Second into R1
+        ADDS 	R1, #0x1			
+        LDR 	R2, =iterations
+        STR 	R1, [R2, #12]            @ Stores the incremented value of R1 into the Seconds Variable
         
-	CMP R1, #10
-        BEQ _s2
+	CMP 	R1, #10
+        BEQ 	_s2
 	
 	B	print
-	
+
+@ The _s2 function resets the second variable, increments the decasecond variable until it reaches 10, and then branches to _m1.
 _s2:
-	MOV R1, #0
-	STR R1, [R2, #12]
+	MOV 	R1, #0
+	STR 	R1, [R2, #12]		@ Stores the value Zero in the Seconds Variable
 	
-	LDR R1, =iterations
-        LDR R1, [R1, #8]
-        ADDS R1, #0x1			@ Iterate the Count
-        LDR R2, =iterations
-        STR R1, [R2, #8]            @ Stores the value in R1 into the memory address in R2
+	LDR 	R1, =iterations
+        LDR 	R1, [R1, #8]		@ Loads the Decasecond into R1
+        ADDS 	R1, #0x1			
+        LDR 	R2, =iterations
+        STR 	R1, [R2, #8]            @ Stores the incremented value of R1 into the Decaseconds Variable
         
-	CMP R1, #6
-        BEQ _m1
+	CMP 	R1, #6
+        BEQ 	_m1
 	
 	B	print
-	
+
+@ The _m1 function resets the decasecond variable, increments the hectosecond variable until it reaches 10, and then branches to _start.
 _m1:
-	MOV R1, #0
-	STR R1, [R2, #8]
+	MOV 	R1, #0
+	STR 	R1, [R2, #8]		@ Stores the value Zero in the Decaseconds Variable
 	
-	LDR R1, =iterations
-        LDR R1, [R1, #4]
-        ADDS R1, #0x1			@ Iterate the Count
-        LDR R2, =iterations
-        STR R1, [R2, #4]            @ Stores the value in R1 into the memory address in R2
+	LDR 	R1, =iterations
+        LDR 	R1, [R1, #4]		@ Loads the Hectosecond into R1
+        ADDS 	R1, #0x1			
+        LDR 	R2, =iterations
+        STR 	R1, [R2, #4]            @ Stores the incremented value of R1 into the Hectoseconds Variable
         
-	CMP R1, #2
-        BEQ _start
+	CMP 	R1, #2
+        BEQ 	print_2_00_00		@ Branches to print  2_00_00 
 	
 	B	print
 
 print:    
 
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
-        LDR 	R1, =iterations		
-        LDR 	R1, [R1]            @ Obtain the Number in Iterations into R1
-        BL 	printf
+	LDR 	R0, =string         	@ Load the String Format Location in R0
+        LDR 	R1, =iterations		@ Load Address of the Variables into R1
+        LDR 	R1, [R1]            	@ Load the Decaminutes variable
+        BL 	printf			@ Print and wipe the Registers
 	
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
+	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #4]            @ Obtain the Number in Iterations into R1
+        LDR 	R1, [R1, #4]        	@ Load the minutes variable
         BL 	printf
 
-	LDR 	R0, =colon         @ Obtain the String Format Location in R0
+	LDR 	R0, =colon          	@ Load the Colon String in R0
         BL 	printf
 
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
+	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #8]            @ Obtain the Number in Iterations into R1
+        LDR 	R1, [R1, #8]            @ Load the deaseconds variable
         BL 	printf
 	
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
+	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #12]            @ Obtain the Number in Iterations into R1
+        LDR 	R1, [R1, #12]           @ Load the seconds variable
         BL 	printf
 	
-	LDR 	R0, =colon         @ Obtain the String Format Location in R0
+	LDR 	R0, =colon         	@ Load the Colon String in R0
         BL 	printf
 	
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
+	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #16]            @ Obtain the Number in Iterations into R1
+        LDR 	R1, [R1, #16]           @ Load the deciseconds variable
         BL 	printf
 	
-	LDR 	R0, =string         @ Obtain the String Format Location in R0
+	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #20]            @ Obtain the Number in Iterations into R1
+        LDR 	R1, [R1, #20]           @ Load the seconds variable
         BL 	printf
 
-	LDR 	R0, =newline         @ Obtain the String Format Location in R0
+	LDR 	R0, =newline         	@ Load the newline character in R0
         BL 	printf
 	
-	b 	l1
+	b 	l1			@ Restart the Loop
+
+print_2_00_00:    
+
+	LDR 	R0, =string         	@ Load the String Format Location in R0
+        LDR 	R1, =iterations		@ Load Address of the Variables into R1
+        LDR 	R1, [R1]            	@ Load the Decaminutes variable
+        BL 	printf			@ Print and wipe the Registers
 	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #4]        	@ Load the minutes variable
+        BL 	printf
+
+	LDR 	R0, =colon          	@ Load the Colon String in R0
+        BL 	printf
+
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #8]            @ Load the deaseconds variable
+        BL 	printf
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #12]           @ Load the seconds variable
+        BL 	printf
+	
+	LDR 	R0, =colon         	@ Load the Colon String in R0
+        BL 	printf
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #16]           @ Load the deciseconds variable
+        BL 	printf
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #20]           @ Load the seconds variable
+        BL 	printf
+
+	LDR 	R0, =newline         	@ Load the newline character in R0
+        BL 	printf
+	
+	b 	_start			@ Restart the Loop
+
+@ Used to exit but will never be reached	
 _exit:
-        POP {PC}
-        MOV PC, LR
+        POP 	{PC}
+        MOV 	PC, LR
 
+@ Data and Variables
 .data
 string:
-        .asciz "%d"		@ Printable Number Format
+        .asciz "%d"			@ Printable Number Format
 colon:
-	.asciz ":"
+	.asciz ":"			@ Printable Colon
 newline:
-	.asciz "\n"
+	.asciz "\n"			@ Printable New Line Character
 iterations:
-        .word 0, 0, 0, 0, 0, 0  @ remaining loop iterations MM:SS:HH
+        .word 0, 0, 0, 0, 0, 0  	@ Variables for Clock in order of: MM:SS:HH
