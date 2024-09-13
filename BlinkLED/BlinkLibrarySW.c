@@ -9,13 +9,14 @@ int main(int argc, char **argv)
 	// 60 Hz is 7,450,000
 	int delayTime;
 	delayTime = 1;
-	
+
+	// Loop to create Square Wave
 	while(1) {
 		
-		E4235_Write(12, 1);
-		E4235_Delaynano(delayTime);
-		E4235_Write(12, 0);
-		E4235_Delaynano(delayTime);
+		E4235_Write(12, 1); 		// Make GPIO High
+		E4235_Delaynano(delayTime); 	// Wait
+		E4235_Write(12, 0); 		// Make GPIO Low
+		E4235_Delaynano(delayTime);	// Wait
 		
 	}
 }
