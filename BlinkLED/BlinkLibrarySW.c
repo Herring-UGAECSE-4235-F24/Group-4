@@ -1,4 +1,3 @@
-//#include <E4235.h>
 #include <stdio.h>
 
 extern void E4235_Write(int, int);
@@ -18,5 +17,5 @@ int main(int argc, char **argv)
 		E4235_Write(12, 0); 		// Make GPIO Low
 		E4235_Delaynano(delayTime);	// Wait
 		
-	}
-}
+	} // While Loop
+} // main
