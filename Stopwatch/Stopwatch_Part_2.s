@@ -37,24 +37,13 @@ _Check:
 	bx   lr
       
 _run:
-	cmp r5, #1
-	BEQ _run1
 	mov r5, #1
-	bx lr
-	
-_run1:
-	mov r5, #0
+	mov r6, #0
 	bx lr
       
 _lap:
-    cmp r6, #1
-	BEQ _lap1
 	mov r6, #1		@ move a 1 into the lap register
 	bx   lr
-	
-_lap1:
-	mov r6, #0
-	bx lr
         
 _start:	
 	LDR 	R4, =iterations		@ Loads address of variables
