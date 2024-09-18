@@ -53,12 +53,21 @@ _h1:
         STR 	R3, [R4, #20]           @ Stores the incremented value of R1 into the Centiseconds Variable
         
 		CMP 	R3, #10			@ Compares to see if R1 and  10 are equal
-        @BEQ 	_h2			@ If so, branches to _h2.
-        
+        BEQ 	_h2			@ If so, branches to _h2.
+            
         B	l3			@ Prints 
- 
+        
+@ The _h2 function resets the centisecond variable, increments the decisecond variable until it reaches 10, and then branches to _s1.
+_h2:
+	MOV 	R3, #0			
+	STR 	R3, [R4, #20]		@ Stores the value Zero in the Centiseconds Variable
+	
+	B	l3       
+	
+
 l3: 
 @ print time
+
     LDR 	R0, =string         	
     LDR 	R1, =iterations		
     LDR 	R1, [R1, #20]           @ Load the centiseconds variable
