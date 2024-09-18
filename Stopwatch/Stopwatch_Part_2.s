@@ -73,20 +73,106 @@ _h1:
         
         cmp r6, #1
 		BEQ l1
-        B	l3			@ Prints 
+        B	print			@ Prints 
         
 @ The _h2 function resets the centisecond variable, increments the decisecond variable until it reaches 10, and then branches to _s1.
 _h2:
 	MOV 	R3, #0			
 	STR 	R3, [R4, #20]		@ Stores the value Zero in the Centiseconds Variable
+		
+	LDR 	R3, =iterations
+    LDR 	R3, [R3, #16]		@ Loads the Decisecond into R1
+    ADDS 	R3, #0x1
+    LDR 	R4, =iterations
+    STR 	R3, [R4, #16]           @ Stores the incremented value of R1 into the Deciseconds Variable
+        
+	CMP 	R3, #10
+    BEQ 	_s1
+        
+	cmp r6, #1
+	BEQ l1
+	B	print       
+	
+	
+@ The _s1 function resets the decisecond variable, increments the second variable until it reaches 10, and then branches to _s2.
+_s1:
+
+	MOV 	R3, #0
+	STR 	R3, [R4, #16]		@ Stores the value Zero in the Deciseconds Variable
+	
+	LDR 	R3, =iterations
+        LDR 	R3, [R3, #12]		@ Loads the Second into R1
+        ADDS 	R3, #0x1			
+        LDR 	R4, =iterations
+        STR 	R3, [R4, #12]            @ Stores the incremented value of R1 into the Seconds Variable
+        
+	CMP 	R3, #10
+        BEQ 	_s2
+        
+	cmp r6, #1
+	BEQ l1
+	B	print  
+
+@ The _s2 function resets the second variable, increments the decasecond variable until it reaches 10, and then branches to _m1.
+_s2:
+	MOV 	R3, #0
+	STR 	R3, [R4, #12]		@ Stores the value Zero in the Seconds Variable
+	
+	LDR 	R3, =iterations
+        LDR 	R3, [R3, #8]		@ Loads the Decasecond into R1
+        ADDS 	R3, #0x1			
+        LDR 	R4, =iterations
+        STR 	R3, [R4, #8]            @ Stores the incremented value of R1 into the Decaseconds Variable
+        
+	CMP 	R3, #6
+        BEQ 	_m1
+        
+	cmp r6, #1
+	BEQ l1
+	B	print  
+
+@ The _m1 function resets the decasecond variable, increments the hectosecond variable until it reaches 10, and then branches to _start.
+_m1:
+	MOV 	R3, #0
+	STR 	R3, [R4, #8]		@ Stores the value Zero in the Decaseconds Variable  
 	
 	cmp r6, #1
 	BEQ l1
-	B	l3       
-	
+	B	print  
 
-l3: 
+print: 
 @ print time
+
+	LDR 	R0, =string         	@ Load the String Format Location in R0
+        LDR 	R1, =iterations		@ Load Address of the Variables into R1
+        LDR 	R1, [R1]            	@ Load the Decaminutes variable
+        BL 	printf			@ Print and wipe the Registers
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #4]        	@ Load the minutes variable
+        BL 	printf
+
+	LDR 	R0, =colon          	@ Load the Colon String in R0
+        BL 	printf
+
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #8]            @ Load the deaseconds variable
+        BL 	printf
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #12]           @ Load the seconds variable
+        BL 	printf
+	
+	LDR 	R0, =colon         	@ Load the Colon String in R0
+        BL 	printf
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #16]           @ Load the deciseconds variable
+        BL 	printf
 
     LDR 	R0, =string         	
     LDR 	R1, =iterations		
