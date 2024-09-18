@@ -29,9 +29,9 @@ _Check:
 	cmp r1, #'l'    @ deblocking
 	beq _lap
     cmp r1, #'s'    @ quit
-    beq _exit
+    beq _stop
     cmp r1, #'c'    @ quit
-    beq _exit
+    beq _clear
     cmp r1, #'q'    @ quit
     beq _exit
 	bx   lr
@@ -44,6 +44,24 @@ _run:
 _lap:
 	mov r6, #1		@ move a 1 into the lap register
 	bx   lr
+        
+_stop:
+	mov r5, #0
+	bx lr
+	
+_clear:
+	@ clearing run, lap, stop registers
+	mov r5, #0 @run
+	
+	ldr R3, =iterations		@ Loads the Address of the Variables into R1
+    str R5, [R3]
+    str R5, [R3, #4]	
+    str R5, [R3, #8]
+    str R5, [R3, #12]
+    str R5, [R3, #16]
+    str R5, [R3, #20]
+    
+	bx  lr
         
 _start:	
 	LDR 	R4, =iterations		@ Loads address of variables
