@@ -20,31 +20,50 @@ _Read:
 	svc 0
 	ldrb r1, [r1]	@ read byte in input
 	bx lr
-
-
+       
+_Check:
+	cmp r1, #'r'    @ blocking
+	beq _exit
+	cmp r1, #'l'    @ deblocking
+	beq _exit
+    cmp r1, #'s'    @ quit
+    beq _exit
+    cmp r1, #'c'    @ quit
+    beq _exit
+	bx   lr
         
 _start:	
-	LDR 	R2, =iterations		@ Loads address of variables
-	MOV 	R1, #0			
-	STR 	R1, [R2, #4]		@ Sets Minutes Variable to Zero
+	LDR 	R4, =iterations		@ Loads address of variables
+	MOV 	R3, #0			
+	STR 	R3, [R4, #4]		@ Sets Minutes Variable to Zero
 
-l1:	LDR	R1, =8900000		@ R1 = 8,900,000 
-l2:	SUBS	R1, R1, #1		@ R1 = R1 – 1, decrement R1 
-	BNE	l2			@ repeat it until R1 = 0 
+l1:	LDR	R3, =8900000		@ R3 = 8,900,000 
+l2:	SUBS	R3, R3, #1		@ R3 = R3 – 1, decrement R1 
+	BNE	l2			@ repeat it until R3 = 0 
 	
 	bl _Read
-	
-	@ print read in char
-	ldr r0, =string @Std Out
-	bl printf
-	LDR 	R0, =newline @ Load the newline character in R0
-    BL 	printf
-    
-    @ print time
+	bl _Check
+   
+@ The _h1 function increments the centisecond variable until it reaches 10 and then branches to _h2.
+_h1:
+        LDR 	R3, =iterations		@ Loads the Address of the Variables into R1
+        LDR 	R3, [R3, #20]		@ Loads the Centisecond Variable into R1
+        ADDS 	R3, #0x1		@ Increments R1
+        LDR 	R4, =iterations		
+        STR 	R3, [R4, #20]           @ Stores the incremented value of R1 into the Centiseconds Variable
+        
+		CMP 	R3, #10			@ Compares to see if R1 and  10 are equal
+        @BEQ 	_h2			@ If so, branches to _h2.
+        
+        B	l3			@ Prints 
+ 
+l3: 
+@ print time
     LDR 	R0, =string         	
     LDR 	R1, =iterations		
-    LDR 	R1, [R1, #20]           @ Load the seconds variable
+    LDR 	R1, [R1, #20]           @ Load the centiseconds variable
     BL 	printf
+    
 	LDR 	R0, =newline         	@ Load the newline character in R0
     BL 	printf
     
