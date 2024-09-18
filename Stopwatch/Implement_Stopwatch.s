@@ -3,45 +3,7 @@
     .include "./E4235_KYBdeblock.s"
 
 main:
-
-_Wait_For_Input:
-	b _Read_User_Input
-	
-
-@ read from stdin
-_Read_User_Input:
-	mov r0, #0	@ file descriptor for stdin
-	mov r2, #4	@ allocates bytes to read
-	mov r7, #3	@ svc read
-	ldr r1, =input
-	str r0, [r1]	@ reset input
-	svc 0
-	ldrb r1, [r1]	@ read byte in input
-	b    _Decipher_User_Input
-
-@ check input against ascii characters
-_Decipher_User_Input:
-	cmp r1, #'R'    @ run the stopwatch
-	beq _Run
-	cmp r1, #'C'    @ run the stopwatch
-	beq _Clear
-	cmp r1, #'b'    @ blocking
-	beq block
-	cmp r1, #'d'    @ deblocking
-	beq deblock
-	cmp r1, #'q'    @ quit
-	beq quit
-	b   print
-
-_Clear:
-	MOV 	R4, #0			
-	STR 	R4, [R5]		@ Sets Minutes Variable to Zero
-	STR 	R4, [R5, #4]		@ Sets Minutes Variable to Zero
-	STR 	R4, [R5, #8]		@ Sets Minutes Variable to Zero
-	STR 	R4, [R5, #12]		@ Sets Minutes Variable to Zero
-	STR 	R4, [R5, #16]		@ Sets Minutes Variable to Zero
-	STR 	R4, [R5, #20]		@ Sets Minutes Variable to Zero
-	b	_Read_User_Input
+    b _Run
 	
 _Run:
 	LDR 	R5, =iterations		@ Loads address of variables
@@ -79,11 +41,78 @@ _h2:
         STR 	R4, [R5, #16]           @ Stores the incremented value of R1 into the Deciseconds Variable
         
 	CMP 	R4, #10
-        @BEQ 	_s1
+        BEQ 	_s1
 	
 	B	_Print_Time
+
+@ The _s1 function resets the decisecond variable, increments the second variable until it reaches 10, and then branches to _s2.
+_s1:
+
+	MOV 	R4, #0
+	STR 	R4, [R5, #16]		@ Stores the value Zero in the Deciseconds Variable
+	
+	LDR 	R4, =iterations
+        LDR 	R4, [R4, #12]		@ Loads the Second into R1
+        ADDS 	R4, #0x1			
+        LDR 	R5, =iterations
+        STR 	R4, [R5, #12]            @ Stores the incremented value of R1 into the Seconds Variable
+        
+	CMP 	R4, #10
+        BEQ 	_s2
+	
+	B	print
+
+@ The _s2 function resets the second variable, increments the decasecond variable until it reaches 10, and then branches to _m1.
+_s2:
+	MOV 	R4, #0
+	STR 	R4, [R5, #12]		@ Stores the value Zero in the Seconds Variable
+	
+	LDR 	R4, =iterations
+        LDR 	R4, [R4, #8]		@ Loads the Decasecond into R1
+        ADDS 	R4, #0x1			
+        LDR 	R5, =iterations
+        STR 	R4, [R5, #8]            @ Stores the incremented value of R1 into the Decaseconds Variable
+        
+	CMP 	R4, #6
+        BEQ 	_m1
+	
+	B	print
+
+@ The _m1 function resets the decasecond variable, increments the hectosecond variable until it reaches 10, and then branches to _start.
+_m1:
+	MOV 	R4, #0
+	STR 	R4, [R5, #8]		@ Stores the value Zero in the Decaseconds Variable
+	
+	LDR 	R4, =iterations
+        LDR 	R4, [R4, #4]		@ Loads the Hectosecond into R1
+        ADDS 	R4, #0x1			
+        LDR 	R5, =iterations
+        STR 	R4, [R5, #4]            @ Stores the incremented value of R1 into the Hectoseconds Variable
+        
+	CMP 	R4, #2
+        BEQ 	print_2_00_00		@ Branches to print  2_00_00 
+	
+	B	print
 	
 _Print_Time:    
+
+	LDR 	R0, =string         	@ Load the String Format Location in R0
+        LDR 	R1, =iterations		@ Load Address of the Variables into R1
+        LDR 	R1, [R1]            	@ Load the Decaminutes variable
+        BL 	printf			@ Print and wipe the Registers
+	
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #4]        	@ Load the minutes variable
+        BL 	printf
+
+	LDR 	R0, =colon          	@ Load the Colon String in R0
+        BL 	printf
+
+	LDR 	R0, =string         	
+        LDR 	R1, =iterations		
+        LDR 	R1, [R1, #8]            @ Load the deaseconds variable
+        BL 	printf
 	
 	LDR 	R0, =string         	
         LDR 	R1, =iterations		
@@ -100,32 +129,13 @@ _Print_Time:
 	
 	LDR 	R0, =string         	
         LDR 	R1, =iterations		
-        LDR 	R1, [R1, #20]           @ Load the centiseconds variable
+        LDR 	R1, [R1, #20]           @ Load the seconds variable
         BL 	printf
 
 	LDR 	R0, =newline         	@ Load the newline character in R0
         BL 	printf
 	
 	b 	l1			@ Restart the Loop
-
-@ change the terminal to blocking
-block:
-    mov r0, #0
-    bl  E4235_KYBdeblock
-    b   _Read_User_Input
-
-@ change the terminal to nonblocking
-deblock:
-    mov r0, #1
-    bl  E4235_KYBdeblock
-    b   _Read_User_Input
-
-@ print a string to the terminal
-print:
-    ldr r0, =string
-    bl  printf
-    ldr r1, =input
-    b   _Read_User_Input
 
 @ quit the program
 quit:
