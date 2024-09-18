@@ -15,6 +15,7 @@
 main:
 	mov r5, #0
 	mov r6, #0
+	mov r7, #0
     b _deblock
 
 @ Deblock Function - Calls Deblock from Class Library.
@@ -60,11 +61,17 @@ _lap:
 @ Stop Function - Stops the Program from tracking time, basically just stops the run function.  
 _stop:
 	mov r5, #0				@ Set Run Flag = 0
+	mov r7, #1
 	bx lr					@ Return to tracking time
+	
+_stop_print:
+	mov r7, #0
+	b print
 	
 @ Clear Function - Stops the Program with the Run Flag and Sets Variables to 0.
 _clear:
 	mov r5, #0 				@ Set Run Flag = 0
+	mov r7, #1
 	ldr r3, =iterations		@ Loads the Address of the Variables into r3
     
     str r5, [r3]			@ Stores 0 in the X0:00:00 Variable
@@ -90,6 +97,8 @@ l2:	subs	r3, r3, #1		@ r3 = r3 – 1, decrement r1
 	bl _check				@ Check User Input
 	cmp r5, #1				@ Checks if the program is running
 	beq _h1					@ Branch if so
+	cmp r7, #1
+	beq _stop_print
 	b l1					@ Loop again if not so
    
 @ H1 Function - Increments the centisecond variable (00:00:0X) until it reaches 10 and then branches to _h2.
