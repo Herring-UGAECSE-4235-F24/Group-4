@@ -4,6 +4,8 @@
     .include "./E4235_KYBdeblock.s"
 
 main:
+	mov r5, #0
+	mov r6, #0
     b _Deblock
 
 _Deblock:  
@@ -23,7 +25,7 @@ _Read:
        
 _Check:
 	cmp r1, #'r'    @ blocking
-	beq _exit
+	beq _run
 	cmp r1, #'l'    @ deblocking
 	beq _lap
     cmp r1, #'s'    @ quit
@@ -34,11 +36,22 @@ _Check:
     beq _exit
 	bx   lr
       
+_run:
+	cmp r5, #1
+	BEQ _run1
+	mov r5, #1
+	bx lr
+	
+_run1:
+	mov r5, #0
+	bx lr
+      
 _lap:
     cmp r6, #1
 	BEQ _lap1
 	mov r6, #1		@ move a 1 into the lap register
 	bx   lr
+	
 _lap1:
 	mov r6, #0
 	bx lr
@@ -54,6 +67,9 @@ l2:	SUBS	R3, R3, #1		@ R3 = R3 – 1, decrement R1
 	
 	bl _Read
 	bl _Check
+	cmp r5, #1
+	BEQ _h1
+	b l1
    
 @ The _h1 function increments the centisecond variable until it reaches 10 and then branches to _h2.
 _h1:
