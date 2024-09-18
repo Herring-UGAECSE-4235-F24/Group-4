@@ -9,14 +9,7 @@ main:
 _Deblock:  
     mov r0, #1
     bl  E4235_KYBdeblock
-    b _Read
-    
-_Scan:
-	ldr r0, =inputform
-    ldr r1, =input
-    bl scanf
-    ldr r1, =input
-    ldr r1, [r1]
+    b _start
 
 _Read:
 	mov r0, #0	@ file descriptor for stdin
@@ -26,28 +19,37 @@ _Read:
 	str r0, [r1]	@ reset input
 	svc 0
 	ldrb r1, [r1]	@ read byte in input
+	bx lr
 
-_Check:
-	cmp r1, #'b'    @ blocking
-	beq _Print
-	cmp r1, #'d'    @ deblocking
-	beq _Print
-    cmp r1, #'q'    @ quit
-    beq _Print
-	b   _Read
 
-_Print:
+        
+_start:	
+	LDR 	R2, =iterations		@ Loads address of variables
+	MOV 	R1, #0			
+	STR 	R1, [R2, #4]		@ Sets Minutes Variable to Zero
+
+l1:	LDR	R1, =8900000		@ R1 = 8,900,000 
+l2:	SUBS	R1, R1, #1		@ R1 = R1 – 1, decrement R1 
+	BNE	l2			@ repeat it until R1 = 0 
+	
+	bl _Read
+	
+	@ print read in char
 	ldr r0, =string @Std Out
 	bl printf
-	
+	LDR 	R0, =newline @ Load the newline character in R0
+    BL 	printf
+    
+    @ print time
+    LDR 	R0, =string         	
+    LDR 	R1, =iterations		
+    LDR 	R1, [R1, #20]           @ Load the seconds variable
+    BL 	printf
 	LDR 	R0, =newline         	@ Load the newline character in R0
     BL 	printf
-	
-    @ldr r1, =output
-    @mov r2, #1 @length of out string
-    @mov r7, #4 @write sys call
-    @svc 0
-    b _Scan
+    
+	B 	l1
+
 
 @ Used to exit but will never be reached	
 _exit:
