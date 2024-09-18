@@ -25,12 +25,23 @@ _Check:
 	cmp r1, #'r'    @ blocking
 	beq _exit
 	cmp r1, #'l'    @ deblocking
-	beq _exit
+	beq _lap
     cmp r1, #'s'    @ quit
     beq _exit
     cmp r1, #'c'    @ quit
     beq _exit
+    cmp r1, #'q'    @ quit
+    beq _exit
 	bx   lr
+      
+_lap:
+    cmp r6, #1
+	BEQ _lap1
+	mov r6, #1		@ move a 1 into the lap register
+	bx   lr
+_lap1:
+	mov r6, #0
+	bx lr
         
 _start:	
 	LDR 	R4, =iterations		@ Loads address of variables
@@ -54,7 +65,9 @@ _h1:
         
 		CMP 	R3, #10			@ Compares to see if R1 and  10 are equal
         BEQ 	_h2			@ If so, branches to _h2.
-            
+        
+        cmp r6, #1
+		BEQ l1
         B	l3			@ Prints 
         
 @ The _h2 function resets the centisecond variable, increments the decisecond variable until it reaches 10, and then branches to _s1.
@@ -62,6 +75,8 @@ _h2:
 	MOV 	R3, #0			
 	STR 	R3, [R4, #20]		@ Stores the value Zero in the Centiseconds Variable
 	
+	cmp r6, #1
+	BEQ l1
 	B	l3       
 	
 
