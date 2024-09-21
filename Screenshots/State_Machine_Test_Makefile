@@ -1,0 +1,31 @@
+CC = gcc
+AS = as
+CFLAGS = -Wall -g
+ASFLAGS = 
+
+TARGET = State_Machine
+
+OBJS = State_Machine.o E4235_Read.o E4235_Write.o E4235_Delaynano.o
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+State_Machine.o: State_Machine.c E4235.h
+	$(CC) $(CFLAGS) -c $<
+
+E4235_Read.o: E4235_Read.s E4235.h
+	$(AS) $(ASFLAGS) -o $@ $<
+
+E4235_Write.o: E4235_Write.s E4235.h
+	$(AS) $(ASFLAGS) -o $@ $<
+
+E4235_Delaynano.o: E4235_Delaynano.s E4235.h
+	$(AS) $(ASFLAGS) -o $@ $<
+
+.PHONY: run clean
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(TARGET) $(OBJS)
