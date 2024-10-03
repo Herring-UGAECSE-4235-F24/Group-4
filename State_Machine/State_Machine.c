@@ -7,7 +7,7 @@
 // To Compile: gcc -o State_Machine State_Machine.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l E4235
 
 // Revised the makefile to resolve the compilation and linking executable issues. Now, the keypad doesn't work anymore.
-
+// Seemed to work again after using the wrong compilation command and then recompiling it correctly
 
 #include "stdio.h"
 #include "gpiotopin.h"
@@ -28,24 +28,37 @@ int main(int argc, char **argv) {
 	int pin26 = 0;
 	int pin27 = 0;
 	
+	char rowOne [3];
+	
+	rowOne =   ['1', '2', '3', 'A']
+	rowTwo =   ['4', '5', '6', 'B']
+	rowThree = ['7', '8', '9', 'C']
+	rowFour=   ['*', '0', '#', 'D']
+	
 	while(1) {
 		
 		pin20 = E4235_Write(GPIO20, 1);
+		pin21 = E4235_Write(GPIO21, 1);
+		pin22 = E4235_Write(GPIO22, 1);
+		pin23 = E4235_Write(GPIO23, 1);
 		pin24 = E4235_Read(GPIO24);
-		//pin23 = E4235_Read(GPIO25);
-		//pin25 = E4235_Read(GPIO26);
-		//pin27 = E4235_Read(GPIO27);
-		E4235_Delaynano(500000);
+		pin25 = E4235_Read(GPIO25);
+		pin26 = E4235_Read(GPIO26);
+		pin27 = E4235_Read(GPIO27);
+		//E4235_Delaynano(500000);
 		//pin20 = E4235_Write(GPIO20, 0);
 		
-		printf("24: %d\n ", pin24);
-		//printf("25: %d ", pin25);
-		//printf("26: %d ", pin26);
-		//printf("27: %d\n", pin27);
+		printf("24: %d ", pin24);
+		printf("25: %d ", pin25);
+		printf("26: %d ", pin26);
+		printf("27: %d\n", pin27);
 		
-		//E4235_Delaynano(500000);
+		E4235_Delaynano(500000);
 		
-		
+		pin20 = E4235_Write(GPIO20, 0);
+		pin21 = E4235_Write(GPIO21, 0);
+		pin22 = E4235_Write(GPIO22, 0);
+		pin23 = E4235_Write(GPIO23, 0);
 	}	
 			
 	return 0;
