@@ -19,7 +19,7 @@ extern int E4235_Write(int, int); // GPIO,value (on/off)
 extern void E4235_Delaynano(int); // time
 // we need to make a clock so that it only samples on rising edges of the clock
 
-// compile command is gcc -o State_Machine State_Machine.c -l bcm2835
+// compile command is gcc -o keypad keypad.c -l bcm2835
 
 // Looks for a high on the keypad when writing to that row
 int readKeyPad(int GPIONumber){
@@ -174,7 +174,7 @@ int lookForInput(){
 
 int deciperCodeHex(selectedNumber){
 	
-	if (selectedNumber == 30) {
+	if (selectedNumber == 48) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -182,7 +182,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 31) {
+	} else if (selectedNumber == 49) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -190,7 +190,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 32) {
+	} else if (selectedNumber == 50) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -198,7 +198,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 33) {
+	} else if (selectedNumber == 51) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -206,7 +206,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 34) {
+	} else if (selectedNumber == 52) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -214,7 +214,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 35) {
+	} else if (selectedNumber == 53) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -222,7 +222,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 36) {
+	} else if (selectedNumber == 54) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -230,7 +230,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 37) {
+	} else if (selectedNumber == 55) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -238,7 +238,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 38) {
+	} else if (selectedNumber == 56) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -246,7 +246,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 39) {
+	} else if (selectedNumber == 57) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -262,7 +262,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 41) {
+	} else if (selectedNumber == 65) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -270,7 +270,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 42) {
+	} else if (selectedNumber == 66) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -278,7 +278,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 43) {
+	} else if (selectedNumber == 67) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -286,7 +286,7 @@ int deciperCodeHex(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 44) {
+	} else if (selectedNumber == 68) {
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -301,7 +301,7 @@ int deciperCodeHex(selectedNumber){
 
 int deciperCodeDecimal(selectedNumber){
 	
-	if (selectedNumber == 30) {
+	if (selectedNumber == 48) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -309,7 +309,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 31) {
+	} else if (selectedNumber == 49) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -317,7 +317,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 32) {
+	} else if (selectedNumber == 50) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -325,7 +325,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 33) {
+	} else if (selectedNumber == 51) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -333,7 +333,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 34) {
+	} else if (selectedNumber == 52) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -341,7 +341,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 35) {
+	} else if (selectedNumber == 53) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -349,7 +349,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 36) {
+	} else if (selectedNumber == 54) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -357,7 +357,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 37) {
+	} else if (selectedNumber == 55) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -365,7 +365,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 38) {
+	} else if (selectedNumber == 56) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -373,7 +373,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 39) {
+	} else if (selectedNumber == 57) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -389,7 +389,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 41) {
+	} else if (selectedNumber == 65) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -397,7 +397,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 42) {
+	} else if (selectedNumber == 66) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -405,7 +405,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 43) {
+	} else if (selectedNumber == 67) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -413,7 +413,7 @@ int deciperCodeDecimal(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 44) {
+	} else if (selectedNumber == 68) {
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -435,6 +435,8 @@ int main(int argc, char **argv) {
 	int curVar			= 40;
 	int flashTimer 		= 0;
 	int flash40 		= 0;
+	int clockTimer 		= 0;
+	int goingUp 		= 0;
 	
 	if (!bcm2835_init()) {
 		return 1;
@@ -449,14 +451,14 @@ int main(int argc, char **argv) {
 	bcm2835_gpio_fsel(17, 0x01);
 	bcm2835_gpio_fsel(18, 0x01);
 	
-	//bcm2835_gpio_set_pud(9, 0x0094);
-	//bcm2835_gpio_set_pud(10, 0x0094);
-	//bcm2835_gpio_set_pud(11, 0x0094);
-	//bcm2835_gpio_set_pud(12, 0x0094);
-	//bcm2835_gpio_set_pud(13, 0x0094);
-	//bcm2835_gpio_set_pud(16, 0x0094);
-	//bcm2835_gpio_set_pud(17, 0x0094);
-	//bcm2835_gpio_set_pud(18, 0x0094);
+	bcm2835_gpio_set_pud(9, 0x0094);
+	bcm2835_gpio_set_pud(10, 0x0094);
+	bcm2835_gpio_set_pud(11, 0x0094);
+	bcm2835_gpio_set_pud(12, 0x0094);
+	bcm2835_gpio_set_pud(13, 0x0094);
+	bcm2835_gpio_set_pud(16, 0x0094);
+	bcm2835_gpio_set_pud(17, 0x0094);
+	bcm2835_gpio_set_pud(18, 0x0094);
 	
 	bcm2835_gpio_fsel(20, 0x01);
 	bcm2835_gpio_fsel(21, 0x01);
@@ -474,8 +476,18 @@ int main(int argc, char **argv) {
 	flashTimer = 0;
 	flash40 = 0;
 	
+	bcm2835_gpio_write(10, 0);
+	bcm2835_gpio_write(11, 0);
+	bcm2835_gpio_write(12, 0);
+	bcm2835_gpio_write(13, 0);
+	bcm2835_gpio_write(16, 0);
+	bcm2835_gpio_write(17, 0);
+	bcm2835_gpio_write(18, 0);
+	
 	// Infinite Loop
 	while (1) {
+		
+		bcm2835_gpio_write(9, 1);
 		
 		selectedNumber = 0; // Necessary to look for continuous input
 			
@@ -505,7 +517,7 @@ int main(int argc, char **argv) {
 		} else if (flashTimer == 200000) {
 			flashTimer = 0;
 		} else {
-			printf("%d\n", curVar); // Used to test what is being received
+			//printf("%d\n", curVar); // Used to test what is being received
 			if (decodeOn == 1) {
 				printf("%d\n", curVar); // Used to test what is being received
 				deciperCodeHex(curVar); // Sends binary hex string to LA
@@ -533,9 +545,23 @@ int main(int argc, char **argv) {
 			printf("reset!\n");
 			decodeOn = 0;
 			curVar = 40;
-		}
+		} // if
+		
+		if (clockTimer == 4000) {
+			
+			if (goingUp == 1) {
+				bcm2835_gpio_write(9, 1);
+				goingUp = 0;
+			} else {
+				bcm2835_gpio_write(9, 0);
+				goingUp = 1;
+			}
+			
+			clockTimer = 0;
+		} // if
 		
 		flashTimer = flashTimer + 1;
+		clockTimer = clockTimer + 1;
 		
 	} // While(1)
 				
