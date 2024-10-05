@@ -27,39 +27,36 @@ int main(int argc, char **argv) {
 	int pin25 = 0;
 	int pin26 = 0;
 	int pin27 = 0;
+	int stop = 1;
 	
-	char rowOne [3];
-	
-	rowOne =   ['1', '2', '3', 'A']
-	rowTwo =   ['4', '5', '6', 'B']
-	rowThree = ['7', '8', '9', 'C']
-	rowFour=   ['*', '0', '#', 'D']
-	
-	while(1) {
+	while(stop != 0) {
 		
-		pin20 = E4235_Write(GPIO20, 1);
-		pin21 = E4235_Write(GPIO21, 1);
-		pin22 = E4235_Write(GPIO22, 1);
-		pin23 = E4235_Write(GPIO23, 1);
-		pin24 = E4235_Read(GPIO24);
-		pin25 = E4235_Read(GPIO25);
-		pin26 = E4235_Read(GPIO26);
-		pin27 = E4235_Read(GPIO27);
-		//E4235_Delaynano(500000);
-		//pin20 = E4235_Write(GPIO20, 0);
-		
-		printf("24: %d ", pin24);
-		printf("25: %d ", pin25);
-		printf("26: %d ", pin26);
-		printf("27: %d\n", pin27);
-		
-		E4235_Delaynano(500000);
-		
-		pin20 = E4235_Write(GPIO20, 0);
-		pin21 = E4235_Write(GPIO21, 0);
-		pin22 = E4235_Write(GPIO22, 0);
-		pin23 = E4235_Write(GPIO23, 0);
-	}	
-			
+		pin24 = readKeyPad(GPIO20);
+		printf("24: %d\n", pin24);
+	}
+				
 	return 0;
-}
+} // Main
+
+
+
+int readKeyPad(gpioNumber){
+		
+	E4235_Write(gpioNumber, 1);
+	
+	if (E4235_Read(GPIO24) == 1){
+		return 1;
+	}
+	if (E4235_Read(GPIO25) == 1){
+		return 2;
+	}
+	if (E4235_Read(GPIO26) == 1){
+		return 3;
+	}
+	if (E4235_Read(GPIO27) == 1){
+		return 4;
+	}
+	
+	return 0;
+	
+} // readKeyPad
