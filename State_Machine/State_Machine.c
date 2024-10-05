@@ -11,6 +11,7 @@
 
 #include "stdio.h"
 #include "gpiotopin.h"
+#include <bcm2835.h>
 //#include "E4235.h"
 
 //extern int E4235_Read(int); // GPIO
@@ -73,6 +74,30 @@ int readKeyPad(GPIONumber){
 		}
 	 }
 	
+	if (GPIONumber == 22) {
+		if (selectedNumber == 1) {
+			return '7';
+		} else if (selectedNumber == 2) {
+			return '8';
+		} else if (selectedNumber == 3) {
+			return '9';
+		} else if (selectedNumber == 4) {
+			return 'C';
+		}
+	 } 
+	
+	if (GPIONumber == 23) {
+		if (selectedNumber == 1) {
+			return '*';
+		} else if (selectedNumber == 2) {
+			return '0';
+		} else if (selectedNumber == 3) {
+			return '#';
+		} else if (selectedNumber == 4) {
+			return 'D';
+		}
+	 } 
+	 
 	return 'L';
 }
 
@@ -109,6 +134,15 @@ int main(int argc, char **argv) {
 	int selectedNumber 	= 0;
 	int decodeOn 		= 0;
 	
+	if (!bcm2835_init()) {
+		return 1;
+	} // BCM Initialize
+	
+	bcm2835_gpio_fsel(24, 0x00);
+	bcm2835_gpio_fsel(25, 0x00);
+	bcm2835_gpio_fsel(26, 0x00);
+	bcm2835_gpio_fsel(27, 0x00);
+	
 	// Infinite Loop
 	while (1) {
 		
@@ -121,13 +155,6 @@ int main(int argc, char **argv) {
 		
 		// When an input is read, enter this loop
 		if (selectedNumber != 0) {
-			if (selectedNumber == 5) {
-				if (decodeOn == 1) {
-					decodeOn = 0;		// Decode Off
-				} else {
-					decodeOn = 1; 		// Decode On
-				}
-			} // Decode On/Off
 					
 			printf("Output: %d\n", selectedNumber); // Used to test what is being received
 			
