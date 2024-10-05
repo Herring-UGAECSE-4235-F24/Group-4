@@ -21,15 +21,17 @@
 
 int writeHexToLA(selectedNumber){
 		
-	if (selectedNumber == 48) {
-		bcm2835_gpio_write(10, 0);
-		bcm2835_gpio_write(11, 1);
-		bcm2835_gpio_write(12, 1);
-		bcm2835_gpio_write(13, 0);
-		bcm2835_gpio_write(16, 0);
-		bcm2835_gpio_write(17, 0);
-		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 49) {
+	if (selectedNumber == 48) { // Should output 30 
+		printf("print 1");
+		bcm2835_gpio_write(10, 0); // msb
+		bcm2835_gpio_write(11, 1); //
+		bcm2835_gpio_write(12, 1); //
+		bcm2835_gpio_write(13, 0); 		//
+		bcm2835_gpio_write(16, 0); 		//
+		bcm2835_gpio_write(17, 0); 		//
+		bcm2835_gpio_write(18, 0); 		// lsb
+
+	} else if (selectedNumber == 49) { // 0x31 - 011 0001
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -37,7 +39,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 50) {
+	} else if (selectedNumber == 50) { // 0x32 - 011 0010
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -45,7 +47,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 51) {
+	} else if (selectedNumber == 51) { // 0x33 - 011 0011
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -53,7 +55,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 52) {
+	} else if (selectedNumber == 52) { // 0x34 - 011 0100
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -61,7 +63,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 53) {
+	} else if (selectedNumber == 53) { // 0x35 - 011 0101
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -69,7 +71,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 54) {
+	} else if (selectedNumber == 54) { // 0x36 - 011 0110
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -77,7 +79,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 55) {
+	} else if (selectedNumber == 55) { // 0x37 - 011 0111
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -85,7 +87,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 1);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 56) {
+	} else if (selectedNumber == 56) { // 0x38 - 011 1000
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -93,7 +95,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 57) {
+	} else if (selectedNumber == 57) { // 0x39 - 011 1001
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -101,23 +103,23 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 40) {
-		bcm2835_gpio_write(10, 0);
-		bcm2835_gpio_write(11, 1);
-		bcm2835_gpio_write(12, 0);
-		bcm2835_gpio_write(13, 1);
-		bcm2835_gpio_write(16, 0);
-		bcm2835_gpio_write(17, 0);
-		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 65) {
-		bcm2835_gpio_write(10, 0);
-		bcm2835_gpio_write(11, 1);
+	} else if (selectedNumber == 40) { // 0x40 - 100 0000
+		bcm2835_gpio_write(10, 1);
+		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
 		bcm2835_gpio_write(13, 0);
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 65) { // 0x41 - 100 0001
+		bcm2835_gpio_write(10, 1);
+		bcm2835_gpio_write(11, 0);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 66) {
+	} else if (selectedNumber == 66) { // 0x42 - 100 0010
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -125,7 +127,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 0);
-	} else if (selectedNumber == 67) {
+	} else if (selectedNumber == 67) { // 0x43 - 100 0011
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -133,7 +135,7 @@ int writeHexToLA(selectedNumber){
 		bcm2835_gpio_write(16, 0);
 		bcm2835_gpio_write(17, 1);
 		bcm2835_gpio_write(18, 1);
-	} else if (selectedNumber == 68) {
+	} else if (selectedNumber == 68) { // 0x44 - 100 0100
 		bcm2835_gpio_write(10, 1);
 		bcm2835_gpio_write(11, 0);
 		bcm2835_gpio_write(12, 0);
@@ -288,6 +290,7 @@ int clockLoop() {
 	int selectedNumber = 0;
 	
 	selectedNumber = lookForInput();
+	printf("%d\n", selectedNumber); // Used to test what is being received
 	writeHexToLA(selectedNumber);
 	
 	return 1;
