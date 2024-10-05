@@ -19,6 +19,133 @@
 
 // 1000 delay is 1 kHz
 
+int writeHexToLA(selectedNumber){
+		
+	if (selectedNumber == 48) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 49) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 50) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 51) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 52) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 1);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 53) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 1);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 54) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 1);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 55) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 1);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 56) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 1);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 57) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 1);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 40) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 1);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 65) {
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 66) {
+		bcm2835_gpio_write(10, 1);
+		bcm2835_gpio_write(11, 0);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 0);
+	} else if (selectedNumber == 67) {
+		bcm2835_gpio_write(10, 1);
+		bcm2835_gpio_write(11, 0);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0);
+		bcm2835_gpio_write(17, 1);
+		bcm2835_gpio_write(18, 1);
+	} else if (selectedNumber == 68) {
+		bcm2835_gpio_write(10, 1);
+		bcm2835_gpio_write(11, 0);
+		bcm2835_gpio_write(12, 0);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 1);
+		bcm2835_gpio_write(17, 0);
+		bcm2835_gpio_write(18, 0);
+	} 
+	
+	return 1;
+} // Write Binary to LA
+
 // Looks for a high on the keypad when writing to that row
 int readKeyPad(int GPIONumber){
 	
@@ -161,6 +288,9 @@ int clockLoop() {
 	int selectedNumber = 0;
 	
 	selectedNumber = lookForInput();
+	writeHexToLA(selectedNumber);
+	
+	return 1;
 	
 }
 
