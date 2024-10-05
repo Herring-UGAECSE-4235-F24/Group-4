@@ -22,7 +22,6 @@
 int decodeOnOutput(selectedNumber){
 		
 	if (selectedNumber == 48) { // Should output 30 
-		printf("print 1");
 		bcm2835_gpio_write(10, 0); // msb
 		bcm2835_gpio_write(11, 1); //
 		bcm2835_gpio_write(12, 1); //
@@ -430,6 +429,11 @@ int main(int argc, char **argv) {
 
 	int isOn = 0;
 	int iterationsFor1kHz = 0;
+	int selectedNumber = 0;
+	int decodeOn = 0;
+	int curVar = 40;
+	int timerToBlink = 0;
+	int lastBlinked40 = 0;		
 	
 	if (!bcm2835_init()) {
       return 1;
@@ -454,6 +458,8 @@ int main(int argc, char **argv) {
 	bcm2835_gpio_fsel(26, 0x00);
 	bcm2835_gpio_fsel(27, 0x00);
 	
+	decodeOffOutput(40);
+	
 	while(1) {
 		
 
@@ -462,9 +468,27 @@ int main(int argc, char **argv) {
 			bcm2835_gpio_write(9, 1);
 			iterationsFor1kHz = 0;
 			isOn = 1;
-			clockLoop();
-		
-			// print to screen
+			decodeOn = 1;
+	
+			selectedNumber = lookForInput();
+			
+			if (selectedNumber != 0) {
+				curVar = selectedNumber;
+				decodeOnOutput(curVar);
+				timerToBlink = 0;	
+			} // Input has been Read Loop
+			
+			if ((timerToBlink >= 400000000) && (lastBlinked40 == 0)) {
+				decodeOnOutput(40);
+				timerToBlink = 0;			
+				lastBlinked40 = 1;
+				printf("%d\n", 40); // Used to test what is being received	
+			} else if ((timerToBlink >= 100000000) && (lastBlinked40 == 1)) {
+				decodeOnOutput(curVar);
+				lastBlinked40 = 0;
+				timerToBlink = 0;			
+				printf("%d\n", curVar); 
+			}	
 			
 		} else if ((iterationsFor1kHz == 130000) && (isOn == 1)) {
 		
@@ -475,6 +499,7 @@ int main(int argc, char **argv) {
 		} // if/else
 		
 		iterationsFor1kHz = iterationsFor1kHz + 1;
+		timerToBlink = timerToBlink + 1;
 
 	} // while
 				
