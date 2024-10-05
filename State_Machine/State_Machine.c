@@ -160,7 +160,8 @@ int main(int argc, char **argv) {
 	
 	//int row 			= 0;
 	int selectedNumber 	= 0;
-	//int decodeOn 		= 0;
+	int decodeOn 		= 0;
+	int debounce 		= 0;
 	
 	if (!bcm2835_init()) {
 		return 1;
@@ -176,24 +177,34 @@ int main(int argc, char **argv) {
 	bcm2835_gpio_fsel(22, 0x01);
 	bcm2835_gpio_fsel(23, 0x01);
 	
+	printf("%d\n", 40); 
+	// send @ to the logic analzyer
+	
 	// Infinite Loop
 	while (1) {
 		
-		selectedNumber = 0; // Necessary to look for continuous input
+		if (debounce == 0) {
 		
-		// Look for input and set it to anything but 0 if found
-		while (selectedNumber == 0) {
-			selectedNumber = lookForInput();
+			selectedNumber = 0; // Necessary to look for continuous input
+			
+			// Look for input and set it to anything but 0 if found
+			while (selectedNumber == 0) {
+				selectedNumber = lookForInput();
+			}
+			
+			// When an input is read, enter this loop
+			if (selectedNumber != 0) {
+				debounce = 40000000;
+				printf("Output: %d\n", selectedNumber); // Used to test what is being received
+				//printf("HEX: %X\n", selectedNumber);
+				
+				
+			} // Input has been Read Loop 
+		} else {
+			
+			debounce = debounce - 1;
 		}
 		
-		// When an input is read, enter this loop
-		if (selectedNumber != 0) {
-					
-			printf("Output: %d\n", selectedNumber); // Used to test what is being received
-			//printf("HEX: %X\n", selectedNumber);
-			
-			
-		} // Input has been Read Loop 
 		
 	} // While(1)
 				
