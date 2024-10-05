@@ -10,178 +10,62 @@
 // Seemed to work again after using the wrong compilation command and then recompiling it correctly
 
 #include "stdio.h"
-#include "gpiotopin.h"
-//#include "E4235.h"
+#include <bcm2835.h>
+#include "E4235.h"
 
-//extern int E4235_Read(int); // GPIO
-//extern int E4235_Write(int, int); // GPIO,value (on/off)
-//extern void E4235_Delaynano(int); // time
-// we need to make a clock so that it only samples on rising edges of the clock
+extern int E4235_Read(int); // GPIO
+extern int E4235_Write(int, int); // GPIO,value (on/off)
+extern void E4235_Delaynano(int); // time
 
-// Looks for a high on the keypad when writing to that row
-int readKeyPad(GPIONumber){
-	
-	int rowPushed = 0;
-		
-	E4235_Write(GPIONumber, 1);
-	
-	if (E4235_Read(GPIO24) == 1){
-		rowPushed = 1;
-	}
-	if (E4235_Read(GPIO25) == 1){
-		rowPushed = 2;
-	}
-	if (E4235_Read(GPIO26) == 1){
-		rowPushed = 3;
-	}
-	if (E4235_Read(GPIO27) == 1){
-		rowPushed = 4;
-	}
-	
-	E4235_Write(GPIONumber, 0);
-	
-	return rowPushed;
-	
-} // readKeyPad
-
-
-
-// Returns the Char that the keypad saw based on the Input at the time and column pushed
- translateNumber(GPIONumber, selectedNumber) {
-	
-	if (GPIONumber == 20) {
-		if (selectedNumber == 1) {
-			return '1';
-		} else if (selectedNumber == 2) {
-			return '2';
-		} else if (selectedNumber == 3) {
-			return '3';
-		} else if (selectedNumber == 4) {
-			return 'A';
-		}
-	 } 
-	 
-	 if (GPIONumber == 21) {
-		if (selectedNumber == 1) {
-			return '4';
-		} else if (selectedNumber == 2) {
-			return '5';
-		} else if (selectedNumber == 3) {
-			return '6';
-		} else if (selectedNumber == 4) {
-			return 'B';
-		}
-	 }
-	
-	return 'L';
-}
-
-int lookForInput(){
-	
-	int stop = 0;
-		
-	stop = readKeyPad(20); 
-	if (stop != 0) {
-		return translateNumber(20, stop); 	
-	}
-	stop = readKeyPad(21);
-	if (stop != 0) {
-		return translateNumber(21, stop);
-	}
-	stop = readKeyPad(22);
-	if (stop != 0) {
-		return translateNumber(22, stop);
-	}
-	stop = readKeyPad(23);
-	if (stop != 0) {
-		return translateNumber(23, stop);
-	}
-				
-	return stop;
-			
-} // Looking For Input
-
-
-// Main Loop
 int main(int argc, char **argv) {
 	
-	int row 			= 0;
-	int selectedNumber 	= 0;
-	int decodeOn 		= 0;
+	int pin20 = 0;
+	int pin21 = 0;
+	int pin22 = 0;
+	int pin23 = 0;
+	int pin24 = 0;
+	int pin25 = 0;
+	int pin26 = 0;
+	int pin27 = 0;
 	
-	// Infinite Loop
-	while (1) {
+	char rowOne [3];
+	
+	if (!bcm2835_init()) {
+		return 1;
+	} // BCM Initialize
+	
+	bcm2835_gpio_fsel(pin24, 0x00);
+	bcm2835_gpio_fsel(pin25, 0x00);
+	bcm2835_gpio_fsel(pin26, 0x00);
+	bcm2835_gpio_fsel(pin27, 0x00);
+
+	
+	while(1) {
 		
-		selectedNumber = 0; // Necessary to look for continuous input
+		pin20 = E4235_Write(20, 1);
+		pin21 = E4235_Write(21, 1);
+		pin22 = E4235_Write(22, 1);
+		pin23 = E4235_Write(23, 1);
 		
-		// Look for input and set it to anything but 0 if found
-		while (selectedNumber == 0) {
-			selectedNumber = lookForInput();
-		}
+		pin24 = bcm2835_gpio_lev(24);
+		pin25 = bcm2835_gpio_lev(25);
+		pin26 = bcm2835_gpio_lev(26);
+		pin27 = bcm2835_gpio_lev(27);
 		
-		// When an input is read, enter this loop
-		if (selectedNumber != 0) {
-			if (selectedNumber == 5) {
-				if (decodeOn == 1) {
-					decodeOn = 0;		// Decode Off
-				} else {
-					decodeOn = 1; 		// Decode On
-				}
-			} // Decode On/Off
-					
-			printf("Output: %d\n", selectedNumber); // Used to test what is being received
+		printf("24: %d ", pin24);
+		printf("25: %d ", pin25);
+		printf("26: %d ", pin26);
+		printf("27: %d\n", pin27);
+		
+		E4235_Delaynano(250000);
+		
+		//pin20 = E4235_Write(20, 0);
+		//pin21 = E4235_Write(21, 0);
+		//pin22 = E4235_Write(22, 0);
+		//pin23 = E4235_Write(23, 0);
+		
+		E4235_Delaynano(250000);
+	}	
 			
-		} // Input has been Read Loop 
-		
-	} // While(1)
-				
-	return 0;
-} // Main
-
-
-/*
-int main(int argc, char **argv) {
-	E4235_Write(GPIO20, 1);
-	E4235_Write(GPIO21, 1);
-	E4235_Write(GPIO22, 1);
-	E4235_Write(GPIO23, 1);
-	while(1)
-	{
-		if (E4235_Read(GPIO24) == 1)
-		{
-				printf("*\n");
-				E4235_Write(GPIO20, 0);
-				E4235_Write(GPIO21, 0);
-				E4235_Write(GPIO22, 0);
-		}
-		else if (E4235_Read(GPIO25) == 1)
-		{
-				printf("0\n");
-				E4235_Write(GPIO20, 0);
-				E4235_Write(GPIO21, 0);
-				E4235_Write(GPIO22, 0);
-		}
-		else if (E4235_Read(GPIO26) == 1)
-		{
-				printf("#\n");
-				E4235_Write(GPIO20, 0);
-				E4235_Write(GPIO21, 0);
-				E4235_Write(GPIO22, 0);
-		}
-		else if (E4235_Read(GPIO27) == 1)
-		{
-				printf("D\n");
-				E4235_Write(GPIO20, 0);
-				E4235_Write(GPIO21, 0);
-				E4235_Write(GPIO22, 0);
-		}
-			E4235_Write(GPIO20, 0);
-			E4235_Write(GPIO21, 0);
-			E4235_Write(GPIO22, 0);
-	}
-	
-	E4235_Delaynano(0.01);
-	
 	return 0;
 }
-*/
