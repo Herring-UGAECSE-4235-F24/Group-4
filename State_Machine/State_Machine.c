@@ -127,6 +127,21 @@ int translateNumber(int GPIONumber, int selectedNumber) {
 	return 'L';
 }
 
+void debounce() {
+	
+	int x = 40000000;
+	
+	while (x != 0) {
+		
+		x = x -1;
+		
+	} // while
+	
+	return;
+	
+} // debounce
+	
+
 int lookForInput(){
 	
 	int stop = 0;
@@ -152,16 +167,16 @@ int lookForInput(){
 			
 } // Looking For Input
 
-//logic analyzer software
-
-
 // Main Loop
 int main(int argc, char **argv) {
 	
 	//int row 			= 0;
 	int selectedNumber 	= 0;
 	int decodeOn 		= 0;
-	int debounce 		= 0;
+	int lastVar			= 0;
+	int curVar			= 0;
+	int flashTimer 		= 0;
+	int flash40 		= 0;
 	
 	if (!bcm2835_init()) {
 		return 1;
@@ -182,28 +197,43 @@ int main(int argc, char **argv) {
 	
 	// Infinite Loop
 	while (1) {
-		
-		if (debounce == 0) {
-		
-			selectedNumber = 0; // Necessary to look for continuous input
 			
-			// Look for input and set it to anything but 0 if found
-			while (selectedNumber == 0) {
-				selectedNumber = lookForInput();
+		selectedNumber = 0; // Necessary to look for continuous input
+			
+		flashTimer = 0;
+		flash40 = 0;
+		// Look for input and set it to anything but 0 if found
+		while (selectedNumber == 0) {
+			
+			if ((flashTimer == 2000000) && (flash40 == 0)) {
+			
+				flash40 = 1;
+				flashTimer = 0;
+			
+			} else if ((flashTimer == 500000) && (flash40 == 1)) {
+			
+				flash40 = 0;
+				flashTimer = 0;
+				
+			} // if/else
+			
+			if (flash40 == 1) {
+				printf("%d\n", 40);
+			} else {
+				printf("%d\n", curVar);
 			}
 			
-			// When an input is read, enter this loop
-			if (selectedNumber != 0) {
-				debounce = 40000000;
-				printf("Output: %d\n", selectedNumber); // Used to test what is being received
-				//printf("HEX: %X\n", selectedNumber);
+			flashTimer = flashTimer + 1;
+			selectedNumber = lookForInput();
+		} // while
 				
-				
-			} // Input has been Read Loop 
-		} else {
+				// When an input is read, enter this loop
+		if (selectedNumber != 0) {
+			debounce();
+			curVar = selectedNumber;
+			printf("%d\n", selectedNumber); // Used to test what is being received					
+		} // Input has been Read Loop
 			
-			debounce = debounce - 1;
-		}
 		
 		
 	} // While(1)
