@@ -11,107 +11,129 @@
 
 #include "stdio.h"
 #include "gpiotopin.h"
-#include <bcm2835.h>
 //#include "E4235.h"
 
 //extern int E4235_Read(int); // GPIO
 //extern int E4235_Write(int, int); // GPIO,value (on/off)
 //extern void E4235_Delaynano(int); // time
-// we need to make a clock so that it only samples on rising edges of the clock
 
-// Looks for a high on the keypad when writing to that row
+// dec to char: 
+// 49 -> 1, 50 -> 2, 51 -> 3, 65 -> 4
+// 42 -> *, 48 -> 0, 35 -> #, 68 -> D
+
+
 int readKeyPad(GPIONumber){
 	
 	int rowPushed = 0;
 		
 	E4235_Write(GPIONumber, 1);
 	
-	if (bcm2835_gpio_lev(GPIO24) == 1){
+	if (E4235_Read(GPIO24) == 1){
 		rowPushed = 1;
+		printf("1st row\n");
 	}
-	if (bcm2835_gpio_lev(GPIO25) == 1){
+	if (E4235_Read(GPIO25) == 1){
 		rowPushed = 2;
+		printf("2nd row\n");
 	}
-	if (bcm2835_gpio_lev(GPIO26) == 1){
+	if (E4235_Read(GPIO26) == 1){
 		rowPushed = 3;
+		printf("3rd row\n");
 	}
-	if (bcm2835_gpio_lev(GPIO27) == 1){
+	if (E4235_Read(GPIO27) == 1){
 		rowPushed = 4;
+		printf("4th row\n");
 	}
 	
-	E4235_Write(GPIONumber, 0);
+	E4235_Write(GPIONumber, 0); // may need to move this down to translateNumber() as the last line
 	
 	return rowPushed;
 	
 } // readKeyPad
 
-
-
-// Returns the Char that the keypad saw based on the Input at the time and column pushed
- translateNumber(GPIONumber, selectedNumber) {
+int translateNumber(GPIONumber, selectedNumber) {
 	
 	if (GPIONumber == 20) {
 		if (selectedNumber == 1) {
+			printf("1 dumbo\n");
 			return '1';
 		} else if (selectedNumber == 2) {
+			printf("2 dumbo\n");
 			return '2';
 		} else if (selectedNumber == 3) {
+			printf("3 dumbo\n");
 			return '3';
 		} else if (selectedNumber == 4) {
+			printf("4 dumbo\n");
 			return 'A';
 		}
 	 } 
 	 
 	 if (GPIONumber == 21) {
 		if (selectedNumber == 1) {
+			printf("4 dumbo\n");
 			return '4';
 		} else if (selectedNumber == 2) {
+			printf("5 dumbo\n");
 			return '5';
 		} else if (selectedNumber == 3) {
+			printf("6 dumbo\n");
 			return '6';
 		} else if (selectedNumber == 4) {
+			printf("B dumbo\n");
 			return 'B';
 		}
 	 }
 	
 	if (GPIONumber == 22) {
 		if (selectedNumber == 1) {
+			printf("7 dumbo\n");
 			return '7';
 		} else if (selectedNumber == 2) {
+			printf("8 dumbo\n");
 			return '8';
 		} else if (selectedNumber == 3) {
+			printf("9 dumbo\n");
 			return '9';
 		} else if (selectedNumber == 4) {
+			printf("C dumbo\n");
 			return 'C';
 		}
-	 } 
-	
-	if (GPIONumber == 23) {
+	 }
+	 
+	 if (GPIONumber == 23) {
 		if (selectedNumber == 1) {
+			printf("* dumbo\n");
 			return '*';
 		} else if (selectedNumber == 2) {
+			printf("0 dumbo\n");
 			return '0';
 		} else if (selectedNumber == 3) {
+			printf("# dumbo\n");
 			return '#';
 		} else if (selectedNumber == 4) {
+			printf("D dumbo\n");
 			return 'D';
 		}
-	 } 
-	 
+	 }
+	//E4235_Write(GPIONumber, 0);
 	return 'L';
 }
 
 int lookForInput(){
 	
 	int stop = 0;
+	int yes = 0;
 		
-	stop = readKeyPad(20); 
+	stop = readKeyPad(20); // may need to move E4235_Write(GPIONumber, 0); to right after this line
 	if (stop != 0) {
-		return translateNumber(20, stop); 	
+		return translateNumber(20, stop); // this may be returning a character instead of an int
 	}
 	stop = readKeyPad(21);
 	if (stop != 0) {
-		return translateNumber(21, stop);
+		yes = translateNumber(21, stop);
+		printf("GPIO21:\n", yes);
+		return yes;
 	}
 	stop = readKeyPad(22);
 	if (stop != 0) {
@@ -119,7 +141,9 @@ int lookForInput(){
 	}
 	stop = readKeyPad(23);
 	if (stop != 0) {
-		return translateNumber(23, stop);
+		yes = translateNumber(23, stop);
+		printf("23!!!\n", yes);
+		return yes;
 	}
 				
 	return stop;
@@ -127,40 +151,23 @@ int lookForInput(){
 } // Looking For Input
 
 
-// Main Loop
 int main(int argc, char **argv) {
 	
-	int row 			= 0;
-	int selectedNumber 	= 0;
-	int decodeOn 		= 0;
+	char selectedNumber = 0; // original was int
 	
-	if (!bcm2835_init()) {
-		return 1;
-	} // BCM Initialize
-	
-	bcm2835_gpio_fsel(24, 0x00);
-	bcm2835_gpio_fsel(25, 0x00);
-	bcm2835_gpio_fsel(26, 0x00);
-	bcm2835_gpio_fsel(27, 0x00);
-	
-	// Infinite Loop
 	while (1) {
 		
-		selectedNumber = 0; // Necessary to look for continuous input
+		selectedNumber = 0; 
 		
-		// Look for input and set it to anything but 0 if found
 		while (selectedNumber == 0) {
-			selectedNumber = lookForInput();
+			selectedNumber = lookForInput(); 
 		}
 		
-		// When an input is read, enter this loop
 		if (selectedNumber != 0) {
-					
-			printf("Output: %d\n", selectedNumber); // Used to test what is being received
 			
-		} // Input has been Read Loop 
-		
-	} // While(1)
+			printf("Output: %c\n", selectedNumber); //original was decimal
+		}
+	}
 				
 	return 0;
 } // Main
