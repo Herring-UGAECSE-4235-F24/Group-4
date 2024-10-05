@@ -13,15 +13,17 @@
 #include "gpiotopin.h"
 //#include "E4235.h"
 
-extern int E4235_Read(int); // GPIO
-extern int E4235_Write(int, int); // GPIO,value (on/off)
-extern void E4235_Delaynano(int); // time
+//extern int E4235_Read(int); // GPIO
+//extern int E4235_Write(int, int); // GPIO,value (on/off)
+//extern void E4235_Delaynano(int); // time
 
-int readKeyPad(gpioNumber){
+
+// Looks for a high on the keypad when writing to that row
+int readKeyPad(GPIONumber){
 	
 	int rowPushed = 0;
 		
-	E4235_Write(gpioNumber, 1);
+	E4235_Write(GPIONumber, 1);
 	
 	if (E4235_Read(GPIO24) == 1){
 		rowPushed = 1;
@@ -36,12 +38,15 @@ int readKeyPad(gpioNumber){
 		rowPushed = 4;
 	}
 	
-	E4235_Write(gpioNumber, 0);
+	E4235_Write(GPIONumber, 0);
 	
 	return rowPushed;
 	
 } // readKeyPad
 
+
+
+// Returns the Char that the keypad saw based on the Input at the time and column pushed
  translateNumber(GPIONumber, selectedNumber) {
 	
 	if (GPIONumber == 20) {
@@ -54,44 +59,122 @@ int readKeyPad(gpioNumber){
 		} else if (selectedNumber == 4) {
 			return 'A';
 		}
-	}
+	 } 
+	 
+	 if (GPIONumber == 21) {
+		if (selectedNumber == 1) {
+			return '4';
+		} else if (selectedNumber == 2) {
+			return '5';
+		} else if (selectedNumber == 3) {
+			return '6';
+		} else if (selectedNumber == 4) {
+			return 'B';
+		}
+	 }
 	
 	return 'L';
 }
 
+int lookForInput(){
+	
+	int stop = 0;
+		
+	stop = readKeyPad(20); 
+	if (stop != 0) {
+		return translateNumber(20, stop); 	
+	}
+	stop = readKeyPad(21);
+	if (stop != 0) {
+		return translateNumber(21, stop);
+	}
+	stop = readKeyPad(22);
+	if (stop != 0) {
+		return translateNumber(22, stop);
+	}
+	stop = readKeyPad(23);
+	if (stop != 0) {
+		return translateNumber(23, stop);
+	}
+				
+	return stop;
+			
+} // Looking For Input
+
+
+// Main Loop
 int main(int argc, char **argv) {
 	
-	int pin20 = 0;
-	int pin21 = 0;
-	int pin22 = 0;
-	int pin23 = 0;
-	int pin24 = 0;
-	int pin25 = 0;
-	int pin26 = 0;
-	int pin27 = 0;
-	int stop = 1;
-	int selectedNumber;
-	int returnedChar;
-
-	char rowOne [3];
-	rowOne [0] = '1';
-	rowOne [1] = '2';
-	rowOne [2] = '3';
-	rowOne [3] = 'A';
+	int row 			= 0;
+	int selectedNumber 	= 0;
+	int decodeOn 		= 0;
 	
-	while(stop != 0) {
+	// Infinite Loop
+	while (1) {
 		
-		selectedNumber = 0;
-		returnedChar = '0';
+		selectedNumber = 0; // Necessary to look for continuous input
 		
-		selectedNumber = readKeyPad(GPIO20, rowOne);
-		if (selectedNumber != 0) {
-			returnedChar = translateNumber(GPIO20, selectedNumber);
+		// Look for input and set it to anything but 0 if found
+		while (selectedNumber == 0) {
+			selectedNumber = lookForInput();
 		}
 		
-		printf("24: %c\n", returnedChar);
+		// When an input is read, enter this loop
+		if (selectedNumber != 0) {
+					
+			printf("Output: %d\n", selectedNumber); // Used to test what is being received
+			
+		} // Input has been Read Loop 
 		
-	}
+	} // While(1)
 				
 	return 0;
 } // Main
+
+
+/*
+int main(int argc, char **argv) {
+	E4235_Write(GPIO20, 1);
+	E4235_Write(GPIO21, 1);
+	E4235_Write(GPIO22, 1);
+	E4235_Write(GPIO23, 1);
+	while(1)
+	{
+		if (E4235_Read(GPIO24) == 1)
+		{
+				printf("*\n");
+				E4235_Write(GPIO20, 0);
+				E4235_Write(GPIO21, 0);
+				E4235_Write(GPIO22, 0);
+		}
+		else if (E4235_Read(GPIO25) == 1)
+		{
+				printf("0\n");
+				E4235_Write(GPIO20, 0);
+				E4235_Write(GPIO21, 0);
+				E4235_Write(GPIO22, 0);
+		}
+		else if (E4235_Read(GPIO26) == 1)
+		{
+				printf("#\n");
+				E4235_Write(GPIO20, 0);
+				E4235_Write(GPIO21, 0);
+				E4235_Write(GPIO22, 0);
+		}
+		else if (E4235_Read(GPIO27) == 1)
+		{
+				printf("D\n");
+				E4235_Write(GPIO20, 0);
+				E4235_Write(GPIO21, 0);
+				E4235_Write(GPIO22, 0);
+		}
+			E4235_Write(GPIO20, 0);
+			E4235_Write(GPIO21, 0);
+			E4235_Write(GPIO22, 0);
+	}
+	
+	E4235_Delaynano(0.01);
+	
+	return 0;
+}
+*/
