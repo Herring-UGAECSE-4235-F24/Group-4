@@ -17,18 +17,19 @@
 #include "gpiotopin.h"
 #include <bcm2835.h>
 
-// 1000 delay is 1 kHz
+// 1 khz is equal to 260000
 
+// Outputs the decoded choice through GPIOs into the Logic Analyzer.
 int decodeOnOutput(selectedNumber){
 		
-	if (selectedNumber == 48) { // Should output 30 
-		bcm2835_gpio_write(10, 0); // msb
-		bcm2835_gpio_write(11, 1); //
-		bcm2835_gpio_write(12, 1); //
-		bcm2835_gpio_write(13, 0); 		//
-		bcm2835_gpio_write(16, 0); 		//
-		bcm2835_gpio_write(17, 0); 		//
-		bcm2835_gpio_write(18, 0); 		// lsb
+	if (selectedNumber == 48) { // outputs 0x30 
+		bcm2835_gpio_write(10, 0);
+		bcm2835_gpio_write(11, 1);
+		bcm2835_gpio_write(12, 1);
+		bcm2835_gpio_write(13, 0);
+		bcm2835_gpio_write(16, 0); 
+		bcm2835_gpio_write(17, 0); 
+		bcm2835_gpio_write(18, 0);
 
 	} else if (selectedNumber == 49) { // 0x31 - 011 0001
 		bcm2835_gpio_write(10, 0);
@@ -145,8 +146,10 @@ int decodeOnOutput(selectedNumber){
 	} 
 	
 	return 1;
-} // Write Binary to LA
+} // decodeOnOutput 
 
+
+// Outputs the Non-decoded choice through GPIOs into the Logic Analyzer.
 int decodeOffOutput(selectedNumber){
 		
 	if (selectedNumber == 48) { // Should output 0 
@@ -409,7 +412,17 @@ int lookForInput() {
 			
 } // Looking For Input
 
-
+void debounce() {
+	
+	int x = 40000000;
+	
+	while (x != 0) {
+		x = x -1;
+	} // while
+	
+	return;
+	
+} // debounce
 
 int clockLoop() {
 	
@@ -468,23 +481,55 @@ int main(int argc, char **argv) {
 			bcm2835_gpio_write(9, 1);
 			iterationsFor1kHz = 0;
 			isOn = 1;
-			decodeOn = 1;
 	
 			selectedNumber = lookForInput();
 			
+			// poll for user input
 			if (selectedNumber != 0) {
-				curVar = selectedNumber;
-				decodeOnOutput(curVar);
+				if (selectedNumber != 35) {
+					curVar = selectedNumber;
+				}
+				if (decodeOn == 1) {
+					decodeOnOutput(curVar);
+				} else { 
+					decodeOffOutput(curVar);
+				}
 				timerToBlink = 0;	
 			} // Input has been Read Loop
 			
+			if (selectedNumber == 42) {
+				printf("reset!\n");
+				decodeOn = 0;
+				curVar = 40;
+			}
+			
+			if (selectedNumber == 35) {
+				if (decodeOn == 1) {
+					decodeOn = 0;
+					printf("decode on!\n");
+				} else {
+					decodeOn = 1;
+					printf("decode off!\n");
+				}
+				debounce();
+			} 
+			
+			// 2 on 1/2 off
 			if ((timerToBlink >= 400000000) && (lastBlinked40 == 0)) {
-				decodeOnOutput(40);
+				if (decodeOn == 1) {
+					decodeOnOutput(40);
+				} else { 
+					decodeOffOutput(40);
+				}
 				timerToBlink = 0;			
 				lastBlinked40 = 1;
 				printf("%d\n", 40); // Used to test what is being received	
 			} else if ((timerToBlink >= 100000000) && (lastBlinked40 == 1)) {
-				decodeOnOutput(curVar);
+				if (decodeOn == 1) {
+					decodeOnOutput(curVar);
+				} else { 
+					decodeOffOutput(curVar);
+				}
 				lastBlinked40 = 0;
 				timerToBlink = 0;			
 				printf("%d\n", curVar); 
