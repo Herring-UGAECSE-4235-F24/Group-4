@@ -1,28 +1,23 @@
-// Uses GPIOs 10 to 17 (8 digits) 17 the msb and 10 the lsb
-// GPIO 9 is the clock
-// GPIOs 20 to 27 are the inputs for the keypad
-// pins 20-23 -> X1-X4
-// pins 24-27 -> Y1-Y4
-
-// To Compile: gcc -o State_Machine State_Machine.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l E4235
-
-// Revised the makefile to resolve the compilation and linking executable issues. Now, the keypad doesn't work anymore.
-// Seemed to work again after using the wrong compilation command and then recompiling it correctly
-
-// 1 Khz in class library is 1,000,000 iterations total, 500,000 on/off
-// By testing, 1 kHz is about 860,000 iterations total or 430,000 on/off.
-// simple parallel
+// State_Machine
+//
+// ECSE 4235 - Embedded Systems II
+// Property of Samuel Brewster and Simline Gijo	
+// Created 19SEP2024
+// Finished 03OCT2024
+// To Compile: gcc -o State_Machine State_Machine.c -l bcm2835
 
 #include "stdio.h"
 #include "gpiotopin.h"
 #include <bcm2835.h>
 
-// 1 khz is equal to 260000
-
-// Outputs the decoded choice through GPIOs into the Logic Analyzer.
+// Outputs the decoded hex number through GPIOs into the Logic Analyzer.
 int decodeOnOutput(selectedNumber){
-		
-	if (selectedNumber == 48) { // outputs 0x30 
+
+	// GPIO 10 is the MSB and 18 is the LSB
+	// The GPIOS follow this 7-bit format
+	// 0+0+0 0+0+0+0 -> 10+11+12 13+16+17+18
+	
+	if (selectedNumber == 48) { //  0x30 - 011 0000
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
 		bcm2835_gpio_write(12, 1);
@@ -30,7 +25,6 @@ int decodeOnOutput(selectedNumber){
 		bcm2835_gpio_write(16, 0); 
 		bcm2835_gpio_write(17, 0); 
 		bcm2835_gpio_write(18, 0);
-
 	} else if (selectedNumber == 49) { // 0x31 - 011 0001
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 1);
@@ -149,9 +143,13 @@ int decodeOnOutput(selectedNumber){
 } // decodeOnOutput 
 
 
-// Outputs the Non-decoded choice through GPIOs into the Logic Analyzer.
+// Outputs the binary equivalent of the ascii choice through GPIOs into the Logic Analyzer.
 int decodeOffOutput(selectedNumber){
-		
+
+	// GPIO 10 is the MSB and 18 is the LSB
+	// The GPIOS follow this 7-bit format
+	// 0+0+0 0+0+0+0 -> 10+11+12 13+16+17+18
+	
 	if (selectedNumber == 48) { // Should output 0 
 		bcm2835_gpio_write(10, 0);
 		bcm2835_gpio_write(11, 0);
@@ -275,41 +273,46 @@ int decodeOffOutput(selectedNumber){
 	} 
 	
 	return 1;
-} // Write Binary to LA
+} // decodeOffOutput
 
 // Looks for a high on the keypad when writing to that row
 int readKeyPad(int GPIONumber){
 	
 	int rowPushed = 0;
-		
+
+	// Writes High to GPIO 20 and sets each other GPIO to Low
 	if (GPIONumber == 20) {
 		bcm2835_gpio_write(20, 1);
 		bcm2835_gpio_write(21, 0);
 		bcm2835_gpio_write(22, 0);
 		bcm2835_gpio_write(23, 0);
 	}
-	
+		
+	// Writes High to GPIO 21 and sets each other GPIO to Low
 	if (GPIONumber == 21) {
 		bcm2835_gpio_write(20, 0);
 		bcm2835_gpio_write(21, 1);
 		bcm2835_gpio_write(22, 0);
 		bcm2835_gpio_write(23, 0);
 	}
-	
+
+	// Writes High to GPIO 22 and sets each other GPIO to Low
 	if (GPIONumber == 22) {
 		bcm2835_gpio_write(20, 0);
 		bcm2835_gpio_write(21, 0);
 		bcm2835_gpio_write(22, 1);
 		bcm2835_gpio_write(23, 0);
 	}
-	
+
+	// Writes High to GPIO 23 and sets each other GPIO to Low
 	if (GPIONumber == 23) {
 		bcm2835_gpio_write(20, 0);
 		bcm2835_gpio_write(21, 0);
 		bcm2835_gpio_write(22, 0);
 		bcm2835_gpio_write(23, 1);
 	}
-	
+
+	// Reads the Output of the Keypad and Sets the Ouput accordingly
 	if (bcm2835_gpio_lev(GPIO24) == 1){
 		rowPushed = 1;
 	}
@@ -322,7 +325,8 @@ int readKeyPad(int GPIONumber){
 	if (bcm2835_gpio_lev(GPIO27) == 1){
 		rowPushed = 4;
 	}
-	
+
+	// Turns off the Keypad input
 	bcm2835_gpio_write(GPIONumber, 0);
 	
 	return rowPushed;
@@ -331,9 +335,10 @@ int readKeyPad(int GPIONumber){
 
 
 
-// Returns the Char that the keypad saw based on the Input at the time and column pushed
+// Returns the value of column that was selected by the keypad read based on the GPIO Input used.
 int translateNumber(int GPIONumber, int selectedNumber) {
-	
+
+	// Selects which value is selected in row 1
 	if (GPIONumber == 20) {
 		if (selectedNumber == 1) {
 			return '1';
@@ -345,7 +350,8 @@ int translateNumber(int GPIONumber, int selectedNumber) {
 			return 'A';
 		}
 	 } 
-	 
+	
+	 // Selects which value is selected in row 2
 	 if (GPIONumber == 21) {
 		if (selectedNumber == 1) {
 			return '4';
@@ -357,7 +363,8 @@ int translateNumber(int GPIONumber, int selectedNumber) {
 			return 'B';
 		}
 	 }
-	
+
+	// Selects which value is selected in row 3
 	if (GPIONumber == 22) {
 		if (selectedNumber == 1) {
 			return '7';
@@ -369,7 +376,8 @@ int translateNumber(int GPIONumber, int selectedNumber) {
 			return 'C';
 		}
 	 } 
-	
+
+	// Selects which value is selected in row 4
 	if (GPIONumber == 23) {
 		if (selectedNumber == 1) {
 			return '*';
@@ -382,36 +390,40 @@ int translateNumber(int GPIONumber, int selectedNumber) {
 		}
 	 } 
 	 
-	return 'L';
+	return 'L'; // Test Case that is never reached
 }
 
 
 
+// Calls each keypad input and reads the output from it. If a value is returned, it returns its char equivalent via the translateNumber function.
 int lookForInput() {
 	
 	int stop = 0;
-		
-	stop = readKeyPad(20); 
+
+	stop = readKeyPad(20); // Reads the output from sending an input to row 1
 	if (stop != 0) {
-		return translateNumber(20, stop); 	
+		return translateNumber(20, stop); // translates if a row 1 output is received	
 	}
-	stop = readKeyPad(21);
+	stop = readKeyPad(21); // Reads the output from sending an input to row 2
 	if (stop != 0) {
-		return translateNumber(21, stop);
+		return translateNumber(21, stop); // translates if a row 2 output is received
 	}
-	stop = readKeyPad(22);
+	stop = readKeyPad(22); // Reads the output from sending an input to row 3
 	if (stop != 0) {
-		return translateNumber(22, stop);
+		return translateNumber(22, stop); // translates if a row 3 output is received
 	}
-	stop = readKeyPad(23);
+	stop = readKeyPad(23); // Reads the output from sending an input to row 4
 	if (stop != 0) {
-		return translateNumber(23, stop);
+		return translateNumber(23, stop); // translates if a row 4 output is received
 	}
 				
 	return stop;
 			
 } // Looking For Input
 
+
+
+// A simple debouncing function that causes a delay by counting computer iterations.
 void debounce() {
 	
 	int x = 40000000;
@@ -424,22 +436,12 @@ void debounce() {
 	
 } // debounce
 
-int clockLoop() {
-	
-	int selectedNumber = 0;
-	
-	selectedNumber = lookForInput();
-	printf("%d\n", selectedNumber); // Used to test what is being received
-	decodeOffOutput(selectedNumber);
-	//decodeOnOutput(selectedNumber);
 
-	return 1;
-	
-}
 
 // Main Loop
 int main(int argc, char **argv) {
 
+	// Initialize Variables
 	int isOn = 0;
 	int iterationsFor1kHz = 0;
 	int selectedNumber = 0;
@@ -447,11 +449,13 @@ int main(int argc, char **argv) {
 	int curVar = 40;
 	int timerToBlink = 0;
 	int lastBlinked40 = 0;		
-	
+
+	// Initialize the BCM Library
 	if (!bcm2835_init()) {
-      return 1;
-    }
-	
+      		return 1;
+    	}
+
+	// Set the following Pins to Outputs (Logic Analyzers)
 	bcm2835_gpio_fsel(9, 0x01);
 	bcm2835_gpio_fsel(10, 0x01);
 	bcm2835_gpio_fsel(11, 0x01);
@@ -460,49 +464,57 @@ int main(int argc, char **argv) {
 	bcm2835_gpio_fsel(16, 0x01);
 	bcm2835_gpio_fsel(17, 0x01);
 	bcm2835_gpio_fsel(18, 0x01);
-	
+
+	// Set the following Pins to Outputs (Keypad)
 	bcm2835_gpio_fsel(20, 0x01);
 	bcm2835_gpio_fsel(21, 0x01);
 	bcm2835_gpio_fsel(22, 0x01);
 	bcm2835_gpio_fsel(23, 0x01);
-	
+
+	// Set the following Pins to Inputs (Keypad)
 	bcm2835_gpio_fsel(24, 0x00);
 	bcm2835_gpio_fsel(25, 0x00);
 	bcm2835_gpio_fsel(26, 0x00);
 	bcm2835_gpio_fsel(27, 0x00);
-	
+
+	// Initializes the program by Outputting 40 to the Logic Analyzer
 	decodeOffOutput(40);
-	
+
+	// Main While Loop
 	while(1) {
 		
-
+		// Clock Switch Case Loop - When entering If, the program is on a rising edge
 		if ((iterationsFor1kHz == 130000) && (isOn == 0)) {
-			
-			bcm2835_gpio_write(9, 1);
-			iterationsFor1kHz = 0;
-			isOn = 1;
+
+			bcm2835_gpio_write(9, 1); 	// Writes a high to the clock
+			iterationsFor1kHz = 0;		// Resets the clock counter
+			isOn = 1;			// Sets the clock to be on so it can switch cases
 	
-			selectedNumber = lookForInput();
+			selectedNumber = lookForInput();	// Looks for user input
 			
-			// poll for user input
+			// If user input is selected...
 			if (selectedNumber != 0) {
+				// Check if the user input is anything but the #
 				if (selectedNumber != 35) {
 					curVar = selectedNumber;
 				}
+				// Output based on if the Decode is On or Off
 				if (decodeOn == 1) {
-					decodeOnOutput(curVar);
+					decodeOnOutput(curVar); // Output the decoded input
 				} else { 
-					decodeOffOutput(curVar);
+					decodeOffOutput(curVar); // Output the non-decoded input
 				}
-				timerToBlink = 0;	
+				timerToBlink = 0; // Reset the variable that counts for the 2 on + 1/2 off
 			} // Input has been Read Loop
-			
+
+			// If the User presses the *, output 40 and look for user input
 			if (selectedNumber == 42) {
 				printf("reset!\n");
 				decodeOn = 0;
 				curVar = 40;
 			}
-			
+
+			// If the User presses the #, switch whether or not the decode is on
 			if (selectedNumber == 35) {
 				if (decodeOn == 1) {
 					decodeOn = 0;
@@ -511,43 +523,46 @@ int main(int argc, char **argv) {
 					decodeOn = 1;
 					printf("decode off!\n");
 				}
-				debounce();
+				debounce(); // Debounce so it doesnt read this input more than once
 			} 
 			
 			// 2 on 1/2 off
 			if ((timerToBlink >= 400000000) && (lastBlinked40 == 0)) {
+				// Ouput 40/@ based on the decode status
 				if (decodeOn == 1) {
 					decodeOnOutput(40);
 				} else { 
 					decodeOffOutput(40);
 				}
-				timerToBlink = 0;			
-				lastBlinked40 = 1;
+				timerToBlink = 0; // reset the timer for blinking			
+				lastBlinked40 = 1; // switch the blink case
 				printf("%d\n", 40); // Used to test what is being received	
 			} else if ((timerToBlink >= 100000000) && (lastBlinked40 == 1)) {
+				// Ouput the keypad choice based on the decode status
 				if (decodeOn == 1) {
 					decodeOnOutput(curVar);
 				} else { 
 					decodeOffOutput(curVar);
 				}
-				lastBlinked40 = 0;
-				timerToBlink = 0;			
-				printf("%d\n", curVar); 
+				lastBlinked40 = 0; // reset the timer for blinking
+				timerToBlink = 0; // switch the blink case			
+				printf("%d\n", curVar); // Used to test what is being received
 			}	
 			
 		} else if ((iterationsFor1kHz == 130000) && (isOn == 1)) {
 		
-			bcm2835_gpio_write(9, 0);
-			iterationsFor1kHz = 0;
-			isOn = 0;
+			bcm2835_gpio_write(9, 0); 	// Falling Edge for the clock
+			iterationsFor1kHz = 0;		// Reset the lcock timer
+			isOn = 0;			// Update the switch Case
 			
 		} // if/else
-		
+
+		// Used to keep time for the clock and blinking function
 		iterationsFor1kHz = iterationsFor1kHz + 1;
 		timerToBlink = timerToBlink + 1;
 
 	} // while
 				
-	return 0;
+	return 0; // Never Reached
 	
 } // Main
