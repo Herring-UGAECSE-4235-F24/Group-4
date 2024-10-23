@@ -1,5 +1,6 @@
 # include <stdio.h>
 # include <bcm2835.h>
+# include <sys/time.h>
 
 # define MODE_READ 1
 
@@ -23,7 +24,15 @@ void initialize() {
 	return;
 }
 
-
+void realTime() {
+	
+	time_t * curTime;
+	
+	
+		
+	printf("%s", gettimeofday(&curTime, NULL));
+}
+	
 int main(int argc, char **argv) {
 	
 	//open '/dev/i2c-0' to access i2c data
@@ -32,6 +41,7 @@ int main(int argc, char **argv) {
 	//begin
 	
 	initialize();
+	realTime();
 
 	char zeroBuf[8];
 	char oneBuf[8];
