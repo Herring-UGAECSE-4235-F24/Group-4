@@ -56,13 +56,14 @@ int main(int argc, char **argv) {
 	char year[1];
 	year[0] = 0x06;		// Address of Years
 	
-	char one[2];
-	one[0] = 0x00; // Seconds
-	one[1] = 0x7F; // Data in seconds
+	char zero[1];
+	zero[0] = 0x00;
 	
-	char zero[2];
-	zero[0] = 0x68;
-	zero[1] = 0x00;
+	char one[1];
+	one[0] = 0x11; // Seconds
+
+	char two[1];
+	two[0] = 0x01;
 	
 	char binaryString[8];
 
@@ -78,77 +79,28 @@ int main(int argc, char **argv) {
 	}
 	
 	bcm2835_i2c_setSlaveAddress(0x68);
-	//bcm2835_i2c_write(zero, 2); // Write 0 to start writing process to i2c, second arg now works with a char array
+	bcm2835_i2c_write(zero, 1); // Write 0 to start writing process to i2c, second arg now works with a char array
+	
+	bcm2835_i2c_setSlaveAddress(0x68);
+	bcm2835_i2c_write(one, 1); // Write 0 to start writing process to i2c, second arg now works with a char array
 	
 	// if the time is 
-	
-	bcm2835_i2c_write(one, 2); // Write 0h
+	bcm2835_i2c_setSlaveAddress(0x69);
+	bcm2835_i2c_write(two, 1); // Write 0h
+	//bcm2835_i2c_write(, 1); // Write 0h
 
+	printf("Read Result = %i\n", one[0]); // address	
+	printf("Read Result = %i\n", two[0]); // address
+
+	while (1) {
 	// seg faulting here
-	bcm2835_i2c_setSlaveAddress(0x68);
-	one[0] = 0x00;
-	one[1] = 0x00;
-	printf("Read Result = %i\n", one[0]);
-	printf("Read Result = %i\n", one[1]);
-	bcm2835_i2c_read(one, 1);
-	printf("Read Result = %i\n", one[0]);
-	printf("Read Result = %i\n", one[1]);
-	
-	int result;
-	int dividend;
-	int divisor;
-	int increment;
-	increment = 0;
-	dividend = one[0];
-	divisor = 2;
-	
-	for(int i = 0; i < 8; i++) {
-		
-		result = dividend % divisor;
-		binaryString[i] = result;
-		dividend = dividend / divisor;
+		bcm2835_i2c_setSlaveAddress(0x68);
+		bcm2835_i2c_read_register_rs(seconds, one, 1);
+		printf("%i   ", one[0]); // address
+		bcm2835_i2c_read_register_rs(minutes, two, 1);
+		printf("%i\n", two[0]);	
+		delay(1000);
 	}
-	
-	printf("The Binary String is: ");
-	
-	for(int i = 0; i < 8; i++) {
-		
-		printf("%i", binaryString[i]);
-		
-	}
-	
-	printf("\n");
-	
-	//printf("%i", translateSeconds(binaryString[]));
-	
-	
-	// Convert Seconds to Real
-	int total;
-	total = 0;
-	
-	if (binaryString[0] == 1) {
-		total += 1;
-	}
-	if (binaryString[1] == 1) {
-		total += 2;
-	}
-	if (binaryString[2] == 1) {
-		total += 4;
-	} 
-	if (binaryString[3] == 1) {
-		total += 8;
-	}
-	if (binaryString[4] == 1) {
-		total += 10;
-	}
-	if (binaryString[5] == 1) {
-		total += 20;
-	}
-	if (binaryString[6] == 1) {
-		total += 40;
-	}
-	
-	printf("%i", total);
 	
 	bcm2835_i2c_end();  
 	bcm2835_close();
