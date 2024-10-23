@@ -25,13 +25,13 @@ void initialize() {
 	return;
 }
 	
-int binaryStringSeconds(binaryString, inputDiv) {
+int binaryStringSeconds(inputDiv) {
 	
 	int result;
 	int dividend;
 	int divisor;
-	int increment;
-	increment = 0;
+	char binaryString[8];
+
 	dividend = inputDiv;
 	divisor = 2;
 	
@@ -42,40 +42,31 @@ int binaryStringSeconds(binaryString, inputDiv) {
 		dividend = dividend / divisor;
 	} // for
 	
-	printf("The Binary String is: ");
-		
-	for(int i = 7; i < -1; i--) {
-			
-		printf("%i", binaryString[i]);
-			
-	} // for
-		
-	printf("\n");
+	printf("The Seconds Value is: ");
 				
-		
 	// Convert Seconds to Real
 	int total;
 	total = 0;
 		
-	if (binaryString[6] == 1) {
+	if (binaryString[0] == 1) {
 		total += 1;
 	}
-	if (binaryString[5] == 1) {
+	if (binaryString[1] == 1) {
 		total += 2;
 	}
-	if (binaryString[4] == 1) {
+	if (binaryString[2] == 1) {
 		total += 4;
 	} 
 	if (binaryString[3] == 1) {
 		total += 8;
 	}
-	if (binaryString[2] == 1) {
+	if (binaryString[4] == 1) {
 		total += 10;
 	}
-	if (binaryString[1] == 1) {
+	if (binaryString[5] == 1) {
 		total += 20;
 	}
-	if (binaryString[0] == 1) {
+	if (binaryString[6] == 1) {
 		total += 40;
 	}
 		
@@ -118,7 +109,7 @@ int main(int argc, char **argv) {
 	zero[0] = 0x00;
 	
 	char one[1];
-	one[0] = 0x01; // Seconds
+	one[0] = 0x60; // Seconds
 
 	char two[1];
 	two[0] = 0x02;
@@ -189,7 +180,7 @@ int main(int argc, char **argv) {
 		bcm2835_i2c_setSlaveAddress(0x68);
 		bcm2835_i2c_read_register_rs(seconds, one, 1);
 		printf("%i ", one[0]); // address
-		binaryStringSeconds(binaryString, one[0]);
+		binaryStringSeconds(one[0]);
 		bcm2835_i2c_read_register_rs(minutes, two, 1);
 		printf("%i  ", two[0]);	
 		bcm2835_i2c_read_register_rs(hours, three, 1);
