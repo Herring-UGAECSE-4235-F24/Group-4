@@ -25,7 +25,65 @@ void initialize() {
 	return;
 }
 	
+int binaryStringSeconds(binaryString, inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	int increment;
+	increment = 0;
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Binary String is: ");
+		
+	for(int i = 7; i < -1; i--) {
+			
+		printf("%i", binaryString[i]);
+			
+	} // for
+		
+	printf("\n");
+				
+		
+	// Convert Seconds to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[6] == 1) {
+		total += 1;
+	}
+	if (binaryString[5] == 1) {
+		total += 2;
+	}
+	if (binaryString[4] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[2] == 1) {
+		total += 10;
+	}
+	if (binaryString[1] == 1) {
+		total += 20;
+	}
+	if (binaryString[0] == 1) {
+		total += 40;
+	}
+		
+	printf("%i\n", total);
+	
+	return total;
 
+} // Binary String
 	
 int main(int argc, char **argv) {
 	
@@ -60,10 +118,25 @@ int main(int argc, char **argv) {
 	zero[0] = 0x00;
 	
 	char one[1];
-	one[0] = 0x11; // Seconds
+	one[0] = 0x01; // Seconds
 
 	char two[1];
-	two[0] = 0x01;
+	two[0] = 0x02;
+	
+	char three[1];
+	three[0] = 0x03; // Seconds
+
+	char four[1];
+	four[0] = 0x7F;
+	
+	char five[1];
+	five[0] = 0x7F; // Seconds
+
+	char six[1];
+	six[0] = 0x7F;
+	
+	char seven[1];
+	seven[0] = 0x7F; // Seconds
 	
 	char binaryString[8];
 
@@ -79,28 +152,60 @@ int main(int argc, char **argv) {
 	}
 	
 	bcm2835_i2c_setSlaveAddress(0x68);
-	bcm2835_i2c_write(zero, 1); // Write 0 to start writing process to i2c, second arg now works with a char array
+	bcm2835_i2c_write(zero, 1); // Write Zeroes
 	
 	bcm2835_i2c_setSlaveAddress(0x68);
-	bcm2835_i2c_write(one, 1); // Write 0 to start writing process to i2c, second arg now works with a char array
-	
-	// if the time is 
-	bcm2835_i2c_setSlaveAddress(0x69);
-	bcm2835_i2c_write(two, 1); // Write 0h
-	//bcm2835_i2c_write(, 1); // Write 0h
+	bcm2835_i2c_write(one, 1); // Write Seconds
 
-	printf("Read Result = %i\n", one[0]); // address	
-	printf("Read Result = %i\n", two[0]); // address
+	bcm2835_i2c_setSlaveAddress(0x69);
+	bcm2835_i2c_write(two, 1); // Write Minutes
+	
+	bcm2835_i2c_setSlaveAddress(0x70);
+	bcm2835_i2c_write(three, 1); // Write Hours
+	
+	bcm2835_i2c_setSlaveAddress(0x71);
+	bcm2835_i2c_write(four, 1); // Write Days
+
+	bcm2835_i2c_setSlaveAddress(0x72);
+	bcm2835_i2c_write(five, 1); // Write Date
+	
+	bcm2835_i2c_setSlaveAddress(0x73);
+	bcm2835_i2c_write(six, 1); // Write Months
+	
+	bcm2835_i2c_setSlaveAddress(0x74);
+	bcm2835_i2c_write(seven, 1); // Write Years
+
+	printf("Original Value = %i\n", one[0]); // address	
+	printf("Original Value = %i\n", two[0]); // address	
+	printf("Original Value = %i\n", three[0]); // address	
+	printf("Original Value = %i\n", four[0]); // address	
+	printf("Original Value = %i\n", five[0]); // address	
+	printf("Original Value = %i\n", six[0]); // address	
+	printf("Original Value = %i\n", seven[0]); // address	
+	
 
 	while (1) {
 	// seg faulting here
 		bcm2835_i2c_setSlaveAddress(0x68);
 		bcm2835_i2c_read_register_rs(seconds, one, 1);
-		printf("%i   ", one[0]); // address
+		printf("%i ", one[0]); // address
+		binaryStringSeconds(binaryString, one[0]);
 		bcm2835_i2c_read_register_rs(minutes, two, 1);
-		printf("%i\n", two[0]);	
+		printf("%i  ", two[0]);	
+		bcm2835_i2c_read_register_rs(hours, three, 1);
+		printf("%i ", three[0]); // address
+		bcm2835_i2c_read_register_rs(days, four, 1);
+		printf("%i  ", four[0]);	
+		bcm2835_i2c_read_register_rs(date, five, 1);
+		printf("%i  ", five[0]); // address
+		bcm2835_i2c_read_register_rs(month, six, 1);
+		printf("%i  ", six[0]);
+		bcm2835_i2c_read_register_rs(year, seven, 1);
+		printf("%i  \n", seven[0]); // address	
 		delay(1000);
 	}
+	
+	
 	
 	bcm2835_i2c_end();  
 	bcm2835_close();
