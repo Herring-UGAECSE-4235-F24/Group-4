@@ -1,25 +1,24 @@
-# include <stdio.h>
+\# include <stdio.h>
 # include <bcm2835.h>
 
 # define MODE_READ 1
 
 void initialize() {
 	
-	printf("before seg fault");
 	if (!bcm2835_init()) {
-		printf("not initialized");
-	}
+      printf("bcm2835_init failed. Are you running as root??\n");
+      return;
+    }
+      
+    // I2C begin if specified   
+    if (!bcm2835_i2c_begin()) {
+        printf("bcm2835_i2c_begin failed. Are you running as root??\n");
+		return;
+    }
 	
-	printf("before seg fault");
-	if (!bcm2835_i2c_begin()) {
-		printf("not begin");
-	}
-	
-	printf("before seg fault");
-	bcm2835_i2c_setSlaveAddress(0x68);
+	//bcm2835_i2c_setSlaveAddress(0x68);
 	//bcm2835_i2c_setClockDivider(32000);
-	printf("before seg fault");
-	bcm2835_i2c_set_baudrate(100000);
+	//bcm2835_i2c_set_baudrate(100000);
 	
 	return;
 }
@@ -36,9 +35,9 @@ int main(int argc, char **argv) {
 
 	//uint8_t data;
 	
-	printf("before seg fault");
-	bcm2835_i2c_setSlaveAddress(0x68);
-	printf("before seg fault");
+	//printf("before seg fault");
+	//bcm2835_i2c_setSlaveAddress(0x68);
+	//printf("before seg fault");
 	//data = bcm2835_i2c_write(0x00, 1);
 	
 	// seg faulting here
@@ -51,4 +50,3 @@ int main(int argc, char **argv) {
 	return 1;
 	
 }
-
