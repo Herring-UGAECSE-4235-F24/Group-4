@@ -96,9 +96,7 @@ int binaryStringMinutes(int inputDiv) {
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Minutes Value is: ");
-				
+					
 	// Convert Minutes to Real
 	int total;
 	total = 0;
@@ -125,8 +123,6 @@ int binaryStringMinutes(int inputDiv) {
 		total += 40;
 	}
 		
-	printf("%i\n", total);
-	
 	return total;
 
 } // Binary String Minutes
@@ -147,8 +143,6 @@ int binaryStringHours(int inputDiv) {
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Hours Value is: ");
 				
 	// Convert Hours to Real
 	int total;
@@ -173,8 +167,6 @@ int binaryStringHours(int inputDiv) {
 		total += 12;
 	}
 	//bit 6 is always going to be set to 1 in write to indicate 12-hour clock
-		
-	printf("%i\n", total);
 	
 	return total;
 
@@ -234,9 +226,8 @@ int binaryStringDate(int inputDiv) {
 		result = dividend % divisor;
 		binaryString[i] = result;
 		dividend = dividend / divisor;
+		
 	} // for
-	
-	printf("The Date Value is: ");
 				
 	// Convert Date to Real
 	int total;
@@ -260,8 +251,6 @@ int binaryStringDate(int inputDiv) {
 	if (binaryString[5] == 1) {
 		total += 20;
 	}
-		
-	printf("%i\n", total);
 	
 	return total;
 
@@ -370,32 +359,26 @@ int translateSeconds(int secVar) {
 	
 	int returnedVar;
 	returnedVar = 0x00;
-	printf("0: %i\n", returnedVar);
 	
 	if (secVar >= 40) {
 		secVar -= 40;
 		returnedVar += 0x40;//0100
-		printf("40: %i\n", returnedVar);
 	}
 	if (secVar >= 20) {
 		secVar -= 20;
 		returnedVar += 0x20;//0010
-		printf("20: %i\n", returnedVar);
 	}
 	if (secVar >= 10) {
 		secVar -= 10;
 		returnedVar += 0x10;//0001 0000
-		printf("10: %i\n", returnedVar);
 	}
 	if (secVar >= 8) {
 		secVar -= 8;
 		returnedVar += 0x08;//0000 1000
-		printf("8: %i\n", returnedVar);
 	}
 	if (secVar >= 4) {
 		secVar -= 4;
 		returnedVar += 0x04;
-		printf("4: %i\n", returnedVar);
 	}
 	if (secVar >= 2) {
 		secVar -= 2;
@@ -415,45 +398,263 @@ int translateMinutes(int minVar) {
 	
 	int returnedVar;
 	returnedVar = 0x00;
-	printf("0: %i\n", returnedVar);
 	
 	if (minVar >= 40) {
 		minVar -= 40;
 		returnedVar += 0x40;//0100
-		printf("40: %i\n", returnedVar);
 	}
 	if (minVar >= 20) {
 		minVar -= 20;
 		returnedVar += 0x20;//0010
-		printf("20: %i\n", returnedVar);
 	}
 	if (minVar >= 10) {
 		minVar -= 10;
 		returnedVar += 0x10;//0001 0000
-		printf("10: %i\n", returnedVar);
 	}
 	if (minVar >= 8) {
 		minVar -= 8;
 		returnedVar += 0x08;//0000 1000
-		printf("8: %i\n", returnedVar);
 	}
 	if (minVar >= 4) {
 		minVar -= 4;
 		returnedVar += 0x04;
-		printf("4: %i\n", returnedVar);
 	}
 	if (minVar >= 2) {
 		minVar -= 2;
 		returnedVar += 0x02;
-		printf("2: %i\n", returnedVar);
 	}
 	if (minVar >= 1) {
 		minVar -= 1;
 		returnedVar += 0x01;
-		printf("1: %i\n", returnedVar);
 	}
 	
 	return returnedVar;
+}
+
+int translateHours(int hourVar) {
+	
+	int returnedVar;
+	returnedVar = 0x40; // set bit 5
+	
+	if (hourVar >= 10) {
+		hourVar = hourVar - 10;
+		returnedVar += 0x10;
+	}
+	if (hourVar >= 8) {
+		hourVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (hourVar >= 4) {
+		hourVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (hourVar >= 2) {
+		hourVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (hourVar >= 1) {
+		hourVar -= 1;
+		returnedVar += 0x01;
+	}	
+		
+	return returnedVar;
+}
+
+int translateDate(int dateVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	
+	if (dateVar >= 20) {
+		dateVar = dateVar - 20;
+		returnedVar += 0x20;
+	}
+	
+	if (dateVar >= 10) {
+		dateVar = dateVar - 10;
+		returnedVar += 0x10;
+	}
+	if (dateVar >= 8) {
+		dateVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (dateVar >= 4) {
+		dateVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (dateVar >= 2) {
+		dateVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (dateVar >= 1) {
+		dateVar -= 1;
+		returnedVar += 0x01;
+	}	
+	printf("DateVar: %i\n", returnedVar);
+	
+	return returnedVar;
+
+}
+
+int translateMonth(int monthVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00; // set bit 5
+	
+	if (monthVar >= 10) {
+		monthVar -= 10;
+		returnedVar += 0x10;
+	}
+	if (monthVar >= 8) {
+		monthVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (monthVar >= 4) {
+		monthVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (monthVar >= 2) {
+		monthVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (monthVar >= 1) {
+		monthVar -= 1;
+		returnedVar += 0x01;
+	}	
+	
+	//returnedVar += 0x01;
+	
+	return returnedVar;
+}
+
+int translateYears(int yearVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+
+	if (yearVar >= 80) {
+		yearVar -= 80;
+		returnedVar += 0x80;//0100
+	}	
+	if (yearVar >= 40) {
+		yearVar -= 40;
+		returnedVar += 0x40;//0100
+	}
+	if (yearVar >= 20) {
+		yearVar -= 20;
+		returnedVar += 0x20;//0010
+	}
+	if (yearVar >= 10) {
+		yearVar -= 10;
+		returnedVar += 0x10;//0001 0000
+	}
+	if (yearVar >= 8) {
+		yearVar -= 8;
+		returnedVar += 0x08;//0000 1000
+	}
+	if (yearVar >= 4) {
+		yearVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (yearVar >= 2) {
+		yearVar -= 2;
+		returnedVar += 0x02;
+	}
+	if (yearVar >= 1) {
+		yearVar -= 1;
+		returnedVar += 0x01;
+	}
+	
+	return returnedVar;
+}
+
+void printDay(int dayVar) {
+	
+	if (dayVar == 1) {
+		printf("SUN ");
+	} else if (dayVar == 2) {
+		printf("MON ");
+	} else if (dayVar == 3) {
+		printf("TUE ");
+	} else if (dayVar == 4) {
+		printf("WED ");
+	} else if (dayVar == 5) {
+		printf("THU ");
+	} else if (dayVar == 6) {
+		printf("FRI ");
+	} else if (dayVar == 7) {
+		printf("SAT ");
+	} 
+	
+	return;
+}
+
+// Prints Using the Int Value Given by Int
+void printMonth(int monthVar) {
+	
+	if (monthVar == 0) {
+		printf("Jan ");
+	} else if (monthVar == 1) {
+		printf("Feb ");
+	} else if (monthVar == 2) {
+		printf("Mar ");
+	} else if (monthVar == 3) {
+		printf("Apr ");
+	} else if (monthVar == 4) {
+		printf("May ");
+	} else if (monthVar == 5) {
+		printf("Jun ");
+	} else if (monthVar == 6) {
+		printf("Jul ");
+	} else if (monthVar == 7) {
+		printf("Aug ");
+	} else if (monthVar == 8) {
+		printf("Sep ");
+	} else if (monthVar == 9) {
+		printf("Oct ");
+	} else if (monthVar == 10) {
+		printf("Nov ");
+	} else if (monthVar == 11) {
+		printf("Dec ");
+	}
+	
+	return;
+}
+
+// Changes I2C Hex to Int and Prints
+void printDate(int dateVar) {
+	
+	printf("%i ", binaryStringDate(dateVar));
+	return;
+	
+}
+
+void printHours(int hourVar) {
+
+	printf("%i", binaryStringHours(hourVar));
+	return;
+}
+
+void printMins(int minVar) {
+
+	printf("%i", binaryStringMinutes(minVar));
+	return;
+}
+
+void printAll(int weekday, int month, int date, int hour, int min, int sec, int year) {
+	
+	printDay(weekday);
+	printMonth(month);
+	printDate(date);
+	printHours(hour);
+	printf(":");
+	printMins(min);
+	printf(":");
+	//printSec(sec);
+	//printyear(year);
+	printf("\n");
+	
+	return;
 }
 
 int main(int argc, char **argv) {
@@ -469,10 +670,11 @@ int main(int argc, char **argv) {
 	char zeroBuf[8];
 	char oneBuf[8];
 	char testBuf[8];
+	int isPM;
 	int sec;
 	int min;
 	int hour;
-	int dayOfMonth; // mday
+	int DOM; // mday
 	int monthT; //month
 	int yearT; // years since 1900
 	int weekday; // mon, tues, etc
@@ -493,8 +695,8 @@ int main(int argc, char **argv) {
 	hour = local->tm_hour;
 	printf("Hours: %i\n", hour);
 	
-	dayOfMonth = local->tm_mday;
-	printf("day of Month: %i\n", dayOfMonth);
+	DOM = local->tm_mday;
+	printf("day of Month: %i\n", DOM);
 	
 	monthT = local->tm_mon;
 	printf("monthT: %i\n", monthT);
@@ -506,13 +708,30 @@ int main(int argc, char **argv) {
 	weekday = local->tm_wday;
 	printf("weekday: %i\n", weekday);
 	
-	printf("before: %i\n", sec);
 	sec = translateSeconds(sec);
-	printf("after: %x\n", sec);
-
-	printf("before: %i\n", min);
 	min = translateMinutes(min);
-	printf("after: %x\n", min);
+	
+	if (hour > 12) {
+		isPM = 1;
+		hour -= 12;
+		printf("isPM\n");
+	} else {
+		isPM = 0;
+		printf("isnt PM\n");
+	}
+	
+	printf("\n");
+	
+	hour = translateHours(hour);
+	DOM = translateDate(DOM);
+	printDate(DOM);
+	
+	printf("before: %i\n", yearT);
+	monthT = translateMonth(monthT);
+	yearT = translateYears(yearT);
+	printf("after: %x\n", yearT);
+	
+	//printAll(weekday, monthT, date, hour, min, sec, yearT);
 	
 	char seconds[1];
 	seconds[0] = 0x00; 	// Address of seconds
@@ -543,23 +762,23 @@ int main(int argc, char **argv) {
 	
 	char three[2];
 	three[0] = 0x02; 	// hours Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
-	three[1] = 0x03;
+	three[1] = hour;
 
 	char four[2];		// days
 	four[0] = 0x03;
-	four[1] = 0x04;
+	four[1] = weekday;
 	
 	char five[2];
 	five[0] = 0x04; 	// date
-	four[1] = 0x05;
+	five[1] = DOM;
 
 	char six[2];		// month
 	six[0] = 0x05;
-	six[1] = 0x06;
+	six[1] = monthT;
 	
 	char seven[2];
 	seven[0] = 0x06; 	// year
-	seven[1] = 0x07;
+	seven[1] = yearT;
 	
 	char binaryString[8];
 
@@ -638,6 +857,7 @@ int main(int argc, char **argv) {
 		printf("%i ", seven[0]); // address	
 		binaryStringYear(seven[0]);
 		printf("\n");
+		printAll(four[0], six[0], five[0], three[0], two[0], one[0], seven[0]);
 		
 		delay(1000);
 	}
