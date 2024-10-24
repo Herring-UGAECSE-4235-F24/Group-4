@@ -794,21 +794,26 @@ int main(int argc, char **argv) {
 	char four[2];		// days
 	four[0] = 0x03;
 	four[1] = weekday;
-	
+
+	// Buffer to write the five to the I2C
 	char five[2];
 	five[0] = 0x04; 	// date
 	five[1] = DOM;
 
+	// Buffer to write the monthT to the I2C
 	char six[2];		// month
 	six[0] = 0x05;
 	six[1] = monthT;
-	
+
+	// Buffer to write the yearT to the I2C
 	char seven[2];
 	seven[0] = 0x06; 	// year
 	seven[1] = yearT;
-	
+
+	// Initialize a binary string with 8 bits of data
 	char binaryString[8];
 
+	// Trash functions
 	for (int i = 0; i < 8; i++) {
 		zeroBuf[i] = 0;
 		binaryString[i] = 0;
@@ -819,31 +824,26 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < 1; i++) {
 		testBuf[i] = 1;
 	}
-	
+
+	// Write 
 	bcm2835_i2c_setSlaveAddress(0x68);
 	bcm2835_i2c_write(zero, 1); // Write Zeroes
 	
-	//bcm2835_i2c_setSlaveAddress(0x68);
-	bcm2835_i2c_write(one, 2); // Write Seconds
+	bcm2835_i2c_write(one, 2); // Write Seconds to the I2C
 
-	//bcm2835_i2c_setSlaveAddress(0x69);
-	bcm2835_i2c_write(two, 2); // Write Minutes
+	bcm2835_i2c_write(two, 2); // Write Minutes to the I2C
 	
-	//bcm2835_i2c_setSlaveAddress(0x70);
-	bcm2835_i2c_write(three, 2); // Write Hours
+	bcm2835_i2c_write(three, 2); // Write Hours to the I2C
 	
-	//bcm2835_i2c_setSlaveAddress(0x71);
-	bcm2835_i2c_write(four, 2); // Write Days
+	bcm2835_i2c_write(four, 2); // Write Days to the I2C
 
-	//bcm2835_i2c_setSlaveAddress(0x72);
-	bcm2835_i2c_write(five, 2); // Write Date
+	bcm2835_i2c_write(five, 2); // Write Date to the I2C
 	
-	//bcm2835_i2c_setSlaveAddress(0x73);
-	bcm2835_i2c_write(six, 2); // Write Months
+	bcm2835_i2c_write(six, 2); // Write Months to the I2C
 	
-	//bcm2835_i2c_setSlaveAddress(0x74);
-	bcm2835_i2c_write(seven, 2); // Write Years
+	bcm2835_i2c_write(seven, 2); // Write Years to the I2C
 
+	// Test Prints for verifying
 	printf("Original Value = %x\n", one[0]); // address	
 	printf("Original Value = %i\n", two[0]); // address	
 	printf("Original Value = %i\n", three[0]); // address	
@@ -853,34 +853,35 @@ int main(int argc, char **argv) {
 	printf("Original Value = %i\n", seven[0]); // address	
 	
 
+	// While loop to conitnually read and print the time
 	while (1) {
 	// seg faulting here
 		bcm2835_i2c_setSlaveAddress(0x68);
-		bcm2835_i2c_read_register_rs(seconds, one, 1);
+		bcm2835_i2c_read_register_rs(seconds, one, 1); // Reads the I2C Seconds
 		printf("%i ", one[0]); // address
 		binaryStringSeconds(one[0]);
 		
-		bcm2835_i2c_read_register_rs(minutes, two, 1);
+		bcm2835_i2c_read_register_rs(minutes, two, 1); // Reads the I2C Minutes
 		printf("%i ", two[0]);	
 		binaryStringMinutes(two[0]);
 		
-		bcm2835_i2c_read_register_rs(hours, three, 1);
+		bcm2835_i2c_read_register_rs(hours, three, 1); // Reads the I2C Hours
 		printf("%i ", three[0]); // address
 		binaryStringHours(three[0]);
 		
-		bcm2835_i2c_read_register_rs(days, four, 1);
+		bcm2835_i2c_read_register_rs(days, four, 1); // Reads the I2C Days
 		printf("%i ", four[0]);
 		binaryStringDays(four[0]);	
 		
-		bcm2835_i2c_read_register_rs(date, five, 1);
+		bcm2835_i2c_read_register_rs(date, five, 1); // Reads the I2C Date
 		printf("%i ", five[0]); // address
 		binaryStringDate(five[0]);
 		
-		bcm2835_i2c_read_register_rs(month, six, 1);
+		bcm2835_i2c_read_register_rs(month, six, 1); // Reads the I2C Months
 		printf("%i ", six[0]);
 		binaryStringMonth(six[0]);
 		
-		bcm2835_i2c_read_register_rs(year, seven, 1);
+		bcm2835_i2c_read_register_rs(year, seven, 1); // Reads the I2C Year
 		printf("%i ", seven[0]); // address	
 		binaryStringYear(seven[0]);
 		printf("\n");
@@ -890,6 +891,8 @@ int main(int argc, char **argv) {
 		} else {
 			isPM = 0;
 		}
+
+		// Prints the Data
 		printAll(four[0], six[0], five[0], three[0], two[0], one[0], seven[0], isPM);
 		
 		delay(1000);
