@@ -1,8 +1,12 @@
 # include <stdio.h>
 # include <bcm2835.h>
 # include <sys/time.h>
+# include <time.h>
 
 # define MODE_READ 1
+
+// To Compile: gcc -o I2CRTC I2CRTC.c -l bcm2835
+// To Run: sudo ./I2CRTC
 
 void initialize() {
 	
@@ -74,8 +78,294 @@ int binaryStringSeconds(inputDiv) {
 	
 	return total;
 
-} // Binary String
+} // Binary String Seconds
 	
+int binaryStringMinutes(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Minutes Value is: ");
+				
+	// Convert Minutes to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	if (binaryString[6] == 1) {
+		total += 40;
+	}
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Minutes
+	
+int binaryStringHours(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Hours Value is: ");
+				
+	// Convert Hours to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 12;
+	}
+	//bit 6 is always going to be set to 1 in write to indicate 12-hour clock
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Hours
+	
+int binaryStringDays(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Days Value is: ");
+				
+	// Convert Days to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Days
+	
+int binaryStringDate(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Date Value is: ");
+				
+	// Convert Date to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Date
+
+int binaryStringMonth(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Month Value is: ");
+				
+	// Convert Month to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Month
+
+int binaryStringYear(inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+	
+	printf("The Year Value is: ");
+				
+	// Convert Year to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	if (binaryString[6] == 1) {
+		total += 40;
+	}
+	if (binaryString[7] == 1) {
+		total += 80;
+	}
+		
+	printf("%i\n", total);
+	
+	return total;
+
+} // Binary String Year
+
 int main(int argc, char **argv) {
 	
 	//open '/dev/i2c-0' to access i2c data
@@ -89,6 +379,42 @@ int main(int argc, char **argv) {
 	char zeroBuf[8];
 	char oneBuf[8];
 	char testBuf[8];
+	int sec;
+	int min;
+	int hour;
+	int dayOfMonth; // mday
+	int monthT; //month
+	int yearT; // years since 1900
+	int weekday; // mon, tues, etc
+	
+	struct tm * local;
+	time_t t = time(NULL);
+	
+	local = localtime(&t);
+	
+	printf("Local time and date: %s\n", asctime(local));
+	
+	sec = local->tm_sec;
+	printf("Seconds: %i\n", sec);
+	
+	min = local->tm_min;
+	printf("Minutes: %i\n", min);
+	
+	hour = local->tm_hour;
+	printf("Hours: %i\n", hour);
+	
+	dayOfMonth = local->tm_mday;
+	printf("day of Month: %i\n", dayOfMonth);
+	
+	monthT = local->tm_mon;
+	printf("monthT: %i\n", monthT);
+	
+	yearT = local->tm_year;
+	//yearT += 1900;
+	printf("yearT: %i\n", yearT);
+	
+	weekday = local->tm_wday;
+	printf("weekday: %i\n", weekday);
 	
 	char seconds[1];
 	seconds[0] = 0x00; 	// Address of seconds
@@ -115,7 +441,7 @@ int main(int argc, char **argv) {
 	two[0] = 0x02;
 	
 	char three[1];
-	three[0] = 0x03; // Seconds
+	three[0] = 0x03; // Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
 
 	char four[1];
 	four[0] = 0x7F;
@@ -181,18 +507,32 @@ int main(int argc, char **argv) {
 		bcm2835_i2c_read_register_rs(seconds, one, 1);
 		printf("%i ", one[0]); // address
 		binaryStringSeconds(one[0]);
+		
 		bcm2835_i2c_read_register_rs(minutes, two, 1);
 		printf("%i  ", two[0]);	
+		binaryStringMinutes(two[0]);
+		
 		bcm2835_i2c_read_register_rs(hours, three, 1);
 		printf("%i ", three[0]); // address
+		binaryStringHours(three[0]);
+		
 		bcm2835_i2c_read_register_rs(days, four, 1);
-		printf("%i  ", four[0]);	
+		printf("%i  ", four[0]);
+		binaryStringDays(four[0]);	
+		
 		bcm2835_i2c_read_register_rs(date, five, 1);
 		printf("%i  ", five[0]); // address
+		binaryStringDate(five[0]);
+		
 		bcm2835_i2c_read_register_rs(month, six, 1);
 		printf("%i  ", six[0]);
+		binaryStringMonth(six[0]);
+		
 		bcm2835_i2c_read_register_rs(year, seven, 1);
-		printf("%i  \n", seven[0]); // address	
+		printf("%i  ", seven[0]); // address	
+		binaryStringYear(seven[0]);
+		printf("\n");
+		
 		delay(1000);
 	}
 	
