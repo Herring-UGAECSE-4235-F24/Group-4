@@ -8,29 +8,34 @@
 // To Compile: gcc -o I2CRTC I2CRTC.c -l bcm2835
 // To Run: sudo ./I2CRTC
 
+// Initializes the BCM and I2C Clock
 void initialize() {
 	
 	uint16_t clk_div = BCM2835_I2C_CLOCK_DIVIDER_148;
-	
+
+	// BCM Initialized
 	if (!bcm2835_init()) {
-      printf("bcm2835_init failed. Are you running as root??\n");
-      return;
-    }
+      		printf("bcm2835_init failed. Are you running as root??\n");
+      	return;
+    	}
       
-    // I2C begin if specified   
-    if (!bcm2835_i2c_begin()) {
-        printf("bcm2835_i2c_begin failed. Are you running as root??\n");
+    	// I2C begins
+    	if (!bcm2835_i2c_begin()) {
+        	printf("bcm2835_i2c_begin failed. Are you running as root??\n");
 		return;
-    }
-	
+    	}
+
+	// CLK and Baud Rate setl; Can be anything over 32000
 	bcm2835_i2c_setClockDivider(clk_div);
 	bcm2835_i2c_set_baudrate(100000);
 	
 	return;
-}
-	
+} // Initialize
+
+// Converts an int into a string reprsenting seconds for I2C
 int binaryStringSeconds(int inputDiv) {
-	
+
+	// Init Variables
 	int result;
 	int dividend;
 	int divisor;
@@ -38,7 +43,8 @@ int binaryStringSeconds(int inputDiv) {
 
 	dividend = inputDiv;
 	divisor = 2;
-	
+
+	// Converts to a binary string
 	for(int i = 0; i < 8; i++) {
 			
 		result = dividend % divisor;
@@ -46,10 +52,10 @@ int binaryStringSeconds(int inputDiv) {
 		dividend = dividend / divisor;
 	} // for
 				
-	// Convert Seconds to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -75,7 +81,8 @@ int binaryStringSeconds(int inputDiv) {
 	return total;
 
 } // Binary String Seconds
-	
+
+// Converts an int into a string reprsenting minutes for I2C
 int binaryStringMinutes(int inputDiv) {
 	
 	int result;
@@ -96,7 +103,8 @@ int binaryStringMinutes(int inputDiv) {
 	// Convert Minutes to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -122,7 +130,8 @@ int binaryStringMinutes(int inputDiv) {
 	return total;
 
 } // Binary String Minutes
-	
+
+// Converts an int into a string reprsenting hours for I2C
 int binaryStringHours(int inputDiv) {
 	
 	int result;
@@ -143,7 +152,8 @@ int binaryStringHours(int inputDiv) {
 	// Convert Hours to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -167,7 +177,8 @@ int binaryStringHours(int inputDiv) {
 	return total;
 
 } // Binary String Hours
-	
+
+// Converts an int into a string reprsenting days for I2C
 int binaryStringDays(int inputDiv) {
 	
 	int result;
@@ -185,10 +196,10 @@ int binaryStringDays(int inputDiv) {
 		dividend = dividend / divisor;
 	} // for
 				
-	// Convert Days to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -202,7 +213,8 @@ int binaryStringDays(int inputDiv) {
 	return total;
 
 } // Binary String Days
-	
+
+// Converts an int into a string reprsenting the date for I2C
 int binaryStringDate(int inputDiv) {
 	
 	int result;
@@ -224,7 +236,8 @@ int binaryStringDate(int inputDiv) {
 	// Convert Date to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -248,6 +261,7 @@ int binaryStringDate(int inputDiv) {
 
 } // Binary String Date
 
+// Converts an int into a string reprsenting moonths for I2C
 int binaryStringMonth(int inputDiv) {
 	
 	int result;
@@ -268,7 +282,8 @@ int binaryStringMonth(int inputDiv) {
 	// Convert Month to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -289,6 +304,7 @@ int binaryStringMonth(int inputDiv) {
 
 } // Binary String Month
 
+// Converts an int into a string reprsenting years for I2C
 int binaryStringYear(int inputDiv) {
 	
 	int result;
@@ -309,7 +325,8 @@ int binaryStringYear(int inputDiv) {
 	// Convert Year to Real
 	int total;
 	total = 0;
-		
+
+	// Returns the integer representation based off of the Binary Values found in DS3231 Datasheet
 	if (binaryString[0] == 1) {
 		total += 1;
 	}
@@ -339,11 +356,12 @@ int binaryStringYear(int inputDiv) {
 
 } // Binary String Year
 
+// Translates the an integer representing seconds into a hex number in the DS3231 Datasheet format
 int translateSeconds(int secVar) {
 	
 	int returnedVar;
 	returnedVar = 0x00;
-	
+
 	if (secVar >= 40) {
 		secVar -= 40;
 		returnedVar += 0x40;//0100
@@ -378,6 +396,7 @@ int translateSeconds(int secVar) {
 	return returnedVar;
 }
 
+// Translates the an integer representing minutes into a hex number in the DS3231 Datasheet format
 int translateMinutes(int minVar) {
 	
 	int returnedVar;
@@ -415,6 +434,7 @@ int translateMinutes(int minVar) {
 	return returnedVar;
 }
 
+// Translates the an integer representing hours into a hex number in the DS3231 Datasheet format
 int translateHours(int hourVar) {
 	
 	int returnedVar;
@@ -444,6 +464,7 @@ int translateHours(int hourVar) {
 	return returnedVar;
 }
 
+// Translates the an integer representing the date into a hex number in the DS3231 Datasheet format
 int translateDate(int dateVar) {
 	
 	int returnedVar;
@@ -480,6 +501,7 @@ int translateDate(int dateVar) {
 
 }
 
+// Translates the an integer representing month into a hex number in the DS3231 Datasheet format
 int translateMonth(int monthVar) {
 	
 	int returnedVar;
@@ -511,6 +533,7 @@ int translateMonth(int monthVar) {
 	return returnedVar;
 }
 
+// Translates the an integer representing years into a hex number in the DS3231 Datasheet format
 int translateYears(int yearVar) {
 	
 	int returnedVar;
@@ -552,6 +575,7 @@ int translateYears(int yearVar) {
 	return returnedVar;
 }
 
+// Prints the day of the week according to the DS3231 Datasheet format
 void printDay(int dayVar) {
 	
 	if (dayVar == 1) {
@@ -573,7 +597,7 @@ void printDay(int dayVar) {
 	return;
 }
 
-// Prints Using the Int Value Given by Int
+// Prints the month according to the DS3231 Datasheet format
 void printMonth(int monthVar) {
 	
 	if (monthVar == 0) {
@@ -605,7 +629,7 @@ void printMonth(int monthVar) {
 	return;
 }
 
-// Changes I2C Hex to Int and Prints
+// Prints the date according to the DS3231 Datasheet format
 void printDate(int dateVar) {
 	
 	printf("%i ", binaryStringDate(dateVar));
@@ -613,30 +637,35 @@ void printDate(int dateVar) {
 	
 }
 
+// Prints the hours according to the DS3231 Datasheet format
 void printHours(int hourVar) {
 
 	printf("%i", binaryStringHours(hourVar));
 	return;
 }
 
+// Prints the minutes according to the DS3231 Datasheet format
 void printMins(int minVar) {
 
 	printf("%i", binaryStringMinutes(minVar));
 	return;
 }
 
+// Prints the seconds according to the DS3231 Datasheet format
 void printSeconds(int secVar) {
 
 	printf("%i", binaryStringSeconds(secVar));
 	return;
 }
 
+// Prints the year according to the DS3231 Datasheet format
 void printYear(int yearVar) {
 
 	printf(" %i", 1900 + binaryStringYear(yearVar));
 	return;
 }
 
+// Calls all print functions to work in the format of: Day-of-week Month Date HH:MM:SS AM/PM Year
 void printAll(int weekday, int month, int date, int hour, int min, int sec, int year, int isPM) {
 	
 	printDay(weekday);
@@ -660,16 +689,13 @@ void printAll(int weekday, int month, int date, int hour, int min, int sec, int 
 	return;
 }
 
+// Main Function for Logic
 int main(int argc, char **argv) {
-	
-	//open '/dev/i2c-0' to access i2c data
-	// we can read the buffer to get the data we need
-	// then print that specific data
-	//begin
-	
-	initialize();
-	//realTime();
 
+	// Initializes and Sets up the BCM and I2C
+	initialize();
+
+	// Declare
 	char zeroBuf[8];
 	char oneBuf[8];
 	char testBuf[8];
@@ -681,35 +707,41 @@ int main(int argc, char **argv) {
 	int monthT; //month
 	int yearT; // years since 1900
 	int weekday; // mon, tues, etc
-	
+
+	// Create a struct in order to grab the local time from the pi
 	struct tm * local;
 	time_t t = time(NULL);
-	
 	local = localtime(&t);
-	
 	printf("Local time and date: %s\n", asctime(local));
-	
+
+	// Get the seconds from the struct
 	sec = local->tm_sec;
 	printf("Seconds: %i\n", sec);
-	
+
+	// Get the minutes from the struct
 	min = local->tm_min;
 	printf("Minutes: %i\n", min);
-	
+
+	// Get the hours from the struct
 	hour = local->tm_hour;
 	printf("Hours: %i\n", hour);
-	
+
+	// Get the day of the month from the struct
 	DOM = local->tm_mday;
 	printf("day of Month: %i\n", DOM);
-	
+
+	// Get the month from the struct
 	monthT = local->tm_mon;
 	printf("monthT: %i\n", monthT);
-	
+
+	// Get the year from the struct
 	yearT = local->tm_year;
 	printf("yearT: %i\n", yearT);
-	
+
+	// Get the weekday from the struct
 	weekday = local->tm_wday;
 	printf("weekday: %i\n", weekday);
-	
+
 	sec = translateSeconds(sec);
 	min = translateMinutes(min);
 	
@@ -721,9 +753,8 @@ int main(int argc, char **argv) {
 	
 	monthT = translateMonth(monthT);
 	yearT = translateYears(yearT);
-	
-	//printAll(weekday, monthT, date, hour, min, sec, yearT);
-	
+
+	// Each variable is the address that needs to be used to read the respective data
 	char seconds[1];
 	seconds[0] = 0x00; 	// Address of seconds
 	char minutes[1];
@@ -738,23 +769,28 @@ int main(int argc, char **argv) {
 	month[0] = 0x05;	// Address of Months
 	char year[1];
 	year[0] = 0x06;		// Address of Years
-	
+
+	// Create a 0 Buffer
 	char zero[2];
 	zero[0] = 0x00;
 	zero[0] = 0x00;
-	
+
+	// Buffer to write the seconds to the I2C
 	char one[2];
 	one[0] = 0x00;
 	one[1] = sec;
 
+	// Buffer to write the minutes to the I2C
 	char two[2];
 	two[0] = 0x01;
 	two[1] = min;
-	
+
+	// Buffer to write the hours to the I2C
 	char three[2];
 	three[0] = 0x02; 	// hours Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
 	three[1] = hour;
 
+	// Buffer to write the weekdays to the I2C
 	char four[2];		// days
 	four[0] = 0x03;
 	four[1] = weekday;
