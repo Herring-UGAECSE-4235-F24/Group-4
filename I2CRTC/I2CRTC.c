@@ -29,7 +29,7 @@ void initialize() {
 	return;
 }
 	
-int binaryStringSeconds(inputDiv) {
+int binaryStringSeconds(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -42,6 +42,7 @@ int binaryStringSeconds(inputDiv) {
 	for(int i = 0; i < 8; i++) {
 			
 		result = dividend % divisor;
+		printf("%i", result);
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
@@ -73,14 +74,13 @@ int binaryStringSeconds(inputDiv) {
 	if (binaryString[6] == 1) {
 		total += 40;
 	}
-		
 	printf("%i\n", total);
-	
+			
 	return total;
 
 } // Binary String Seconds
 	
-int binaryStringMinutes(inputDiv) {
+int binaryStringMinutes(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -131,7 +131,7 @@ int binaryStringMinutes(inputDiv) {
 
 } // Binary String Minutes
 	
-int binaryStringHours(inputDiv) {
+int binaryStringHours(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -180,7 +180,7 @@ int binaryStringHours(inputDiv) {
 
 } // Binary String Hours
 	
-int binaryStringDays(inputDiv) {
+int binaryStringDays(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -219,7 +219,7 @@ int binaryStringDays(inputDiv) {
 
 } // Binary String Days
 	
-int binaryStringDate(inputDiv) {
+int binaryStringDate(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -267,7 +267,7 @@ int binaryStringDate(inputDiv) {
 
 } // Binary String Date
 
-int binaryStringMonth(inputDiv) {
+int binaryStringMonth(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -312,7 +312,7 @@ int binaryStringMonth(inputDiv) {
 
 } // Binary String Month
 
-int binaryStringYear(inputDiv) {
+int binaryStringYear(int inputDiv) {
 	
 	int result;
 	int dividend;
@@ -366,6 +366,51 @@ int binaryStringYear(inputDiv) {
 
 } // Binary String Year
 
+int translateSeconds(int secVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	printf("0: %i\n", returnedVar);
+	
+	if (secVar >= 40) {
+		secVar -= 40;
+		returnedVar += 0x40;//0100
+		printf("40: %i\n", returnedVar);
+	}
+	if (secVar >= 20) {
+		secVar -= 20;
+		returnedVar += 0x20;//0010
+		printf("20: %i\n", returnedVar);
+	}
+	if (secVar >= 10) {
+		secVar -= 10;
+		returnedVar += 0x10;//0001 0000
+		printf("10: %i\n", returnedVar);
+	}
+	if (secVar >= 8) {
+		secVar -= 8;
+		returnedVar += 0x08;//0000 1000
+		printf("8: %i\n", returnedVar);
+	}
+	if (secVar >= 4) {
+		secVar -= 4;
+		returnedVar += 0x04;
+		printf("4: %i\n", returnedVar);
+	}
+	if (secVar >= 2) {
+		secVar -= 2;
+		returnedVar += 0x02;
+		printf("2: %i\n", returnedVar);
+	}
+	if (secVar >= 1) {
+		secVar -= 1;
+		returnedVar += 0x01;
+		printf("1: %i\n", returnedVar);
+	}
+	
+	return returnedVar;
+}
+
 int main(int argc, char **argv) {
 	
 	//open '/dev/i2c-0' to access i2c data
@@ -416,6 +461,11 @@ int main(int argc, char **argv) {
 	weekday = local->tm_wday;
 	printf("weekday: %i\n", weekday);
 	
+	printf("before: %i\n", sec);
+	//sec = translateSeconds(sec);
+	printf("after: %x\n", sec);
+	//sec += 0x01;
+	
 	char seconds[1];
 	seconds[0] = 0x00; 	// Address of seconds
 	char minutes[1];
@@ -431,29 +481,37 @@ int main(int argc, char **argv) {
 	char year[1];
 	year[0] = 0x06;		// Address of Years
 	
-	char zero[1];
+	char zero[2];
+	zero[0] = 0x00;
 	zero[0] = 0x00;
 	
-	char one[1];
-	one[0] = 0x60; // Seconds
+	char one[2];
+	one[0] = 0x00;
+	one[1] = 0x58;
 
-	char two[1];
-	two[0] = 0x02;
+	char two[2];
+	two[0] = 0x01;
+	two[1] = 0x05;
 	
-	char three[1];
-	three[0] = 0x03; // Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
+	char three[2];
+	three[0] = 0x02; 	// hours Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
+	three[1] = 0x03;
 
-	char four[1];
-	four[0] = 0x7F;
+	char four[2];		// days
+	four[0] = 0x03;
+	four[1] = 0x04;
 	
-	char five[1];
-	five[0] = 0x7F; // Seconds
+	char five[2];
+	five[0] = 0x04; 	// date
+	four[1] = 0x05;
 
-	char six[1];
-	six[0] = 0x7F;
+	char six[2];		// month
+	six[0] = 0x05;
+	six[1] = 0x06;
 	
-	char seven[1];
-	seven[0] = 0x7F; // Seconds
+	char seven[2];
+	seven[0] = 0x06; 	// year
+	seven[1] = 0x07;
 	
 	char binaryString[8];
 
@@ -471,28 +529,28 @@ int main(int argc, char **argv) {
 	bcm2835_i2c_setSlaveAddress(0x68);
 	bcm2835_i2c_write(zero, 1); // Write Zeroes
 	
-	bcm2835_i2c_setSlaveAddress(0x68);
-	bcm2835_i2c_write(one, 1); // Write Seconds
+	//bcm2835_i2c_setSlaveAddress(0x68);
+	bcm2835_i2c_write(one, 2); // Write Seconds
 
-	bcm2835_i2c_setSlaveAddress(0x69);
-	bcm2835_i2c_write(two, 1); // Write Minutes
+	//bcm2835_i2c_setSlaveAddress(0x69);
+	bcm2835_i2c_write(two, 2); // Write Minutes
 	
-	bcm2835_i2c_setSlaveAddress(0x70);
-	bcm2835_i2c_write(three, 1); // Write Hours
+	//bcm2835_i2c_setSlaveAddress(0x70);
+	bcm2835_i2c_write(three, 2); // Write Hours
 	
-	bcm2835_i2c_setSlaveAddress(0x71);
-	bcm2835_i2c_write(four, 1); // Write Days
+	//bcm2835_i2c_setSlaveAddress(0x71);
+	bcm2835_i2c_write(four, 2); // Write Days
 
-	bcm2835_i2c_setSlaveAddress(0x72);
-	bcm2835_i2c_write(five, 1); // Write Date
+	//bcm2835_i2c_setSlaveAddress(0x72);
+	bcm2835_i2c_write(five, 2); // Write Date
 	
-	bcm2835_i2c_setSlaveAddress(0x73);
-	bcm2835_i2c_write(six, 1); // Write Months
+	//bcm2835_i2c_setSlaveAddress(0x73);
+	bcm2835_i2c_write(six, 2); // Write Months
 	
-	bcm2835_i2c_setSlaveAddress(0x74);
-	bcm2835_i2c_write(seven, 1); // Write Years
+	//bcm2835_i2c_setSlaveAddress(0x74);
+	bcm2835_i2c_write(seven, 2); // Write Years
 
-	printf("Original Value = %i\n", one[0]); // address	
+	printf("Original Value = %x\n", one[0]); // address	
 	printf("Original Value = %i\n", two[0]); // address	
 	printf("Original Value = %i\n", three[0]); // address	
 	printf("Original Value = %i\n", four[0]); // address	
@@ -509,7 +567,7 @@ int main(int argc, char **argv) {
 		binaryStringSeconds(one[0]);
 		
 		bcm2835_i2c_read_register_rs(minutes, two, 1);
-		printf("%i  ", two[0]);	
+		printf("%i ", two[0]);	
 		binaryStringMinutes(two[0]);
 		
 		bcm2835_i2c_read_register_rs(hours, three, 1);
