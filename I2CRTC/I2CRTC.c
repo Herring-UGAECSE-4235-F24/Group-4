@@ -42,12 +42,9 @@ int binaryStringSeconds(int inputDiv) {
 	for(int i = 0; i < 8; i++) {
 			
 		result = dividend % divisor;
-		printf("%i", result);
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Seconds Value is: ");
 				
 	// Convert Seconds to Real
 	int total;
@@ -74,7 +71,6 @@ int binaryStringSeconds(int inputDiv) {
 	if (binaryString[6] == 1) {
 		total += 40;
 	}
-	printf("%i\n", total);
 			
 	return total;
 
@@ -188,8 +184,6 @@ int binaryStringDays(int inputDiv) {
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Days Value is: ");
 				
 	// Convert Days to Real
 	int total;
@@ -204,8 +198,6 @@ int binaryStringDays(int inputDiv) {
 	if (binaryString[2] == 1) {
 		total += 4;
 	} 
-		
-	printf("%i\n", total);
 	
 	return total;
 
@@ -272,8 +264,6 @@ int binaryStringMonth(int inputDiv) {
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Month Value is: ");
 				
 	// Convert Month to Real
 	int total;
@@ -294,8 +284,6 @@ int binaryStringMonth(int inputDiv) {
 	if (binaryString[4] == 1) {
 		total += 10;
 	}
-		
-	printf("%i\n", total);
 	
 	return total;
 
@@ -317,9 +305,7 @@ int binaryStringYear(int inputDiv) {
 		binaryString[i] = result;
 		dividend = dividend / divisor;
 	} // for
-	
-	printf("The Year Value is: ");
-				
+					
 	// Convert Year to Real
 	int total;
 	total = 0;
@@ -348,9 +334,7 @@ int binaryStringYear(int inputDiv) {
 	if (binaryString[7] == 1) {
 		total += 80;
 	}
-		
-	printf("%i\n", total);
-	
+			
 	return total;
 
 } // Binary String Year
@@ -641,7 +625,19 @@ void printMins(int minVar) {
 	return;
 }
 
-void printAll(int weekday, int month, int date, int hour, int min, int sec, int year) {
+void printSeconds(int secVar) {
+
+	printf("%i", binaryStringSeconds(secVar));
+	return;
+}
+
+void printYear(int yearVar) {
+
+	printf(" %i", 1900 + binaryStringYear(yearVar));
+	return;
+}
+
+void printAll(int weekday, int month, int date, int hour, int min, int sec, int year, int isPM) {
 	
 	printDay(weekday);
 	printMonth(month);
@@ -650,8 +646,15 @@ void printAll(int weekday, int month, int date, int hour, int min, int sec, int 
 	printf(":");
 	printMins(min);
 	printf(":");
-	//printSec(sec);
-	//printyear(year);
+	printSeconds(sec);
+	
+	if (isPM == 1) {
+		printf(" PM");
+	} else {
+		printf(" AM");
+	}
+	
+	printYear(year);
 	printf("\n");
 	
 	return;
@@ -702,7 +705,6 @@ int main(int argc, char **argv) {
 	printf("monthT: %i\n", monthT);
 	
 	yearT = local->tm_year;
-	//yearT += 1900;
 	printf("yearT: %i\n", yearT);
 	
 	weekday = local->tm_wday;
@@ -711,25 +713,14 @@ int main(int argc, char **argv) {
 	sec = translateSeconds(sec);
 	min = translateMinutes(min);
 	
-	if (hour > 12) {
-		isPM = 1;
-		hour -= 12;
-		printf("isPM\n");
-	} else {
-		isPM = 0;
-		printf("isnt PM\n");
-	}
-	
 	printf("\n");
 	
 	hour = translateHours(hour);
 	DOM = translateDate(DOM);
 	printDate(DOM);
 	
-	printf("before: %i\n", yearT);
 	monthT = translateMonth(monthT);
 	yearT = translateYears(yearT);
-	printf("after: %x\n", yearT);
 	
 	//printAll(weekday, monthT, date, hour, min, sec, yearT);
 	
@@ -857,7 +848,13 @@ int main(int argc, char **argv) {
 		printf("%i ", seven[0]); // address	
 		binaryStringYear(seven[0]);
 		printf("\n");
-		printAll(four[0], six[0], five[0], three[0], two[0], one[0], seven[0]);
+		
+		if (binaryStringHours(three[0]) > 12) {
+			isPM = 1;
+		} else {
+			isPM = 0;
+		}
+		printAll(four[0], six[0], five[0], three[0], two[0], one[0], seven[0], isPM);
 		
 		delay(1000);
 	}
