@@ -411,6 +411,51 @@ int translateSeconds(int secVar) {
 	return returnedVar;
 }
 
+int translateMinutes(int minVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	printf("0: %i\n", returnedVar);
+	
+	if (minVar >= 40) {
+		minVar -= 40;
+		returnedVar += 0x40;//0100
+		printf("40: %i\n", returnedVar);
+	}
+	if (minVar >= 20) {
+		minVar -= 20;
+		returnedVar += 0x20;//0010
+		printf("20: %i\n", returnedVar);
+	}
+	if (minVar >= 10) {
+		minVar -= 10;
+		returnedVar += 0x10;//0001 0000
+		printf("10: %i\n", returnedVar);
+	}
+	if (minVar >= 8) {
+		minVar -= 8;
+		returnedVar += 0x08;//0000 1000
+		printf("8: %i\n", returnedVar);
+	}
+	if (minVar >= 4) {
+		minVar -= 4;
+		returnedVar += 0x04;
+		printf("4: %i\n", returnedVar);
+	}
+	if (minVar >= 2) {
+		minVar -= 2;
+		returnedVar += 0x02;
+		printf("2: %i\n", returnedVar);
+	}
+	if (minVar >= 1) {
+		minVar -= 1;
+		returnedVar += 0x01;
+		printf("1: %i\n", returnedVar);
+	}
+	
+	return returnedVar;
+}
+
 int main(int argc, char **argv) {
 	
 	//open '/dev/i2c-0' to access i2c data
@@ -462,9 +507,12 @@ int main(int argc, char **argv) {
 	printf("weekday: %i\n", weekday);
 	
 	printf("before: %i\n", sec);
-	//sec = translateSeconds(sec);
+	sec = translateSeconds(sec);
 	printf("after: %x\n", sec);
-	//sec += 0x01;
+
+	printf("before: %i\n", min);
+	min = translateMinutes(min);
+	printf("after: %x\n", min);
 	
 	char seconds[1];
 	seconds[0] = 0x00; 	// Address of seconds
@@ -487,11 +535,11 @@ int main(int argc, char **argv) {
 	
 	char one[2];
 	one[0] = 0x00;
-	one[1] = 0x58;
+	one[1] = sec;
 
 	char two[2];
 	two[0] = 0x01;
-	two[1] = 0x05;
+	two[1] = min;
 	
 	char three[2];
 	three[0] = 0x02; 	// hours Set 6th bit to 1; for bit 5, 0 is AM and 1 is PM
@@ -575,19 +623,19 @@ int main(int argc, char **argv) {
 		binaryStringHours(three[0]);
 		
 		bcm2835_i2c_read_register_rs(days, four, 1);
-		printf("%i  ", four[0]);
+		printf("%i ", four[0]);
 		binaryStringDays(four[0]);	
 		
 		bcm2835_i2c_read_register_rs(date, five, 1);
-		printf("%i  ", five[0]); // address
+		printf("%i ", five[0]); // address
 		binaryStringDate(five[0]);
 		
 		bcm2835_i2c_read_register_rs(month, six, 1);
-		printf("%i  ", six[0]);
+		printf("%i ", six[0]);
 		binaryStringMonth(six[0]);
 		
 		bcm2835_i2c_read_register_rs(year, seven, 1);
-		printf("%i  ", seven[0]); // address	
+		printf("%i ", seven[0]); // address	
 		binaryStringYear(seven[0]);
 		printf("\n");
 		
