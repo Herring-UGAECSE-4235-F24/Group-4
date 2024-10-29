@@ -2,6 +2,17 @@
 // 	The point of this program is to prove that the State Machine works AFTER we change the read function 
 //	from the one in the BCM Library to the function in the Class Library.
 //
+// In order to use this the class library functions:
+// 1.) Plug GPIOS 20-23 into X1-X4 and GPIOS 24-27 into Y1-Y4 respectively.
+// 2.) Place E4235_Read.s into the folder in which the file you want to use is in.
+// 3.) Extern in the function outside of the main function:
+// -> The below statement must be included, or else the program cant 'see' the function (already done for this file).
+// 
+// 	e.x. 
+// 		extern int E4235_Read(int);
+// 
+// Expected Output: 40 should display on the screen until a number is pressed on the keypad, in which it will alternate between the two.
+//
 // To Compile: 	gcc -o State_Machine_Class State_Machine_Class.c E4235_Read.s
 // To Run: 	./State_Machine_Class
 
