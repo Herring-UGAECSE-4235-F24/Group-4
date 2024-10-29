@@ -1,10 +1,17 @@
-// GPIOs 20 to 27 are the inputs for the keypad
-// 20  to 23 will map to x1 to x4, 24 to 27 will map to y1 to y4
-
-// To Compile: gcc -o LibraryFixTest LibraryFixTest.c -lc
-
+// In order to use this the class library functions:
+// 1.) Place E4235_Read.s and E4235_Delaynano.s into the folder in which the file you want to use is in.
+// 2.) Extern in the function outside of the main function:
+//     Both of the below statements must be included, or else the program cant 'see' the functions (already done for this file).
+// 	e.x. 
+// 		extern int E4235_Read(int);
+//		extern void E4235_Delaynano(int);
+//
 // Compile Using:
 // gcc -o LibraryFixBCM LibraryFixBCM.c E4235_Read.s E4235_Delaynano.s -l bcm2835
+// -> when externing in files, it is important to include the files in the compilation command as seen above.
+// 
+// Run UsingL
+// ./LibraryFixBCM
 
 #include <stdio.h>
 #include <bcm2835.h>
@@ -20,9 +27,9 @@ int main(int argc, char **argv) {
 	
 	int pin20, pin21, pin22, pin23, pin24, pin25, pin26, pin27 = 0;
 	
-	if (!bcm2835_init()) {
-      return 1;
-	}
+    if (!bcm2835_init()) {
+      	return 1;
+    }
 
     // Set the pin to be an output
     bcm2835_gpio_fsel(20, BCM2835_GPIO_FSEL_OUTP);
