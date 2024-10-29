@@ -1,17 +1,21 @@
+// LibraryFixWithBCMWrite
+// 	The purpose of this file is to prove that the Class Library Function, E4235_Read(), works.
+//	This is to be used with the keypad. The code verifies that Y1 through Y4 can correctly read using the function.
+//
 // In order to use this the class library functions:
-// 1.) Place E4235_Read.s and E4235_Delaynano.s into the folder in which the file you want to use is in.
-// 2.) Extern in the function outside of the main function:
-//     Both of the below statements must be included, or else the program cant 'see' the functions (already done for this file).
+// 1.) Plug GPIOS 20-23 into X1-X4 and GPIOS 24-27 into Y1-Y4 respectively.
+// 2.) Place E4235_Read.s and E4235_Delaynano.s into the folder in which the file you want to use is in.
+// 3.) Extern in the function outside of the main function:
+// -> Both of the below statements must be included, or else the program cant 'see' the functions (already done for this file).
+// 
 // 	e.x. 
 // 		extern int E4235_Read(int);
 //		extern void E4235_Delaynano(int);
 //
-// Compile Using:
-// gcc -o LibraryFixBCM LibraryFixBCM.c E4235_Read.s E4235_Delaynano.s -l bcm2835
-// -> when externing in files, it is important to include the files in the compilation command as seen above.
+// Compile Using: 	gcc -o LibraryFixWithBCMWrite LibraryFixWithBCMWrite.c E4235_Read.s E4235_Delaynano.s -l bcm2835
+// 	when externing in files, it is important to include the files in the compilation command as seen above.
 // 
-// Run UsingL
-// ./LibraryFixBCM
+// Run Using: 		./LibraryFixWithBCMWrite
 
 #include <stdio.h>
 #include <bcm2835.h>
