@@ -1,12 +1,26 @@
-// First Compile using: 
-// gcc -o LibraryFixClass LibraryFixClass.c -l E4235
-// Allow the Seg Fault
 
-// Then Compile Using:
-// gcc -o LibraryFixClass LibraryFixClass.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l E4235
+// LibraryFixWithClassWrite
+// 	The purpose of this file is to prove that the Class Library Function, E4235_Write(), DOES NOT work in its current state.
+//	This is to be used with the keypad. The code verifies that X1 through X4 can correctly output with this one trick when compiling.
+//
+// In order to use this the class library functions:
+// 1.) Plug GPIOS 20-23 into X1-X4 and GPIOS 24-27 into Y1-Y4 respectively.
+// 2.) Place E4235_Read.s and E4235_Delaynano.s into the folder in which the file you want to use is in.
+// 3.) Extern in the function outside of the main function:
+// -> Both of the below statements must be included, or else the program cant 'see' the functions (already done for this file).
+// 
+// 	e.x. 
+// 		extern int E4235_Read(int);
+//		extern int E4235_Write(int, int);
+//		extern void E4235_Delaynano(int);
+//
+// First Compile using: gcc -o LibraryFixWithClassWrite LibraryFixWithClassWrite.c -l E4235
+// -> Allow the Seg Fault
+// 
+// Then Compile Using: gcc -o LibraryFixWithClassWrite LibraryFixWithClassWrite.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l E4235
+// -> The function will correctly output highs to all channels, but will not output lows ever. 
 
 #include <stdio.h>
-#include <bcm2835.h>
 #include "E4235.h"
 
 extern int E4235_Read(int);
