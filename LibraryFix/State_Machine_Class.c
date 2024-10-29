@@ -1,21 +1,12 @@
-// Uses GPIOs 10 to 17 (8 digits) 17 the msb and 10 the lsb
-// GPIO 9 is the clock
-// GPIOs 20 to 27 are the inputs for the keypad
-// pins 20-23 -> X1-X4
-// pins 24-27 -> Y1-Y4
-
-// To Compile: gcc -o State_Machine State_Machine.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l E4235
-
-// Revised the makefile to resolve the compilation and linking executable issues. Now, the keypad doesn't work anymore.
-// Seemed to work again after using the wrong compilation command and then recompiling it correctly
-
-// 1 Khz in class library is 1,000,000 iterations total, 500,000 on/off
-// By testing, 1 kHz is about 860,000 iterations total or 430,000 on/off.
-// simple parallel
+// State_Machine_Class
+// 	The point of this program is to prove that the State Machine works AFTER we change the read function 
+//	from the one in the BCM Library to the function in the Class Library.
+//
+// To Compile: 	gcc -o State_Machine_Class State_Machine_Class.c E4235_Read.s
+// To Run: 	./State_Machine_Class
 
 #include "stdio.h"
 #include "gpiotopin.h"
-#include <bcm2835.h>
 
 extern int E4235_Read(int);
 
