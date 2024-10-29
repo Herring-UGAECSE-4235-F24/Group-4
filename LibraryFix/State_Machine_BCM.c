@@ -2,6 +2,12 @@
 // 	The point of this program is to prove that the State Machine works BEFORE we change the read function 
 //	from the one in the BCM Library to the function in the Class Library.
 //
+// In order to use this with the BCM library functions:
+// 1.) Plug GPIOS 20-23 into X1-X4 and GPIOS 24-27 into Y1-Y4 respectively.
+// 2.) Be sure to have the BCM library downloaded.
+//
+// Expected Output: 40 will be displayed on screen until a number on the keypad is pressed.
+//		
 // To Compile: 	gcc -o State_Machine_BCM State_Machine_BCM.c E4235_Read.s E4235_Write.s E4235_Delaynano.s -l bcm2835
 // To Run: 	./State_Machine_BCM
 
