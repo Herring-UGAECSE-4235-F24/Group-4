@@ -1,7 +1,7 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: Initial Push - Lets see what we can work with
+@ Push Name: Updated to New Print Idea
 @ 
 @ The Idea is to print the input line, read the input, then convert to a float and do the operations, then print the output line.
 @ Factorial Logic: CMP if variable is 0, if so, load 1 and branch to exit. 
@@ -37,14 +37,16 @@ _topOfLoop:
   b         topOfLoop
 
 _storeVar:
-  ldr     r2, =outputFLOAT
+  	ldr   r2, =outputFLOAT
 	vldr		s1, [r2]
 
 _printOutputLine:
   	ldr 	r0, =outputline    @ Load the String Format Location in R0
-    ldr 	r1, =outputFLOAT		@ Load Address of the Variables into R1
-    ldr 	r1, [r1]            	@ Load the Decaminutes variable
-    bl 	    printf			    @ Print and wipe the Registers
+	ldr 	r1, =outputFLOAT		@ Load Address of the Variables into R1
+	ldr 	r1, [r1]            	@ Load the Decaminutes variable
+ 	vcvt.f64.f32 d0, s0 Need to convert to a double before we print
+  	vmov 	r1, r2, d0
+    	bl 	printf			    @ Print and wipe the Registers
 
 inputINT:
     .word 0
