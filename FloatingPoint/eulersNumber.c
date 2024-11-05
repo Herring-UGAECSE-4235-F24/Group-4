@@ -1,7 +1,7 @@
 /* eulersNumber.c
  Property of Group 4 - Sam Brewster and Simline Gijo
- Push - Basic Concept of Code
-
+ Push: Change from Float to Double - Printf cant print Floats
+ 
 3) Now, lets use your two functions to calculate a e^x using series expansion
 Write a C program that calls your two assembly functions to calculte the e^x (0 and positive reals are okay) out to the first 5 terms of the Taylor series
 "Calculate e^x.  Enter x:"   and on completion, "e^x = ...."  (substitute the value entered for x)
@@ -17,19 +17,19 @@ Helpful Notes - https://stackoverflow.com/questions/13901261/calling-assembly-fu
  
 #include <stdio.h>
 
-extern "C" {float nfactorial(int n);}
-extern "C" {float nexponential(int n, int x);}
+extern "C" {double nfactorial(int n);}
+extern "C" {double nexponential(int n, int x);}
 
 // Main Loop
 int main(int argc, char **argv) {
 
   // Declare Variables
-  float tempNF;
+  double tempNF;
   tempNF = 0;
-  float tempNE;
+  double tempNE;
   tempNE = 0;
-  float x;
-  float eSum; 
+  double x;
+  double eSum; 
 
   // Initial User Interaction
   printf("Calculate e^x.  Enter x:");
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
   }
 
   // Output to the user
-  printf("e^%f = %f", x, eSum);
+  printf("e^%d = %d", x, eSum);
 
   // Exit
   return 0;
