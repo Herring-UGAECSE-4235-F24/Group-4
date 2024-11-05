@@ -11,42 +11,42 @@
 	.global _start
  
 _start:
-  b     printInputLine    @ Begin by Printing 'Enter n:'
+  b     printInputLine    	@ Begin by Printing 'Enter n:'
 
 _printInputLine:
-  ldr 	r0, =inputline    @ Load the Print Input String Location in R0
-  bl 	  printf			      @ Print and wipe the Registers
+  ldr 	r0, =inputline    	@ Load the Print Input String Location in R0
+  bl 	  printf	  	@ Print and wipe the Registers
 
 _read:
-	mov r0, #0				@ Input the file descriptor for STDIN
-	mov r2, #1				@ Allocates the data to be read as 1 byte
-	mov r7, #3				@ Load the svc code for read
+	mov r0, #0		@ Input the file descriptor for STDIN
+	mov r2, #1		@ Allocates the data to be read as 1 byte
+	mov r7, #3		@ Load the svc code for read
 	ldr r1, =input		@ Load the address of the =input variable
-	str r0, [r1]			@ Clear the Input Variable (make it equal 0)
-	svc 0             @ Call the System Call
-	ldrb r1, [r1]			@ Read the data stored in the input variable into r1 
+	str r0, [r1]		@ Clear the Input Variable (make it equal 0)
+	svc 0             	@ Call the System Call
+	ldrb r1, [r1]		@ Read the data stored in the input variable into r1 
 
 _initLogic: 
-	vmov.f32	s0, r1            @ Convert r1 to a float
-  vmov.f32  s1, s0            @ Create a duplicate of r1
+  	vcvt.f32  s0, r1        @ Convert r1 to a float
+  	vmov.f32  s1, s0        @ Create a duplicate of r1
   
 _topOfLoop:
-  vsubs.f32 s1, #1            @ Subtract 1 from the counter
-  beq        _storeVar @ Exit if s1 equals 0
-  vmul.f32  s0, s0, s1        @ r1 = r1 * (r1 - 1)
-  b         topOfLoop
+  	vsubs.f32 s1, #1        @ Subtract 1 from the counter
+  	beq        _storeVar 	@ Exit if s1 equals 0
+  	vmul.f32  s0, s0, s1    @ r1 = r1 * (r1 - 1)
+ 	b         topOfLoop  	@ Back to the top of the loop
 
 _storeVar:
-  	ldr   r2, =outputFLOAT
-	vldr		s1, [r2]
+  	ldr   r2, =outputFLOAT  @ Store the address of the float variable
+  	vldr  s1, [r2]		@ Unsure of the instruction
 
 _printOutputLine:
-  	ldr 	r0, =outputline    @ Load the String Format Location in R0
-	ldr 	r1, =outputFLOAT		@ Load Address of the Variables into R1
+  	ldr 	r0, =outputline    	@ Load the String Format Location in R0
+	ldr 	r1, =outputFLOAT	@ Load Address of the Variables into R1
 	ldr 	r1, [r1]            	@ Load the Decaminutes variable
- 	vcvt.f64.f32 d0, s0 Need to convert to a double before we print
-  	vmov 	r1, r2, d0
-    	bl 	printf			    @ Print and wipe the Registers
+ 	vcvt.f64.f32 d0, s0 		@ Convert to a double
+  	vmov 	r1, r2, d0		@ Mov to be printed
+    	bl 	printf			@ Print and wipe the Registers
 
 inputINT:
     .word 0
