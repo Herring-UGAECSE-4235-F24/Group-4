@@ -1,16 +1,16 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: Updated to New Print Idea
+@ Push Name: Updated Logic - Works on Paper, Depends on Print
 @ 
 @ The Idea is to print the input line, read the input, then convert to a float and do the operations, then print the output line.
 @ Factorial Logic: CMP if variable is 0, if so, load 1 and branch to exit. 
 @                  If not, r1 and r2 are the same, sub 1 from r2 and mul to r1. Repeat until r2 is 0. Branch to exit.
 
 	.text
-	.global _start
+	.global main
  
-_start:
+main:
   b     printInputLine    	@ Begin by Printing 'Enter n:'
 
 _printInputLine:
@@ -32,13 +32,14 @@ _initLogic:
   
 _topOfLoop:
   	vsubs.f32 s1, #1        @ Subtract 1 from the counter
+   	vcmp.f32  s1, #0	@ Set flags if s1 = 0
   	beq        _storeVar 	@ Exit if s1 equals 0
   	vmul.f32  s0, s0, s1    @ r1 = r1 * (r1 - 1)
  	b         topOfLoop  	@ Back to the top of the loop
 
 _storeVar:
-  	ldr   r2, =outputFLOAT  @ Store the address of the float variable
-  	vldr  s1, [r2]		@ Unsure of the instruction
+  	ldr   	  r2, =outputFLOAT  	@ Store the address of the float variable
+  	vstr.f32  s1, [r2]		@ Unsure of the instruction
 
 _printOutputLine:
   	ldr 	r0, =outputline    	@ Load the String Format Location in R0
@@ -48,6 +49,11 @@ _printOutputLine:
   	vmov 	r1, r2, d0		@ Mov to be printed
     	bl 	printf			@ Print and wipe the Registers
 
+_exit:
+	mov r7, #1		@ Load the Exit Value
+ 	svc 0			@ Exit the Program
+
+.data
 inputINT:
     .word 0
 outputFLOAT:
