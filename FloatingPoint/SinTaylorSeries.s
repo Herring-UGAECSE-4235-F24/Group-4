@@ -10,7 +10,11 @@
 
 .text
 .align 2
-.global sin_v_f
+.global main
+
+main:
+	@ Get X
+
 _sin_v_f: 
 	@@ set runfast mode and rounding to nearest
 	vmrs r1, fpscr 		@ get FPSCR contents in r1
