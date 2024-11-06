@@ -1,7 +1,7 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: Scanf and Printf Working with Floats
+@ Push Name: Literally JUST VCMP WONT WORK
 
 .text
 .global main
