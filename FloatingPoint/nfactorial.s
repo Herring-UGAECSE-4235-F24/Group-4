@@ -1,11 +1,7 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: Scan F Works
-@ 
-@ The Idea is to print the input line, read the input, then convert to a float and do the operations, then print the output line.
-@ Factorial Logic: CMP if variable is 0, if so, load 1 and branch to exit. 
-@                  If not, r1 and r2 are the same, sub 1 from r2 and mul to r1. Repeat until r2 is 0. Branch to exit.
+@ Push Name: Scanf and Printf Working with Floats
 
 .text
 .global main
@@ -15,18 +11,22 @@ main:
 	ldr 	r0, =inputline  @ Load the Print Input String Location in R0
 	bl 	printf	  	@ Print and wipe the Registers
 
-	ldr r0, =format
-	ldr r1, =inputINT
-	bl scanf
+	ldr r0, =format			@ Prepare what to read
+	ldr r1, =inputINT		@ Prepare where to store it
+	bl scanf				@ Poll the User
 
 _initLogic: 
 	
-	ldr 	r0, =outputline    	@ Load the String Format Location in R0
+	ldr r0, =outputline    	@ Load the String Format Location in R0
 	ldr r1, =inputINT		@ Load the address of the =input variable
-	ldr r1, [r1]
-s1:
-	bl 	printf			@ Print and wipe the Registers
+	
+	vldr.f32 s15, [r1]	 	@ Read the data stored in the input variable into r1 
+ 	vcvt.f64.f32 d7, s15 	@ Convert to a double
+	ldr 	r0, =outputline @ Load the String Format Location in R0
 
+	vmov 	r2, r3, d7	@ Mov to be printed
+	bl 	printf			@ Print and wipe the Registers
+	
 _exit:
 	pop {r0-r4, pc}
 	mov r7, #1		@ Load the Exit Value
@@ -34,10 +34,10 @@ _exit:
 
 .data
 inputINT:
-    .word 0
+    .float 0
 inputline:
-    .string "Enter n:"
+    .string "Enter n: "
 format:
-	.string "%i"
+	.string "%f"
 outputline:
-    .string "\nn! = %i\n"
+    .string "You typed in: %f\n"
