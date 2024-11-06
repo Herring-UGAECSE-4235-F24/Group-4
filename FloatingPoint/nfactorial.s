@@ -1,55 +1,45 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: Updated Logic - Works on Paper, Depends on Print
+@ Push Name: Not Properly Reading User Input - Lets try Scanf
 @ 
 @ The Idea is to print the input line, read the input, then convert to a float and do the operations, then print the output line.
 @ Factorial Logic: CMP if variable is 0, if so, load 1 and branch to exit. 
 @                  If not, r1 and r2 are the same, sub 1 from r2 and mul to r1. Repeat until r2 is 0. Branch to exit.
 
-	.text
-	.global main
+.text
+.global main
  
 main:
-  b     printInputLine    	@ Begin by Printing 'Enter n:'
-
-_printInputLine:
-  ldr 	r0, =inputline    	@ Load the Print Input String Location in R0
-  bl 	  printf	  	@ Print and wipe the Registers
+	push {r0-r4, lr}
+	ldr 	r0, =inputline  @ Load the Print Input String Location in R0
+	bl 	printf	  	@ Print and wipe the Registers
+	b _scan
 
 _read:
 	mov r0, #0		@ Input the file descriptor for STDIN
 	mov r2, #1		@ Allocates the data to be read as 1 byte
 	mov r7, #3		@ Load the svc code for read
-	ldr r1, =input		@ Load the address of the =input variable
+	ldr r1, =inputINT		@ Load the address of the =input variable
 	str r0, [r1]		@ Clear the Input Variable (make it equal 0)
 	svc 0             	@ Call the System Call
-	ldrb r1, [r1]		@ Read the data stored in the input variable into r1 
+
+_scan:
+	ldr r1, =inputINT		@ Load the address of the =input variable
+	bl scanf
 
 _initLogic: 
-  	vcvt.f32  s0, r1        @ Convert r1 to a float
-  	vmov.f32  s1, s0        @ Create a duplicate of r1
-  
-_topOfLoop:
-  	vsubs.f32 s1, #1        @ Subtract 1 from the counter
-   	vcmp.f32  s1, #0	@ Set flags if s1 = 0
-  	beq        _storeVar 	@ Exit if s1 equals 0
-  	vmul.f32  s0, s0, s1    @ r1 = r1 * (r1 - 1)
- 	b         topOfLoop  	@ Back to the top of the loop
-
-_storeVar:
-  	ldr   	  r2, =outputFLOAT  	@ Store the address of the float variable
-  	vstr.f32  s1, [r2]		@ Unsure of the instruction
-
-_printOutputLine:
-  	ldr 	r0, =outputline    	@ Load the String Format Location in R0
-	ldr 	r1, =outputFLOAT	@ Load Address of the Variables into R1
-	ldr 	r1, [r1]            	@ Load the Decaminutes variable
- 	vcvt.f64.f32 d0, s0 		@ Convert to a double
-  	vmov 	r1, r2, d0		@ Mov to be printed
-    	bl 	printf			@ Print and wipe the Registers
+  	vldr.f32 s15, [r1]	@ Read the data stored in the input variable into r1 
+s1:
+ 	vcvt.f64.f32 d7, s15 		@ Convert to a double
+s2:
+	ldr 	r0, =outputline    	@ Load the String Format Location in R0
+	vmov 	r2, r3, d7		@ Mov to be printed
+s3:
+	bl 	printf			@ Print and wipe the Registers
 
 _exit:
+	pop {r0-r4, pc}
 	mov r7, #1		@ Load the Exit Value
  	svc 0			@ Exit the Program
 
@@ -59,6 +49,6 @@ inputINT:
 outputFLOAT:
     .float 0
 inputline:
-    .asciz "Enter n:"
+    .string "Enter n:"
 outputline:
-    .asciz "n! = %f"
+    .string "\nn! = %f\n"
