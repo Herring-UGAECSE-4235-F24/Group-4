@@ -1,6 +1,6 @@
 @ fpEx1.s 
 @ Property of Group 4 - Sam Brewster and Simline Gijo
-@ Push: After Using GDB to mess with Printing
+@ Push: IT WORKS! - Successfully Prints by using r2 + r3, d7, and s14 + s15
 @
 @ Group assignment
 @ This program calculates the area of a circle
@@ -13,26 +13,26 @@
 .global main
  
 main:
-	vmov.f32	s0,#0.125		
-	vmul.f32 	s0, s0, s0
-	ldr			r2,=piNumber
-	vldr.f32	s1, [r2]
-	vmul.f32	s0, s0, s1
+	push {r0-r4, lr}
+	
+	vmov.f32	s14,#0.125		
+	vmul.f32 	s14, s14, s14
+	ldr		r2,=piNumber
+	vldr.f32	s15, [r2]
+	vmul.f32	s14, s14, s15
 
 _printConvert:
-  	ldr 			r0, =outputline    	@ Load the String Format Location in R0
-s1:
- 	vcvt.f64.f32 	d0, s0 			@ Convert to a double
-s2:
-  	vmov.f32 		r0, r1, d0		@ Move to be printed
-s3:
-    bl 				printf			@ Print and wipe the Registers
 
+  	ldr 			r0, =outputline    	@ Load the String Format Location in R0
+ 	vcvt.f64.f32 		d7, s14			@ Convert to a double
+  	vmov			r2, r3, d7		@ Move to be printed
+	bl 			printf			@ Print and wipe the Registers
 	
 _infiniteLoop:	
 	@b	_infiniteLoop
 
  _exit:
+	pop {r0-r4, lr}
 	mov r7, #1		@ Load the Exit Value
  	svc 0			@ Exit the Program
 
@@ -40,5 +40,4 @@ _infiniteLoop:
 piNumber: 
 	.float 3.141593
 outputline:
-    	.asciz "Area = %d\n"
-	
+    	.string "Area = %f\n"
