@@ -1,86 +1,57 @@
 @ nexponential.s
 @ Property of Group 4
 @
-@ Push Name: Handled when X = 0 and N = 0
+@ Push Name: Reads and Prints X
 @ 
 @ 2) For x^n
 @ Take input from the keyboard for x (0 and positive reals are okay) and for n (0 and small integers only).  "Calculate x^n.  Enter x:"  followed by "Enter n:"
 @ Use f32 floating point to calculate the answer x^n and return answer to monitor.  "x^n = ...." (substitute the x and n values)
 
-	.text
-	.global _start
+.text
+.global main
  
-_start:
-  	b     printInputLineX   @ Begin by Printing 'Calculate x^n.  Enter x:'
+main:
+	push {r0-r4, lr}
+
 
 _printInputLineX:
-  	ldr 	r0, =inputlineX    	@ Load the Print Input String Location in R0
-  	bl 	  printf		@ Print and wipe the Registers
+  	ldr   r0, =inputlineX    	@ Load the Print Input String Location in R0
+  	bl 	  printf				@ Print and wipe the Registers
 
 _readX:
-	mov r0, #0		@ Input the file descriptor for STDIN
-	mov r2, #1		@ Allocates the data to be read as 1 byte
-	mov r7, #3		@ Load the svc code for read
-	ldr r1, =inputXINT	@ Load the address of the =inputXINT variable
-	str r0, [r1]		@ Clear the Input Variable (make it equal 0)
-	svc 0                	@ Call the System Call
-	ldr r2, [r1]		@ Read the data stored in the input variable into r1 
-
-_printInputLineN:
-	ldr r0, =inputlineN    	@ Load the Print Input String Location in R0
-	bl  printf		@ Print and wipe the Registers
-
-_readN:
-	mov r0, #0		@ Input the file descriptor for STDIN
-	mov r2, #1		@ Allocates the data to be read as 1 byte
-	mov r7, #3		@ Load the svc code for read
-	ldr r1, =inputNINT	@ Load the address of the =inputXINT variable
-	str r0, [r1]		@ Clear the Input Variable (make it equal 0)
-	svc 0                   @ Call the System Call
-	ldr r3, [r1]		@ Read the data stored in the input variable into r1 
-
-_initLogic: 
-	vmov.f32	s0, r2  @ Convert the X Value in r2 to a float
-	vmov.f32	s0, r3  @ Convert the N Value in r3 to a float
-  
-_topOfLoop:
-	cmp       r2, #0     	@ Check if x is 0
-	beq       xIsZero   	@ Exit if s1 equals 0
-	cmp       r3, #0     	@ Check if n is 0
-	beq       nIsZero   	@ Exit if s1 equals 0
-	vmul.f32  s0, s0, s1   	@ r1 = r1 * (r1 - 1)
-	b         topOfLoop
-
-_xIsZero:
-	mov 	s1, #0
-	ldr     r2, =outputFLOAT
-	vldr		s1, [r2]
-
-_nIsZero:
-	mov 	s1, #1
-	ldr     r2, =outputFLOAT
-	vldr		s1, [r2]
+	
+	ldr r0, =format			@ Prepare what to read
+	ldr r1, =inputXFLOAT	@ Prepare where to store it
+	bl scanf				@ Poll the User
 
 _printOutputLine:
-  	ldr 	r0, =outputline    @ Load the String Format Location in R0
-	ldr 	r1, =outputFLOAT		@ Load Address of the Variables into R1
-	ldr 	r1, [r1]            	@ Load the Decaminutes variable
+ 
+	ldr 	r1, =inputXFLOAT		@ Load Address of the Variables into R1	
+	vldr.f32 s15, [r1]	 	@ Read the data stored in the input variable into r1 
+ 	vcvt.f64.f32 d7, s15 	@ Convert to a double
+	ldr 	r0, =outputline @ Load the String Format Location in R0
+
+	vmov 	r2, r3, d7	@ Mov to be printed
+	
 	bl 	    printf			    @ Print and wipe the Registers
 
 _exit:
-	mov r7, #1
- 	svc 0
+	pop {r0-r4, pc}
+	mov r7, #1		@ Load the Exit Value
+ 	svc 0			@ Exit the Program
 
 .data
-inputXINT:
-    .word 0
-inputNINT:
-    .word 0
+inputXFLOAT:
+    .float 0
+inputNFLOAT:
+    .float 0
 outputFLOAT:
     .float 0
 inputlineX:
-    .asciz "Calculate x^n.  Enter x:"
+    .string "Calculate x^n.  Enter x:"
 inputlineN:
-    .asciz "Enter n:"
+    .string "Enter n:"
 outputline:
-    .asciz "x^n = %f"
+    .string "x^n = %f\n"
+format:
+	.string "%f"
