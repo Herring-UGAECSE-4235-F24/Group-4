@@ -1,7 +1,7 @@
 @ nexponential.s
 @ Property of Group 4
 @
-@ Push Name: Reads and Prints X
+@ Push Name: Reads and Prints Both X and N
 @ 
 @ 2) For x^n
 @ Take input from the keyboard for x (0 and positive reals are okay) and for n (0 and small integers only).  "Calculate x^n.  Enter x:"  followed by "Enter n:"
@@ -24,9 +24,32 @@ _readX:
 	ldr r1, =inputXFLOAT	@ Prepare where to store it
 	bl scanf				@ Poll the User
 
-_printOutputLine:
+_printOutputLineX:
  
 	ldr 	r1, =inputXFLOAT		@ Load Address of the Variables into R1	
+	vldr.f32 s14, [r1]	 	@ Read the data stored in the input variable into r1 
+ 	vcvt.f64.f32 d6, s14 	@ Convert to a double
+	ldr 	r0, =outputline @ Load the String Format Location in R0
+
+	vmov 	r2, r3, d6	@ Mov to be printed
+	
+	bl 	    printf			    @ Print and wipe the Registers
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+_printInputLineN:
+  	ldr   r0, =inputlineN    	@ Load the Print Input String Location in R0
+  	bl 	  printf				@ Print and wipe the Registers
+
+_readN:
+	
+	ldr r0, =format			@ Prepare what to read
+	ldr r1, =inputNFLOAT	@ Prepare where to store it
+	bl scanf				@ Poll the User
+
+_printOutputLineN:
+ 
+	ldr 	r1, =inputNFLOAT		@ Load Address of the Variables into R1	
 	vldr.f32 s15, [r1]	 	@ Read the data stored in the input variable into r1 
  	vcvt.f64.f32 d7, s15 	@ Convert to a double
 	ldr 	r0, =outputline @ Load the String Format Location in R0
