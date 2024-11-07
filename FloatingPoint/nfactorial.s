@@ -1,7 +1,8 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: IT WORKS! - Fixed Zero Edge Case
+@ Push Name: IT WORKS! - Final Working Code for Check
+@ Highest Accurate Value is 34 = 295232883843762098116370704180633927680
 
 .text
 .global main
@@ -36,10 +37,10 @@ isItZero:
 	
 _topOfLoop:
   	vsub.f32  s14, s14, s13 	@ Subtract 1 from the counter
-   	vcmp.f32  s14, #0x00000000	@ THIS IS THE ONLY LINE NOT WORKING RN IM SO MAD
-	vmrs       r10, FPSCR
-	and	   r11, r10, #0x40000000
-	cmp        r11, #0x40000000
+   	vcmp.f32  s14, #0x00000000	@ This works because of the bottom three lines
+	vmrs       r10, FPSCR 			@ Grab the FP CPSR Values
+	and	   r11, r10, #0x40000000	@ And it with the given HEX value to isolate the Zero Flag
+	cmp        r11, #0x40000000	@ CMP with the same HEX value to check if it is high
   	beq        _storeVar 		@ Exit if s14 equals 0
   	vmul.f32  s15, s15, s14 	@ if s14 != 0 then s15 = s15 * (s15 - 1)
  	b         _topOfLoop  		@ Back to the top of the loop
@@ -70,8 +71,8 @@ floatOne:
 inputINT:
 	.float 0.000
 inputline:
-	.string "Enter n: "
+	.string "Calculate n!. Enter n:"
 format:
 	.string "%f"
 outputline:
-	.string "You typed in: %f\n"
+	.string "n! = %f\n"
