@@ -1,7 +1,7 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: IT WORKS!
+@ Push Name: IT WORKS! - Fixed Zero Edge Case
 
 .text
 .global main
@@ -27,18 +27,25 @@ _initLogic:
 	ldr r2, =floatZero
 	vldr.f32  s12, [r2]	@ Fill a register with 0
 	
+isItZero:
+	vcmp.f32   s15, #0x00000000	@ THIS IS THE ONLY LINE NOT WORKING RN IM SO MAD
+	vmrs       r10, FPSCR
+	and	   r11, r10, #0x40000000
+	cmp        r11, #0x40000000
+  	beq        _print 		@ Exit if s14 equals 0
+	
 _topOfLoop:
-  	vsub.f32  s14, s14, s13 @ Subtract 1 from the counter
+  	vsub.f32  s14, s14, s13 	@ Subtract 1 from the counter
    	vcmp.f32  s14, #0x00000000	@ THIS IS THE ONLY LINE NOT WORKING RN IM SO MAD
 	vmrs       r10, FPSCR
 	and	   r11, r10, #0x40000000
 	cmp        r11, #0x40000000
-  	beq        _storeVar 	@ Exit if s14 equals 0
-  	vmul.f32  s15, s15, s14 @ if s14 != 0 then s15 = s15 * (s15 - 1)
- 	b         _topOfLoop  	@ Back to the top of the loop
+  	beq        _storeVar 		@ Exit if s14 equals 0
+  	vmul.f32  s15, s15, s14 	@ if s14 != 0 then s15 = s15 * (s15 - 1)
+ 	b         _topOfLoop  		@ Back to the top of the loop
 
 _storeVar:
-	ldr 	  r0, =outputline @ Load the String Format Location in R0
+	ldr 	  r0, =outputline 	@ Load the String Format Location in R0
   	ldr   	  r1, =inputINT  	@ Store the address of the float variable
   	vstr.f32  s15, [r1]		@ Store the Current Value in the variable
 	
