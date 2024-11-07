@@ -1,14 +1,13 @@
 @ nexponential.s
 @ Property of Group 4
 @
-@ Push Name: IT WORKS - Still have to handle the Zero Edge Case
+@ Push Name: IT WORKS - Handled Zero Edge Case for N
 
 .text
 .global main
  
 main:
 	push {r0-r4, lr}
-
 
 _printInputLineX:
   	ldr   r0, =inputlineX    	@ Load the Print Input String Location in R0
@@ -49,6 +48,16 @@ _initLogic:
 	
 	ldr r2, =floatOne
 	vldr.f32  s12, [r2]	@ Fill a register with 1
+
+isNZero:
+	vcmp.f32   s15, #0x00000000	@ THIS IS THE ONLY LINE NOT WORKING RN IM SO MAD
+	vmrs       r10, FPSCR
+	and	       r11, r10, #0x40000000
+	cmp        r11, #0x40000000
+  	bne        _topOfLoop 		@ Exit if s14 equals 0
+  	ldr r1, =outputFLOAT
+	vstr.f32  s12, [r1]	@ Fill a register with 1
+  	b 			_print
 
 _topOfLoop:
   	vsub.f32  s15, s15, s12 	@ Subtract 1 from the N
