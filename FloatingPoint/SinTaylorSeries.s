@@ -13,7 +13,11 @@
 .global main
 
 main:
-	@ Get X
+	@push {lr}
+	@ldr r1, =piNumber
+	@vldr.f32 s0, [r1] @ move a valid value into s0
+	vmov.f32 s0, #1.0
+	vmov.f32 s2, #1.0
 
 _sin_v_f: 
 	@@ set runfast mode and rounding to nearest
@@ -43,7 +47,23 @@ _sin_v_f:
 	vadd.f32 s0,s0,s24
 	vadd.f32 s26,s26,s28
 	vadd.f32 s0,s0,s26
-	mov pc,lr		@can also use bx lr
+	@bx lr		@can also use bx lr
+	
+_printConvert:
+  	ldr 			r0, =outputline1    	@ Load the String Format Location in R0
+ 	vcvt.f64.f32 	d7, s2			@ Convert to a double
+  	vmov		r2, r3, d7		@ Move to be printed
+	bl 			printf			@ Print and wipe the Registers	
+	
+	ldr 			r0, =outputline2    	@ Load the String Format Location in R0
+ 	vcvt.f64.f32 	d7, s0			@ Convert to a double
+  	vmov		r2, r3, d7		@ Move to be printed
+	bl 			printf			@ Print and wipe the Registers	
+
+_exit:
+	@pop {lr}
+	mov r7, #1		@ Load the Exit Value
+ 	svc 0			@ Exit the Program
 
 .data
 .align 6 @ Align to cache
@@ -53,3 +73,9 @@ ctab:
 	.word 0xB9500D01 @ -1.984127e-04
 	.word 0x3638EF1D @ 2.755732e-06
 	.word 0xB2D7322B @ -2.505211e-08
+piNumber: 
+	.float 3.141593
+outputline1:
+    .string "Sin of %f"
+outputline2:
+    .string " Equals = %f\n"
