@@ -1,7 +1,7 @@
 @ nfactorial.s
 @ Property of Group 4
 @
-@ Push Name: IT WORKS! - Final Working Code for Check
+@ Push Name: IT WORKS! - Fixed Zero Case for Final Check
 @ Highest Accurate Value is 34 = 295232883843762098116370704180633927680
 
 .text
@@ -33,7 +33,9 @@ isItZero:
 	vmrs       r10, FPSCR
 	and	   r11, r10, #0x40000000
 	cmp        r11, #0x40000000
-  	beq        _print 		@ Exit if s14 equals 0
+  	bne        _topOfLoop 		@ Exit if s14 equals 0
+	vmov.f32   s15, #1.0
+	b 	   _storeVar
 	
 _topOfLoop:
   	vsub.f32  s14, s14, s13 	@ Subtract 1 from the counter
