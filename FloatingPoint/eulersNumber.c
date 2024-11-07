@@ -1,6 +1,6 @@
 /* eulersNumber.c
  Property of Group 4 - Sam Brewster and Simline Gijo
- Push: IT WORKS! - Need to Check for Edge Cases
+ Push: IT WORKS! - Final Code for Check
 */ 
  
 #include <stdio.h>
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
       eSum += tempNE/tempNF;         // Add them and increment through until n = 6
 	  //printf("eSum = %f\n", eSum);
 	  
-  } // for
+  } // for loop
 
   // Output to the user
   printf("e^%f = %f\n", x, eSum);
