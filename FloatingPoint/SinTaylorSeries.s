@@ -14,6 +14,13 @@
 
 main:
 
+	ldr 	r0, =inputline  @ Load the Print Input String Location in R0
+	bl 	printf	  	@ Print and wipe the Registers
+	
+	ldr r0, =format		@ Prepare what to read
+	ldr r1, =inputUSER	@ Prepare where to store it
+	bl scanf		@ Poll the User
+
 	ldr r1, =inputUSER	@ Prepare where to store it
 	vldr.f32 s0, [r1]	@ Read Variable
 	vmov.f32 s2, s0		@ Store X Value
@@ -57,7 +64,6 @@ _printConvert:
 	bl 			printf			@ Print and wipe the Registers	
 
 _exit:
-	@pop {lr}
 	mov r7, #1		@ Load the Exit Value
  	svc 0			@ Exit the Program
 
@@ -72,9 +78,9 @@ ctab:
 piNumber: 
 	.float 3.141593
 inputUSER:
-	.float 1.0
+	.float 0.0
 inputline:
-	.string "Please Input X:"
+	.string "Please Input X: "
 format:
 	.string "%f"
 outputline:
