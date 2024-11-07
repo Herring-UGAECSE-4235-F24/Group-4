@@ -1,7 +1,7 @@
 @ nexponential.s
 @ Property of Group 4
 @
-@ Push Name: IT WORKS - Handled Zero Edge Case for N
+@ Push Name: IT WORKS - Both X and N Zero Edge Cases Covered
 
 .text
 .global main
@@ -46,18 +46,31 @@ _printOutputLineN:
 _initLogic:
 	vmov.f32  s13, s14      @ Create a duplicate of X
 	
+	ldr r2, =floatZero
+	vldr.f32  s11, [r2]	@ Fill a register with 0
+	
 	ldr r2, =floatOne
 	vldr.f32  s12, [r2]	@ Fill a register with 1
+	
+_isNZero:
+	vcmp.f32   s15, #0x00000000	@ N
+	vmrs       r10, FPSCR
+	and	       r11, r10, #0x40000000
+	cmp        r11, #0x40000000
+  	bne        _isXZero 		@ Exit if s14 equals 0
+  	ldr r1, =outputFLOAT
+	vstr.f32  s12, [r1]	@ Fill a register with 1
+  	b 			_print
 
-isNZero:
-	vcmp.f32   s15, #0x00000000	@ THIS IS THE ONLY LINE NOT WORKING RN IM SO MAD
+_isXZero:
+	vcmp.f32   s14, #0x00000000	@ X
 	vmrs       r10, FPSCR
 	and	       r11, r10, #0x40000000
 	cmp        r11, #0x40000000
   	bne        _topOfLoop 		@ Exit if s14 equals 0
-  	ldr r1, =outputFLOAT
-	vstr.f32  s12, [r1]	@ Fill a register with 1
-  	b 			_print
+  	ldr r1,    =outputFLOAT
+	vstr.f32   s11, [r1]	@ Fill a register with 0
+  	b 		   _print
 
 _topOfLoop:
   	vsub.f32  s15, s15, s12 	@ Subtract 1 from the N
@@ -89,6 +102,8 @@ _exit:
  	svc 0			@ Exit the Program
 
 .data
+floatZero:
+	.float 0.000
 floatOne:
 	.float 1.000
 inputXFLOAT:
