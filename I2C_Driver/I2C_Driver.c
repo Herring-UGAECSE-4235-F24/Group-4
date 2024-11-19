@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Dr. Herring Update - We need to MANUALLY access the GPIO addresses
+Push: SCL Works!
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -14,22 +14,23 @@ https://www.ics.com/blog/how-control-gpio-hardware-c-or-c
 
  */
 
-# include <stdio.h>
-# include <bcm2835.h>
-# include <sys/time.h>
-# include <time.h>
+#include <stdio.h>
+#include <bcm2835.h>
+#include <sys/time.h>
+#include <time.h>
 
 #define SDA 23
 #define SCL 24
 
-#define SDA_BASE_ADDRESS 0x40022000  // Base Address for pin 23
-#define SCL_BASE_ADDRESS 0x40022000  // Base Address for pin 24
+extern void E4235_Select(int GPIO, int value);
+extern int E4235_Read(int GPIO);
+extern void E4235_delayMili(int time);
 
 // User should be prompted to either be able to a) read the value of the rtc, b) write time to the RTC
 char promptUser(){
 
   printf("Input 'r' to read the RTC or 'w' to write to the RTC:");
-  return scanf();
+  //return scanf();
 
 } // promptUser
 
@@ -37,7 +38,7 @@ char promptUser(){
 // Function to define and setup the Two GPIOs that will be used or SDA and SCL
 void gpioSetup(){
 
-	// How can we access these specific GPIOs and 
+	// Why would we need to setup the GPIOs?
 
 } // gpioSetup
 
@@ -45,13 +46,7 @@ void gpioSetup(){
 // Sets the SDA pin to Read Only, making it into an input
 void inputSDA() {
 
-	// How can we access this specific GPIO?
-	int fd = open("/sys/class/gpio/export", O_RONLY);
-	
-	if (fd == -1) {
-		printf("Error Opening File");
-		return -1;
-	} // if
+	E4235_Select(SDA, 0);
 	
 } // inputSDA
 
@@ -59,20 +54,21 @@ void inputSDA() {
 // Sets the SDA pin to Read Only, making it into an output
 void outputSDA() {
 
-	// How can we access this specific GPIO?
-	int fd = open("/sys/class/gpio/export", O_WONLY);
-	
-	if (fd == -1) {
-		printf("Error Opening File");
-		return -1;
-	} // if
+	E4235_Select(SDA, 1);
 	
 } // inputSDA
 
 
+void outputSCL() {
+
+	E4235_Select(SCL, 0);
+	
+} // inputSCL
+
+
 void inputSCL() {
 
-	// GPIO_DIRN;	
+	E4235_Select(SCL, 1);
 	
 } // inputSCL
 
@@ -95,11 +91,25 @@ void readFunc(){
 // Main Function for Logic
 int main(int argc, char **argv) {
 
-  // Initialize BCM and Setup GPIOs
-  gpioSetup();
+	//char userChoice;
   
-  // We will enable the driver to drive a low and disable it to drive a high
-  // This will be done by setting it to an output or setting it to an input
-  // We will most likely have to pull the GPIO high by setting the GPIO to an input and set it low by making it an output
+	//userChoice = gpioSetup(); // Ask user to read or write
+	
+	while (1) {
+		
+		inputSCL();
+		
+		E4235_Delaymilli(500);
+		
+		outputSCL();
+		
+		E4235_Delaymilli(500);
+		
+	}
+	
+  
+	// We will enable the driver to drive a low and disable it to drive a high
+	// This will be done by setting it to an output or setting it to an input
+	// We will most likely have to pull the GPIO high by setting the GPIO to an input and set it low by making it an output
   
 } // Main
