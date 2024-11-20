@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Theoretically, the Write Works
+Push: Kind of works with write, but it does respond with acks!
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -42,6 +42,73 @@ char promptUser(){
 	return responseList[0];
 
 } // promptUser
+
+int promptUserSeconds(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("How many Seconds?(0-59):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
+int promptUserMinutes(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("How many Minutes?(0-59):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
+int promptUserHours(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("How many Hours?(0-11):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
+int promptUserDays(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("What Day of the Week?(Sun[1] to Sat[7]):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
+int promptUserDate(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("What Day of the Month?(1-31):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
+int promptUserMonth(){
+
+	char * responseFormat = "%i";
+	char responseList[1];
+
+	printf("How many Months?(1-12):");
+	scanf(responseFormat, responseList);
+	return responseList[0];
+
+} // promptUser
+
 
 
 // Does nothing currently
@@ -249,16 +316,25 @@ void sendAddress(char * address){
 // Function to write with address and data
 void writeFunc(){
 
-	int * times[7];
-	times[0] = "00001001";
-	times[1] = "00001001";
-	times[2] = "01000001";
-	times[3] = "00000011";
-	times[4] = "00000001";
-	times[5] = "00000001";
-	times[6] = "00001111";
-	
+	char * times[7];
+	int seconds;
+	int minutes;
+	int hours;
+	int days;
+	int date;
+	int month;
+	int year;
+
+	times[6] = "01111111";
+	times[5] = "00111111";
+	times[4] = "00011111";
+	times[3] = "00001111";
+	times[2] = "00000111";
+	times[1] = "00000011";
+	times[0] = "00000001";
+
 	char address[] = "1101000"; // address for testing, must be 7 bits
+	//char address[] = "1000110"; // address for testing, must be 7 bits
 
 	// START CONDITION -------------------------------------------------
 
@@ -316,9 +392,9 @@ void writeFunc(){
 
 
 // Reads the data on SDA and stores it into a 1 byte int arry
-void writeSDA(char inputString[8]) {
+void writeSDA(char * inputString) {
 	
-	printf("Inside Read\n");
+	printf("Inside Write\n");
 	
 	// Writes bit 7
 	E4235_Delaymicro(clockPeriod);
@@ -408,14 +484,14 @@ void writeSDA(char inputString[8]) {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
-	printf("%i", inputString[7]);
-	printf("%i", inputString[6]);
-	printf("%i", inputString[5]);
-	printf("%i", inputString[4]);
-	printf("%i", inputString[3]);
-	printf("%i", inputString[2]);
-	printf("%i", inputString[1]);
-	printf("%i\n", inputString[0]);
+	printf("%c", inputString[7]);
+	printf("%c", inputString[6]);
+	printf("%c", inputString[5]);
+	printf("%c", inputString[4]);
+	printf("%c", inputString[3]);
+	printf("%c", inputString[2]);
+	printf("%c", inputString[1]);
+	printf("%c\n", inputString[0]);
 	
 	// Sends an ack to the slave
 	E4235_Delaymicro(clockPeriod);
@@ -434,7 +510,7 @@ void writeSDA(char inputString[8]) {
 void readFunc(){
 
 	int * times[8];
-	char address[] = "1101000"; // address for testing, must be 7 bits
+	char address[] = "11001000"; // address for testing, must be 7 bits
 
 	// START CONDITION -------------------------------------------------
 
@@ -474,7 +550,7 @@ void readFunc(){
 	// DATA READ ROUNDS 1-7 --------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
-	for(int i = 0; i <= 7; i++){
+	for(int i = 0; i <= 6; i++){
 		// store returned read data into an array
 		//times[i] = 
 		readSDA();
@@ -496,18 +572,11 @@ void readFunc(){
 // Reads the data on SDA and stores it into a 1 byte int arry
 void readSDA() {
 	
-	int inputString[8];
+	char * inputString[8];
 	
 	printf("Inside Read\n");
 
-	// Stores bit 8 (MSB)
-	inputString[8] = E4235_Read(SDA);
-	risingClock();
-	printf("%i", inputString[8]);
-	E4235_Delaymicro(clockPeriod);
-	fallingClock();
-	
-	// Stores bit 7
+	// Stores bit 7 (MSB)
 	E4235_Delaymicro(clockPeriod);
 	inputString[7] = E4235_Read(SDA);
 	risingClock();
@@ -579,7 +648,7 @@ void readSDA() {
 	fallingClock();
 	lowSDA();
 	
-	//return * inputString;
+	return;
 	
 } // readSDA
 
@@ -590,18 +659,17 @@ int main(int argc, char **argv) {
 
 	// checks if the user wants to read or write to the RTC
 	char userChoice;
-	userChoice = 'w'; // for testing, remove later
-	//userChoice = promptUser(); // Ask user to read or write
+	userChoice = 'r'; // for testing, remove later
+	userChoice = promptUser(); // Ask user to read or write
 	
 	// Determines whether the user wants to read or write
 	if (userChoice == 'r') {
 		readFunc();
-		return 0;
-	} else if (userChoice == 'w') {
+	} else if (userChoice == 'w') {		
 		writeFunc();
 	}
   
-	return 1; // exit
+	return 0; // exit
   
 	// We will enable the driver to drive a low and disable it to drive a high
 	// This will be done by setting it to an output or setting it to an input
