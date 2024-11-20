@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: SCL Works!
+Push: SDA and SCL Work! - Attempt made at Address Writing
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -44,7 +44,7 @@ void gpioSetup(){
 
 
 // Sets the SDA pin to Read Only, making it into an input
-void inputSDA() {
+void lowSDA() {
 
 	E4235_Select(SDA, 0);
 	
@@ -52,30 +52,139 @@ void inputSDA() {
 
 
 // Sets the SDA pin to Read Only, making it into an output
-void outputSDA() {
+void highSDA() {
 
 	E4235_Select(SDA, 1);
 	
 } // inputSDA
 
 
-void outputSCL() {
+void fallingClock() {
 
 	E4235_Select(SCL, 0);
 	
 } // inputSCL
 
 
-void inputSCL() {
+void risingClock() {
 
 	E4235_Select(SCL, 1);
 	
 } // inputSCL
 
+void sendAddress(char * address){
+	
+	risingClock();
+	
+	if (address[7] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[6] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[5] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[4] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[3] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[2] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[1] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	risingClock();
+	
+	if (address[0] == 0) {
+		highSDA();
+	} else {
+		lowSDA();
+	}
+	
+	E4235_Delaymilli(500);
+	lowSDA();
+	fallingClock();
+	E4235_Delaymilli(500);
+	
+	return;
+	
+} // sendAddress
+
 
 // Function to write with address and data
 void writeFunc(){
 
+	char address[] = "10011100";
+
+	sendAddress(address);
+	risingClock();
+	highSDA();
+	
 	
 } // writeFunc
 
@@ -93,15 +202,17 @@ int main(int argc, char **argv) {
 
 	//char userChoice;
   
-	//userChoice = gpioSetup(); // Ask user to read or write
+	//userChoice = promptUser(); // Ask user to read or write
 	
 	while (1) {
 		
-		inputSCL();
+		risingClock();
+		lowSDA();
 		
 		E4235_Delaymilli(500);
 		
-		outputSCL();
+		fallingClock();
+		highSDA();
 		
 		E4235_Delaymilli(500);
 		
