@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Can Properly Write Address and Tries to Read Data in - Why is it all Zeroes? Works on paper
+Push: Can Properly Write Address and Tries to Read Data in - Added Comments and Cleaned it up
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -43,13 +43,14 @@ char promptUser(){
 } // promptUser
 
 
-// Function to define and setup the Two GPIOs that will be used or SDA and SCL
+// Does nothing currently
 void gpioSetup(){
 
 } // gpioSetup
 
 
-// Sets the SDA pin to Read Only, making it into an input
+
+// Sets the SDA pin to Read Only, making it into a low
 void lowSDA() {
 
 	E4235_Select(SDA, 0);
@@ -57,12 +58,14 @@ void lowSDA() {
 } // inputSDA
 
 
-// Sets the SDA pin to Read Only, making it into an output
+
+// Sets the SDA pin to Write Only, making it into a high
 void highSDA() {
 
 	E4235_Select(SDA, 1);
 	
 } // inputSDA
+
 
 
 // Causes a falling Edge for the clock
@@ -73,6 +76,7 @@ void fallingClock() {
 } // inputSCL
 
 
+
 // Causes a rising Edge for the Clock
 void risingClock() {
 
@@ -80,10 +84,14 @@ void risingClock() {
 	
 } // inputSCL
 
+
+
+// Sends a 7 bit address to the slave
 void sendAddress(char * address){
 	
-	risingClock();
+	risingClock(); // start high for some reason
 	
+	// If the bit is high, output a high on SDA, and vice versa
 	printf("%c\n", address[0]);
 	if (address[0] == '0') {
 		highSDA();
@@ -97,6 +105,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 
+	// Same Logic as above but for 2nd MSB
 	printf("%c\n", address[1]);
 	if (address[1] == '0') {
 		highSDA();
@@ -110,6 +119,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	
+	// Same Logic as above but for 3rd MSB
 	printf("%c\n", address[2]);
 	if (address[2] == '0') {
 		highSDA();
@@ -123,6 +133,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	
+	// Same Logic as above but for 4th MSB
 	printf("%c\n", address[3]);
 	if (address[3] == '0') {
 		highSDA();
@@ -136,6 +147,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	
+	// Same Logic as above but for 5th MSB
 	printf("%c\n", address[4]);
 	if (address[4] == '0') {
 		highSDA();
@@ -149,6 +161,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	
+	// Same Logic as above but for 6th MSB
 	printf("%c\n", address[5]);
 	if (address[5] == '0') {
 		highSDA();
@@ -162,6 +175,7 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	
+	// Same Logic as above but for LSB
 	printf("%c\n", address[6]);
 	if (address[6] == '0') {
 		highSDA();
@@ -177,6 +191,7 @@ void sendAddress(char * address){
 	//return;
 	
 } // sendAddress
+
 
 
 // Function to write with address and data
@@ -207,20 +222,22 @@ void writeFunc(){
 } // writeFunc
 
 
-// Reads one Byte from SDA
+
+// Reads the data on SDA and stores it into a 1 byte int arry
 int ** readSDA() {
 	
 	int * inputString[8];
 	
 	printf("Inside Read\n");
 
-	// Writes high to let it know its a read
+	// Stores bit 8 (MSB)
 	risingClock();
 	inputString[8] = E4235_Read(SDA);
 	printf("%i", inputString[8]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 7
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[7] = E4235_Read(SDA);
@@ -228,6 +245,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 6
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[6] = E4235_Read(SDA);
@@ -235,6 +253,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 5
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[5] = E4235_Read(SDA);
@@ -242,6 +261,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 4
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[4] = E4235_Read(SDA);
@@ -249,6 +269,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 3
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[3] = E4235_Read(SDA);
@@ -256,6 +277,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 2
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[2] = E4235_Read(SDA);
@@ -263,6 +285,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 1
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[1] = E4235_Read(SDA);
@@ -270,6 +293,7 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Stores bit 0 (LSB)
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	inputString[0] = E4235_Read(SDA);
@@ -277,9 +301,10 @@ int ** readSDA() {
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
+	// Sends an ack to the slave
 	E4235_Delaymicro(clockPeriod);
 	risingClock();
-	highSDA();
+	highSDA(); // represents ack
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	lowSDA();
@@ -288,17 +313,18 @@ int ** readSDA() {
 }
 
 
+
 // Function to Read address with returned data
 void readFunc(){
 
-	char address[] = "1101000"; // must be 7 bits
+	char address[] = "1101000"; // address for testing, must be 7 bits
 
 	// Sends the Address
 	sendAddress(address);
 
 	printf("address sent\n");
 	
-	// Writes high to let it know its a read
+	// Writes high to SDA to let it know its a read
 	risingClock();
 	highSDA();
 	E4235_Delaymicro(clockPeriod);
@@ -324,37 +350,22 @@ void readFunc(){
 } // readFunc
 
 
-void testSDASCL() {
-	
-	while (1) {
-		
-		risingClock();
-		lowSDA();
-		
-		E4235_Delaymicro(clockPeriod);
-		
-		fallingClock();
-		highSDA();
-		
-		E4235_Delaymicro(clockPeriod);
-		
-	}
-} // testSDASCL
-
 
 // Main Function for Logic
 int main(int argc, char **argv) {
 
+	// checks if the user wants to read or write to the RTC
 	char userChoice;
-  
+	userCoice = 'r'; // for testing, remove later
 	//userChoice = promptUser(); // Ask user to read or write
 	
-	//printf("%c\n", userChoice);
 	
-	readFunc();
-	
-	
-
+	// Determines whether the user wants to read or write
+	if (userChoice == 'r') {
+		readFunc();
+	} else if (userChoice == 'w') {
+		writeFunc();
+	}
   
 	// We will enable the driver to drive a low and disable it to drive a high
 	// This will be done by setting it to an output or setting it to an input
