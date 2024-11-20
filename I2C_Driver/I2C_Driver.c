@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Structure of Read Function Made
+Push: Recognizes our Read Start Condition, Address, and Receives and ACK!
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -29,7 +29,7 @@ https://www.ics.com/blog/how-control-gpio-hardware-c-or-c
 extern void E4235_Select(int GPIO, int value);
 extern int E4235_Read(int GPIO);
 extern void E4235_delayMili(int time);
-extern void E4235_delayMicro(int time);
+extern void E4235_Delaymicro(int time);
 
 // User should be prompted to either be able to a) read the value of the rtc, b) write time to the RTC
 char promptUser(){
@@ -52,7 +52,7 @@ void gpioSetup(){
 
 
 // Sets the SDA pin to Read Only, making it into a low
-void lowSDA() {
+void highSDA() {
 
 	E4235_Select(SDA, 0);
 	
@@ -61,7 +61,7 @@ void lowSDA() {
 
 
 // Sets the SDA pin to Write Only, making it into a high
-void highSDA() {
+void lowSDA() {
 
 	E4235_Select(SDA, 1);
 	
@@ -70,7 +70,7 @@ void highSDA() {
 
 
 // Causes a falling Edge for the clock
-void fallingClock() {
+void risingClock() {
 
 	E4235_Select(SCL, 0);
 	
@@ -79,7 +79,7 @@ void fallingClock() {
 
 
 // Causes a rising Edge for the Clock
-void risingClock() {
+void fallingClock() {
 
 	E4235_Select(SCL, 1);
 	
@@ -90,7 +90,6 @@ void risingClock() {
 void startCondition(){
 	
 	highSDA();
-	E4235_Delaymicro(clockPeriod);
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	lowSDA();
@@ -128,9 +127,10 @@ void sendAddress(char * address){
 	
 	// If the bit is high, output a high on SDA, and vice versa
 	printf("%c\n", address[0]);
-	if (address[0] == '0') {
+	if (address[0] == '1') {
 		highSDA();
 	} else {
+		fallingClock();
 		lowSDA();
 	}
 	
@@ -138,13 +138,14 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
-
+	
+	
 	// Same Logic as above but for 2nd MSB
 	printf("%c\n", address[1]);
-	if (address[1] == '0') {
+	if (address[1] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -154,13 +155,13 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 	
 	// Same Logic as above but for 3rd MSB
 	printf("%c\n", address[2]);
-	if (address[2] == '0') {
+	if (address[2] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -170,13 +171,13 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 4th MSB
 	printf("%c\n", address[3]);
-	if (address[3] == '0') {
+	if (address[3] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -186,13 +187,13 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 5th MSB
 	printf("%c\n", address[4]);
-	if (address[4] == '0') {
+	if (address[4] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -202,13 +203,13 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 6th MSB
 	printf("%c\n", address[5]);
-	if (address[5] == '0') {
+	if (address[5] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -218,13 +219,13 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
 	// force everything low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for LSB
 	printf("%c\n", address[6]);
-	if (address[6] == '0') {
+	if (address[6] == '1') {
 		highSDA();
 	} else {
 		lowSDA();
@@ -233,9 +234,9 @@ void sendAddress(char * address){
 	risingClock(); // new cycle
 	E4235_Delaymicro(clockPeriod); // allow clock cycle
 	
-	// end last cycle, force everything low
-	lowSDA();
+	// force everything low
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 	
 	// End with LOW EVERYTHING and has waited
@@ -252,9 +253,8 @@ void writeFunc(){
 	char address[] = "1101000"; // must be 7 bits
 
 	// Sends the Address
-	sendAddress(address);
+	//sendAddress(address);
 
-	
 	// Writes low to let it know its a write
 	risingClock();
 	lowSDA();
@@ -276,7 +276,7 @@ void writeFunc(){
 
 
 // Reads the data on SDA and stores it into a 1 byte int arry
-int * readSDA() {
+void * readSDA() {
 	
 	int inputString[8];
 	
@@ -284,6 +284,7 @@ int * readSDA() {
 
 	// Stores bit 8 (MSB)
 	risingClock();
+	lowSDA();
 	inputString[8] = E4235_Read(SDA);
 	printf("%i", inputString[8]);
 	E4235_Delaymicro(clockPeriod);
@@ -361,7 +362,7 @@ int * readSDA() {
 	fallingClock();
 	lowSDA();
 	
-	return inputString;
+	//return inputString;
 }
 
 
@@ -391,22 +392,22 @@ void readFunc(){
 	E4235_Delaymicro(clockPeriod);
 	
 	// Reset back to everything Low
-	lowSDA();
 	fallingClock();
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
 	printf("rising edge so its a read sent\n");
 	
 	// RECEIVE THE ACK -------------------------------------------------
 	
 	// Extra Clock pulse to receive the Ack
-	risingClock();
 	printf("%i: Ack received\n", E4235_Read(SDA));
+	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	
 	// Clock to low to start next cycle
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-		
+	/*
 	// DATA READ ROUND 1 -----------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
@@ -415,7 +416,7 @@ void readFunc(){
 		times[i] = readSDA();
 		printf("iteration #i done\n", i);
 	}
-	
+	*/
 	return;
 	
 	// SEND STOP CONDITION ---------------------------------------------
@@ -438,10 +439,10 @@ int main(int argc, char **argv) {
 	userChoice = 'r'; // for testing, remove later
 	//userChoice = promptUser(); // Ask user to read or write
 	
-	
 	// Determines whether the user wants to read or write
 	if (userChoice == 'r') {
 		readFunc();
+		return 0;
 	} else if (userChoice == 'w') {
 		writeFunc();
 	}
