@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Can Properly Write Address and Tries to Read Data in - Added Comments and Cleaned it up
+Push: Structure of Read Function Made
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -22,6 +22,7 @@ https://www.ics.com/blog/how-control-gpio-hardware-c-or-c
 #define SDA 23
 #define SCL 24
 
+// Allows for an easy change to all clock cycles.
 // In order to use the standard I2C rate, we need 10 microseconds per on/off cycle
 #define clockPeriod 10
 
@@ -84,12 +85,46 @@ void risingClock() {
 	
 } // inputSCL
 
+// Changes SDA from HIGH to LOW when the Clock is HIGH
+// Inspiration from bitbanging.space
+void startCondition(){
+	
+	highSDA();
+	E4235_Delaymicro(clockPeriod);
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	lowSDA();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	E4235_Delaymicro(clockPeriod);
+	
+	// Ends with the CLOCK and SDA at LOW
+	
+	return;
+	
+} // startCondition
+
+
+
+// Changes SDA from LOW to HIGH when the Clock is HIGH
+// Inspiration from bitbanging.space
+void stopCondition(){
+	
+	lowSDA();
+	E4235_Delaymicro(clockPeriod);
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	highSDA();
+	E4235_Delaymicro(clockPeriod);
+	
+	return;
+	
+} // startCondition
+
 
 
 // Sends a 7 bit address to the slave
 void sendAddress(char * address){
-	
-	risingClock(); // start high for some reason
 	
 	// If the bit is high, output a high on SDA, and vice versa
 	printf("%c\n", address[0]);
@@ -99,11 +134,13 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // rising Clock edge
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
 
 	// Same Logic as above but for 2nd MSB
 	printf("%c\n", address[1]);
@@ -113,11 +150,13 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
 	
 	// Same Logic as above but for 3rd MSB
 	printf("%c\n", address[2]);
@@ -127,12 +166,14 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
-	
+		
 	// Same Logic as above but for 4th MSB
 	printf("%c\n", address[3]);
 	if (address[3] == '0') {
@@ -141,12 +182,14 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
-	
+		
 	// Same Logic as above but for 5th MSB
 	printf("%c\n", address[4]);
 	if (address[4] == '0') {
@@ -155,12 +198,14 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
-	
+		
 	// Same Logic as above but for 6th MSB
 	printf("%c\n", address[5]);
 	if (address[5] == '0') {
@@ -169,12 +214,14 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
-	risingClock();
-	
+		
 	// Same Logic as above but for LSB
 	printf("%c\n", address[6]);
 	if (address[6] == '0') {
@@ -183,12 +230,17 @@ void sendAddress(char * address){
 		lowSDA();
 	}
 	
-	E4235_Delaymicro(clockPeriod);
+	risingClock(); // new cycle
+	E4235_Delaymicro(clockPeriod); // allow clock cycle
+	
+	// end last cycle, force everything low
 	lowSDA();
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
 	
-	//return;
+	// End with LOW EVERYTHING and has waited
+	
+	return;
 	
 } // sendAddress
 
@@ -224,9 +276,9 @@ void writeFunc(){
 
 
 // Reads the data on SDA and stores it into a 1 byte int arry
-int ** readSDA() {
+int * readSDA() {
 	
-	int * inputString[8];
+	int inputString[8];
 	
 	printf("Inside Read\n");
 
@@ -317,35 +369,62 @@ int ** readSDA() {
 // Function to Read address with returned data
 void readFunc(){
 
+	int * times[8];
 	char address[] = "1101000"; // address for testing, must be 7 bits
 
-	// Sends the Address
-	sendAddress(address);
+	// START CONDITION -------------------------------------------------
 
+	startCondition(); 
+	// SDA AND CLOCK NOW LOW
+
+	// SLAVE ADDRESS SENDING -------------------------------------------
+
+	sendAddress(address); // Sends the Address
+	// SDA AND CLOCK NOW LOW, already waited
 	printf("address sent\n");
 	
+	// READ BIT SENDING ------------------------------------------------
+	
 	// Writes high to SDA to let it know its a read
-	risingClock();
 	highSDA();
-	E4235_Delaymicro(clockPeriod);
-	fallingClock();
+	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	
+	// Reset back to everything Low
+	lowSDA();
+	fallingClock();
+	E4235_Delaymicro(clockPeriod);
 	printf("rising edge so its a read sent\n");
+	
+	// RECEIVE THE ACK -------------------------------------------------
 	
 	// Extra Clock pulse to receive the Ack
 	risingClock();
-	//lowSDA();
-	E4235_Delaymicro(clockPeriod);
 	printf("%i: Ack received\n", E4235_Read(SDA));
+	E4235_Delaymicro(clockPeriod);
+	
+	// Clock to low to start next cycle
 	fallingClock();
 	E4235_Delaymicro(clockPeriod);
 		
-	// readSDA
-	readSDA();
-	printf("sda read\n");
+	// DATA READ ROUND 1 -----------------------------------------------
+	
+	// iterate 7 times so to get all 7 strings of data needed
+	for(int i = 0; i <= 7; i++){
+		// store returned read data into an array
+		times[i] = readSDA();
+		printf("iteration #i done\n", i);
+	}
 	
 	return;
+	
+	// SEND STOP CONDITION ---------------------------------------------
+	
+	//stopCondition();
+
+	// PRINT THE DATA --------------------------------------------------
+	
+	// call the I2CRTC function here
 
 } // readFunc
 
@@ -356,7 +435,7 @@ int main(int argc, char **argv) {
 
 	// checks if the user wants to read or write to the RTC
 	char userChoice;
-	userCoice = 'r'; // for testing, remove later
+	userChoice = 'r'; // for testing, remove later
 	//userChoice = promptUser(); // Ask user to read or write
 	
 	
@@ -366,6 +445,8 @@ int main(int argc, char **argv) {
 	} else if (userChoice == 'w') {
 		writeFunc();
 	}
+  
+	return 1; // exit
   
 	// We will enable the driver to drive a low and disable it to drive a high
 	// This will be done by setting it to an output or setting it to an input
