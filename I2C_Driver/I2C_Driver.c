@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Kind of works with write, but it does respond with acks!
+Push: Wednesday Before Ignite (I Give up) - Read wont read properly and Write cannot be verified, but theoretically should work.
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -109,7 +109,218 @@ int promptUserMonth(){
 
 } // promptUser
 
+int translateSeconds(int secVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	
+	if (secVar >= 40) {
+		secVar -= 40;
+		returnedVar += 0x40;//0100
+	}
+	if (secVar >= 20) {
+		secVar -= 20;
+		returnedVar += 0x20;//0010
+	}
+	if (secVar >= 10) {
+		secVar -= 10;
+		returnedVar += 0x10;//0001 0000
+	}
+	if (secVar >= 8) {
+		secVar -= 8;
+		returnedVar += 0x08;//0000 1000
+	}
+	if (secVar >= 4) {
+		secVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (secVar >= 2) {
+		secVar -= 2;
+		returnedVar += 0x02;
+		printf("2: %i\n", returnedVar);
+	}
+	if (secVar >= 1) {
+		secVar -= 1;
+		returnedVar += 0x01;
+		printf("1: %i\n", returnedVar);
+	}
+	
+	return returnedVar;
+}
 
+int translateMinutes(int minVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	
+	if (minVar >= 40) {
+		minVar -= 40;
+		returnedVar += 0x40;//0100
+	}
+	if (minVar >= 20) {
+		minVar -= 20;
+		returnedVar += 0x20;//0010
+	}
+	if (minVar >= 10) {
+		minVar -= 10;
+		returnedVar += 0x10;//0001 0000
+	}
+	if (minVar >= 8) {
+		minVar -= 8;
+		returnedVar += 0x08;//0000 1000
+	}
+	if (minVar >= 4) {
+		minVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (minVar >= 2) {
+		minVar -= 2;
+		returnedVar += 0x02;
+	}
+	if (minVar >= 1) {
+		minVar -= 1;
+		returnedVar += 0x01;
+	}
+	
+	return returnedVar;
+}
+
+int translateHours(int hourVar) {
+	
+	int returnedVar;
+	returnedVar = 0x40; // set bit 5
+	
+	if (hourVar >= 10) {
+		hourVar = hourVar - 10;
+		returnedVar += 0x10;
+	}
+	if (hourVar >= 8) {
+		hourVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (hourVar >= 4) {
+		hourVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (hourVar >= 2) {
+		hourVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (hourVar >= 1) {
+		hourVar -= 1;
+		returnedVar += 0x01;
+	}	
+		
+	return returnedVar;
+}
+
+int translateDate(int dateVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+	
+	if (dateVar >= 20) {
+		dateVar = dateVar - 20;
+		returnedVar += 0x20;
+	}
+	
+	if (dateVar >= 10) {
+		dateVar = dateVar - 10;
+		returnedVar += 0x10;
+	}
+	if (dateVar >= 8) {
+		dateVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (dateVar >= 4) {
+		dateVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (dateVar >= 2) {
+		dateVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (dateVar >= 1) {
+		dateVar -= 1;
+		returnedVar += 0x01;
+	}	
+	printf("DateVar: %i\n", returnedVar);
+	
+	return returnedVar;
+
+}
+
+int translateMonth(int monthVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00; // set bit 5
+	
+	if (monthVar >= 10) {
+		monthVar -= 10;
+		returnedVar += 0x10;
+	}
+	if (monthVar >= 8) {
+		monthVar -= 8;
+		returnedVar += 0x08;
+	}
+	if (monthVar >= 4) {
+		monthVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (monthVar >= 2) {
+		monthVar -= 2;
+		returnedVar += 0x02;
+	}	
+	if (monthVar >= 1) {
+		monthVar -= 1;
+		returnedVar += 0x01;
+	}	
+	
+	//returnedVar += 0x01;
+	
+	return returnedVar;
+}
+
+int translateYears(int yearVar) {
+	
+	int returnedVar;
+	returnedVar = 0x00;
+
+	if (yearVar >= 80) {
+		yearVar -= 80;
+		returnedVar += 0x80;//0100
+	}	
+	if (yearVar >= 40) {
+		yearVar -= 40;
+		returnedVar += 0x40;//0100
+	}
+	if (yearVar >= 20) {
+		yearVar -= 20;
+		returnedVar += 0x20;//0010
+	}
+	if (yearVar >= 10) {
+		yearVar -= 10;
+		returnedVar += 0x10;//0001 0000
+	}
+	if (yearVar >= 8) {
+		yearVar -= 8;
+		returnedVar += 0x08;//0000 1000
+	}
+	if (yearVar >= 4) {
+		yearVar -= 4;
+		returnedVar += 0x04;
+	}
+	if (yearVar >= 2) {
+		yearVar -= 2;
+		returnedVar += 0x02;
+	}
+	if (yearVar >= 1) {
+		yearVar -= 1;
+		returnedVar += 0x01;
+	}
+	
+	return returnedVar;
+}
 
 // Does nothing currently
 void gpioSetup(){
@@ -510,7 +721,7 @@ void writeSDA(char * inputString) {
 void readFunc(){
 
 	int * times[8];
-	char address[] = "11001000"; // address for testing, must be 7 bits
+	char address[] = "1101000"; // address for testing, must be 7 bits
 
 	// START CONDITION -------------------------------------------------
 
@@ -570,7 +781,7 @@ void readFunc(){
 } // readFunc
 
 // Reads the data on SDA and stores it into a 1 byte int arry
-void readSDA() {
+char * readSDA() {
 	
 	char * inputString[8];
 	
@@ -648,7 +859,7 @@ void readSDA() {
 	fallingClock();
 	lowSDA();
 	
-	return;
+	return * inputString;
 	
 } // readSDA
 
