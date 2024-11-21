@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: NAK to end the read - Now we just need to translate it
+Push: Sanity Push
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -109,46 +109,32 @@ int promptUserMonth(){
 
 } // promptUser
 
-int translateSeconds(int secVar) {
+char translateSeconds(int secVar) {
 	
-	int returnedVar;
-	returnedVar = 0x00;
+	char returnedChar;
+	printf("secVar = %i\n", secVar);
 	
-	if (secVar >= 40) {
-		secVar -= 40;
-		returnedVar += 0x40;//0100
-	}
-	if (secVar >= 20) {
-		secVar -= 20;
-		returnedVar += 0x20;//0010
-	}
-	if (secVar >= 10) {
-		secVar -= 10;
-		returnedVar += 0x10;//0001 0000
-	}
-	if (secVar >= 8) {
-		secVar -= 8;
-		returnedVar += 0x08;//0000 1000
-	}
-	if (secVar >= 4) {
-		secVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (secVar >= 2) {
-		secVar -= 2;
-		returnedVar += 0x02;
-		printf("2: %i\n", returnedVar);
-	}
-	if (secVar >= 1) {
-		secVar -= 1;
-		returnedVar += 0x01;
-		printf("1: %i\n", returnedVar);
-	}
+	// Bitwise
+	returnedChar = secVar % 10;
+	returnedChar = returnedChar | (secVar/10 << 4);
 	
-	return returnedVar;
+	printf("Quick Check %c\n", returnedChar);
+	
+	return returnedChar;
 }
 
-int translateMinutes(int minVar) {
+char translateMinutes(int minVar) {
+	
+	char returnedChar;
+	printf("minVar = %i\n", minVar);
+	
+	// Bitwise
+	returnedChar = minVar % 10;
+	returnedChar = returnedChar | (minVar/10 << 4);
+	
+	printf("Quick Check %c\n", returnedChar);
+	
+	return returnedChar;
 	
 	int returnedVar;
 	returnedVar = 0x00;
@@ -322,12 +308,6 @@ int translateYears(int yearVar) {
 	return returnedVar;
 }
 
-// Does nothing currently
-void gpioSetup(){
-
-} // gpioSetup
-
-
 
 // Sets the SDA pin to Read Only, making it into a low
 void highSDA() {
@@ -347,7 +327,7 @@ void lowSDA() {
 
 
 
-// Causes a falling Edge for the clock
+// Causes a rising Edge for the clock
 void risingClock() {
 
 	E4235_Select(SCL, 0);
@@ -356,7 +336,7 @@ void risingClock() {
 
 
 
-// Causes a rising Edge for the Clock
+// Causes a falling Edge for the Clock
 void fallingClock() {
 
 	E4235_Select(SCL, 1);
@@ -535,6 +515,37 @@ void writeFunc(){
 	int date;
 	int month;
 	int year;
+	
+	struct tm * local;
+	time_t t = time(NULL);
+	
+	local = localtime(&t);
+	
+	printf("Local time and date: %s\n", asctime(local));
+	
+	seconds = local->tm_sec;
+	printf("Seconds: %i\n", seconds);
+	
+	minutes = local->tm_min;
+	printf("Minutes: %i\n", minutes);
+	
+	hours = local->tm_hour;
+	printf("Hours: %i\n", hours);
+	
+	date = local->tm_mday;
+	printf("day of Month: %i\n", date);
+	
+	month = local->tm_mon;
+	printf("monthT: %i\n", month);
+	
+	year = local->tm_year;
+	printf("yearT: %i\n", year);
+	
+	days = local->tm_wday;
+	printf("weekday: %i\n", days);
+
+	printf("%c\n", translateSeconds(seconds));
+	printf("%c\n", translateMinutes(minutes));
 
 	times[6] = "01111111";
 	times[5] = "00111111";
@@ -542,11 +553,10 @@ void writeFunc(){
 	times[3] = "00001111";
 	times[2] = "00000111";
 	times[1] = "00000011";
-	times[0] = "00000001";
+	times[0] = seconds;
 
-	char address[] = "1101000"; // address for testing, must be 7 bits
-	//char address[] = "1000110"; // address for testing, must be 7 bits
-
+	char address[] = "1101000"; // address
+	
 	// START CONDITION -------------------------------------------------
 
 	startCondition(); 
@@ -556,7 +566,7 @@ void writeFunc(){
 
 	sendAddress(address); // Sends the Address
 	// SDA AND CLOCK NOW LOW, already waited
-	printf("address sent\n");
+	//printf("address sent\n");
 	
 	// READ BIT SENDING ------------------------------------------------
 	
@@ -569,12 +579,12 @@ void writeFunc(){
 	fallingClock();
 	lowSDA();
 	E4235_Delaymicro(clockPeriod);
-	printf("rising edge so its a read sent\n");
+	//printf("rising edge so its a read sent\n");
 	
 	// RECEIVE THE ACK -------------------------------------------------
 	
 	// Extra Clock pulse to receive the Ack
-	printf("%i: Ack received\n", E4235_Read(SDA));
+	//printf("%i: Ack received\n", E4235_Read(SDA));
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	
@@ -585,7 +595,7 @@ void writeFunc(){
 	// DATA READ ROUNDS 1-7 --------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
-	for(int i = 0; i <= 6; i++){
+	for(int i = 0; i <= 0; i++){
 		writeSDA(times[i]);
 		printf("write iteration %i done\n", i);
 	}
@@ -603,110 +613,108 @@ void writeFunc(){
 
 
 // Reads the data on SDA and stores it into a 1 byte int arry
-void writeSDA(char * inputString) {
-	
-	printf("Inside Write\n");
+void writeSDA(char inputString) {
 	
 	// Writes bit 7
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[0] == '1') {
-		highSDA();
+	if ((inputString & 0x80) == 0x80) {
+		highSDA(); // print 1
 	} else {
-		lowSDA();
+		lowSDA(); // print 0
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 6
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[1] == '1') {
+	if((inputString & 0x40) == 0x40) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 5
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[2] == '1') {
+	if((inputString & 0x20) == 0x20) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 4
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[3] == '1') {
+	if((inputString & 0x10) == 0x10) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 3
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[4] == '1') {
+	if((inputString & 0x08) == 0x08) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 2
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[5] == '1') {
+	if((inputString & 0x04) == 0x04) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 1
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[6] == '1') {
+	if((inputString & 0x02) == 0x02) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 0 (LSB)
 	E4235_Delaymicro(clockPeriod);
-	if(inputString[7] == '1') {
+	if((inputString & 0x01) == 0x01) {
 		highSDA();
 	} else {
 		lowSDA();
 	}
+	
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
-	printf("%c", inputString[7]);
-	printf("%c", inputString[6]);
-	printf("%c", inputString[5]);
-	printf("%c", inputString[4]);
-	printf("%c", inputString[3]);
-	printf("%c", inputString[2]);
-	printf("%c", inputString[1]);
-	printf("%c\n", inputString[0]);
-	
 	// Sends an ack to the slave
+	lowSDA();
 	E4235_Delaymicro(clockPeriod);
-	highSDA(); // represents ack
+	//highSDA(); // represents ack
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
