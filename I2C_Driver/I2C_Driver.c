@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Sanity Push
+Push: Have to Go
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -111,16 +111,17 @@ int promptUserMonth(){
 
 char translateSeconds(int secVar) {
 	
-	char returnedChar;
+	char returnedChar = 0;
+	char temp = 0;
 	printf("secVar = %i\n", secVar);
 	
 	// Bitwise
-	returnedChar = secVar % 10;
-	returnedChar = returnedChar | (secVar/10 << 4);
+	returnedChar = (secVar % 10); // XXXX 0101
+	temp = returnedChar | ((secVar/10) << 4); // XXXX 0010 -> 0010 0101
 	
-	printf("Quick Check %c\n", returnedChar);
+	printf("Quick Check %i\n", temp);
 	
-	return returnedChar;
+	return temp;
 }
 
 char translateMinutes(int minVar) {
@@ -596,7 +597,7 @@ void writeFunc(){
 	
 	// iterate 7 times so to get all 7 strings of data needed
 	for(int i = 0; i <= 0; i++){
-		writeSDA(times[i]);
+		writeSDA(seconds);
 		printf("write iteration %i done\n", i);
 	}
 		
