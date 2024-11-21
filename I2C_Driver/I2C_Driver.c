@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Tried switching the read function to be done after the rising edge. Makes sense for read...
+Push: Read Finally Works
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -715,6 +715,8 @@ void writeSDA(char * inputString) {
 	return;
 }
 
+
+
 // Function to Read address with returned data
 void readFunc(){
 
@@ -741,7 +743,7 @@ void readFunc(){
 	
 	// Reset back to everything Low
 	fallingClock();
-	lowSDA();
+	//lowSDA();
 	E4235_Delaymicro(clockPeriod);
 	printf("rising edge so its a read sent\n");
 	
@@ -778,6 +780,8 @@ void readFunc(){
 
 } // readFunc
 
+
+
 // Reads the data on SDA and stores it into a 1 byte int arry
 void readSDA() {
 	
@@ -785,81 +789,84 @@ void readSDA() {
 	
 	printf("Inside Read\n");
 
+	highSDA();
+
 	// Stores bit 7 (MSB)
 	E4235_Delaymicro(clockPeriod);
-	//inputString[7] = E4235_Read(SDA);
-	risingClock();
 	inputString[7] = E4235_Read(SDA);
+	risingClock();
+	//inputString[7] = E4235_Read(SDA);
 	printf("%i", inputString[7]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 6
 	E4235_Delaymicro(clockPeriod);
-	//inputString[6] = E4235_Read(SDA);
-	risingClock();
 	inputString[6] = E4235_Read(SDA);
+	risingClock();
+	//inputString[6] = E4235_Read(SDA);
 	printf("%i", inputString[6]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 5
 	E4235_Delaymicro(clockPeriod);
-	//inputString[5] = E4235_Read(SDA);
-	risingClock();
 	inputString[5] = E4235_Read(SDA);
+	risingClock();
+	//inputString[5] = E4235_Read(SDA);
 	printf("%i", inputString[5]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 4
 	E4235_Delaymicro(clockPeriod);
-	//inputString[4] = E4235_Read(SDA);
-	risingClock();
 	inputString[4] = E4235_Read(SDA);
+	risingClock();
+	//inputString[4] = E4235_Read(SDA);
 	printf("%i", inputString[4]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 3
 	E4235_Delaymicro(clockPeriod);
-	//inputString[3] = E4235_Read(SDA);
-	risingClock();
 	inputString[3] = E4235_Read(SDA);
+	risingClock();
+	//inputString[3] = E4235_Read(SDA);
 	printf("%i", inputString[3]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 2
 	E4235_Delaymicro(clockPeriod);
-	//inputString[2] = E4235_Read(SDA);
-	risingClock();
 	inputString[2] = E4235_Read(SDA);
+	risingClock();
+	//inputString[2] = E4235_Read(SDA);
 	printf("%i", inputString[2]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 1
 	E4235_Delaymicro(clockPeriod);
-	//inputString[1] = E4235_Read(SDA);
-	risingClock();
 	inputString[1] = E4235_Read(SDA);
+	risingClock();
+	//inputString[1] = E4235_Read(SDA);
 	printf("%i", inputString[1]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 0 (LSB)
 	E4235_Delaymicro(clockPeriod);
-	//inputString[0] = E4235_Read(SDA);
-	risingClock();
 	inputString[0] = E4235_Read(SDA);
+	risingClock();
+	//inputString[0] = E4235_Read(SDA);
 	printf("%i\n", inputString[0]);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Sends an ack to the slave
 	E4235_Delaymicro(clockPeriod);
-	highSDA(); // represents ack
+	
+	lowSDA();
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
