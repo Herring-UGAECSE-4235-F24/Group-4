@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Read Finally Works
+Push: NAK to end the read - Now we just need to translate it
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -761,12 +761,24 @@ void readFunc(){
 	// DATA READ ROUNDS 1-7 --------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
-	for(int i = 0; i <= 6; i++){
+	for(int i = 0; i <= 5; i++){
 		// store returned read data into an array
 		//times[i] = 
 		readSDA();
+		lowSDA();
+		risingClock();
+		E4235_Delaymicro(clockPeriod);
+		fallingClock();
+		lowSDA();
 		printf("iteration %i done\n", i);
 	}
+	
+	readSDA();
+	highSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
 		
 	// SEND STOP CONDITION ---------------------------------------------
 	
@@ -866,11 +878,7 @@ void readSDA() {
 	// Sends an ack to the slave
 	E4235_Delaymicro(clockPeriod);
 	
-	lowSDA();
-	risingClock();
-	E4235_Delaymicro(clockPeriod);
-	fallingClock();
-	lowSDA();
+	// will have to nack the last byte
 	
 	//return * inputString;
 	
