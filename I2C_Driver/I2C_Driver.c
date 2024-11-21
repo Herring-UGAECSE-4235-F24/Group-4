@@ -114,14 +114,49 @@ char translateSeconds(int secVar) {
 	char returnedChar = 0;
 	char temp = 0;
 	printf("secVar = %i\n", secVar);
-	
+	/*
 	// Bitwise
 	returnedChar = (secVar % 10); // XXXX 0101
 	temp = returnedChar | ((secVar/10) << 4); // XXXX 0010 -> 0010 0101
+	*/
+
+	int returnedVar;
+	returnedVar = 0x00;
+
+	if (secVar >= 40) {
+		secVar -= 40;
+		returnedChar | 0x40; //0100
+	}
+	if (secVar >= 20) {
+		secVar -= 20;
+		returnedChar | 0x20; //0010
+	}
+	if (secVar >= 10) {
+		secVar -= 10;
+		returnedChar | 0x10; //0001 0000
+	}
+	if (secVar >= 8) {
+		secVar -= 8;
+		returnedChar | 0x08; //0000 1000
+	}
+	if (secVar >= 4) {
+		secVar -= 4;
+		returnedChar | 0x04;
+	}
+	if (secVar >= 2) {
+		secVar -= 2;
+		returnedVar | 0x02;
+		printf("2: %i\n", returnedVar);
+	}
+	if (secVar >= 1) {
+		secVar -= 1;
+		returnedVar | 0x01;
+		printf("1: %i\n", returnedVar);
+	}
 	
-	printf("Quick Check %i\n", temp);
+	printf("Quick Check %i\n", returnedVar);
 	
-	return temp;
+	return returnedVar;
 }
 
 char translateMinutes(int minVar) {
