@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Logic Analyzer Matches what the Program is Reading
+Push: Have mercy on what I am about to hard code
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -655,7 +655,15 @@ void writeSDA(char inputString) {
 // Function to Read address with returned data
 void readFunc(){
 
-	int * times[8];
+	char seconds;
+	char minutes;
+	char hours;
+	char days;
+	char date;
+	char month;
+	char year;
+
+	int * times[7];
 	char address[] = "1101000"; // address for testing, must be 7 bits
 
 	// START CONDITION -------------------------------------------------
@@ -696,19 +704,136 @@ void readFunc(){
 	// DATA READ ROUNDS 1-7 --------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
-	for(int i = 0; i <= 5; i++){
-		// store returned read data into an array
-		//times[i] = 
-		printf("%c\n", readSDA());
-		lowSDA();
-		risingClock();
-		E4235_Delaymicro(clockPeriod);
-		fallingClock();
-		lowSDA();
-		printf("iteration %i done\n", i);
-	}
+	//seconds = readSDA();
+	char secondString;
 	
-	printf("%c\n", readSDA());
+	highSDA();
+
+	// Stores bit 7 (MSB)
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 7);
+	risingClock();
+	//inputString[7] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 6
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 6);
+	risingClock();
+	//inputString[6] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 5
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 5);
+	risingClock();
+	//inputString[5] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 4
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 4);
+	risingClock();
+	//inputString[4] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 3
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 3);
+	risingClock();
+	//inputString[3] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 2
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 2);
+	risingClock();
+	//inputString[2] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 1
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA) << 1);
+	risingClock();
+	//inputString[1] = E4235_Read(SDA);
+	printf("%d\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 0 (LSB)
+	E4235_Delaymicro(clockPeriod);
+	secondString = secondString | (E4235_Read(SDA));
+	risingClock();
+	//inputString[0] = E4235_Read(SDA);
+	printf("%d\n\n", secondString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Sends an ack to the slave
+	E4235_Delaymicro(clockPeriod);
+	
+	printf("seconds %d\n", secondString);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	minutes = readSDA();
+	printf("minutes %d\n", minutes);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	hours = readSDA();
+	printf("hours %d\n", hours);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	days = readSDA();
+	printf("days %d\n", days);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	date = readSDA();
+	printf("date %d\n", date);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	month = readSDA();
+	printf("month %d\n", month);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	
+	// Last one to close it off
+	year = readSDA();
+	printf("year %d\n", year);
 	highSDA();
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
