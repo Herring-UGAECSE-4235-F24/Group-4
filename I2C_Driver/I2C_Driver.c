@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Have to Go
+Push: Properly Writes the Current Time for Seconds and Minutes
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -112,51 +112,55 @@ int promptUserMonth(){
 char translateSeconds(int secVar) {
 	
 	char returnedChar = 0;
-	char temp = 0;
 	printf("secVar = %i\n", secVar);
-	/*
+	
+	
 	// Bitwise
 	returnedChar = (secVar % 10); // XXXX 0101
-	temp = returnedChar | ((secVar/10) << 4); // XXXX 0010 -> 0010 0101
-	*/
-
+	returnedChar = returnedChar | ((secVar/10) << 4); // XXXX 0010 -> 0010 0101
+	
+	/*
 	int returnedVar;
 	returnedVar = 0x00;
 
 	if (secVar >= 40) {
 		secVar -= 40;
-		returnedChar | 0x40; //0100
+		returnedChar = returnedChar | 0x40; //0100
 	}
+	printf("Quick Check %i\n", returnedChar);
 	if (secVar >= 20) {
 		secVar -= 20;
-		returnedChar | 0x20; //0010
+		returnedChar = returnedChar | 0x20; //0010 0000
 	}
+	printf("Quick Check %i\n", returnedChar);
 	if (secVar >= 10) {
 		secVar -= 10;
-		returnedChar | 0x10; //0001 0000
+		returnedChar = returnedChar | 0x10; //0001 0000
 	}
+	printf("Quick Check %i\n", returnedChar);
 	if (secVar >= 8) {
 		secVar -= 8;
-		returnedChar | 0x08; //0000 1000
+		returnedChar = returnedChar | 0x08; //0000 1000
 	}
+	printf("Quick Check %i\n", returnedChar);
 	if (secVar >= 4) {
 		secVar -= 4;
-		returnedChar | 0x04;
+		returnedChar = returnedChar | 0x04;
 	}
+	printf("Quick Check %i\n", returnedChar);
 	if (secVar >= 2) {
 		secVar -= 2;
-		returnedVar | 0x02;
-		printf("2: %i\n", returnedVar);
+		returnedChar = returnedChar | 0x02;
 	}
+	printf("Quick Check %d\n", returnedChar);
 	if (secVar >= 1) {
 		secVar -= 1;
-		returnedVar | 0x01;
-		printf("1: %i\n", returnedVar);
+		returnedChar = returnedChar | 0x01;
 	}
+	*/
+	printf("Quick Check %d\n", returnedChar);
 	
-	printf("Quick Check %i\n", returnedVar);
-	
-	return returnedVar;
+	return returnedChar;
 }
 
 char translateMinutes(int minVar) {
@@ -168,43 +172,10 @@ char translateMinutes(int minVar) {
 	returnedChar = minVar % 10;
 	returnedChar = returnedChar | (minVar/10 << 4);
 	
-	printf("Quick Check %c\n", returnedChar);
+	printf("Quick Check %d\n", returnedChar);
 	
 	return returnedChar;
 	
-	int returnedVar;
-	returnedVar = 0x00;
-	
-	if (minVar >= 40) {
-		minVar -= 40;
-		returnedVar += 0x40;//0100
-	}
-	if (minVar >= 20) {
-		minVar -= 20;
-		returnedVar += 0x20;//0010
-	}
-	if (minVar >= 10) {
-		minVar -= 10;
-		returnedVar += 0x10;//0001 0000
-	}
-	if (minVar >= 8) {
-		minVar -= 8;
-		returnedVar += 0x08;//0000 1000
-	}
-	if (minVar >= 4) {
-		minVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (minVar >= 2) {
-		minVar -= 2;
-		returnedVar += 0x02;
-	}
-	if (minVar >= 1) {
-		minVar -= 1;
-		returnedVar += 0x01;
-	}
-	
-	return returnedVar;
 }
 
 int translateHours(int hourVar) {
@@ -420,7 +391,6 @@ void stopCondition(){
 void sendAddress(char * address){
 	
 	// If the bit is high, output a high on SDA, and vice versa
-	printf("%c\n", address[0]);
 	if (address[0] == '1') {
 		highSDA();
 	} else {
@@ -437,7 +407,6 @@ void sendAddress(char * address){
 	
 	
 	// Same Logic as above but for 2nd MSB
-	printf("%c\n", address[1]);
 	if (address[1] == '1') {
 		highSDA();
 	} else {
@@ -453,7 +422,6 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 	
 	// Same Logic as above but for 3rd MSB
-	printf("%c\n", address[2]);
 	if (address[2] == '1') {
 		highSDA();
 	} else {
@@ -469,7 +437,6 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 4th MSB
-	printf("%c\n", address[3]);
 	if (address[3] == '1') {
 		highSDA();
 	} else {
@@ -485,7 +452,6 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 5th MSB
-	printf("%c\n", address[4]);
 	if (address[4] == '1') {
 		highSDA();
 	} else {
@@ -501,7 +467,6 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for 6th MSB
-	printf("%c\n", address[5]);
 	if (address[5] == '1') {
 		highSDA();
 	} else {
@@ -517,7 +482,6 @@ void sendAddress(char * address){
 	E4235_Delaymicro(clockPeriod);
 		
 	// Same Logic as above but for LSB
-	printf("%c\n", address[6]);
 	if (address[6] == '1') {
 		highSDA();
 	} else {
@@ -543,7 +507,7 @@ void sendAddress(char * address){
 // Function to write with address and data
 void writeFunc(){
 
-	char * times[7];
+	char times[7];
 	int seconds;
 	int minutes;
 	int hours;
@@ -580,16 +544,13 @@ void writeFunc(){
 	days = local->tm_wday;
 	printf("weekday: %i\n", days);
 
-	printf("%c\n", translateSeconds(seconds));
-	printf("%c\n", translateMinutes(minutes));
-
-	times[6] = "01111111";
-	times[5] = "00111111";
-	times[4] = "00011111";
-	times[3] = "00001111";
-	times[2] = "00000111";
-	times[1] = "00000011";
-	times[0] = seconds;
+	//times[6] = "01111111";
+	//times[5] = "00111111";
+	//times[4] = "00011111";
+	//times[3] = "00001111";
+	//times[2] = "00000111";
+	//times[1] = "00000011";
+	//times[0] = translateSeconds(seconds);
 
 	char address[] = "1101000"; // address
 	
@@ -632,8 +593,8 @@ void writeFunc(){
 	
 	// iterate 7 times so to get all 7 strings of data needed
 	for(int i = 0; i <= 0; i++){
-		writeSDA(seconds);
-		printf("write iteration %i done\n", i);
+		writeSDA(translateSeconds(seconds));
+		writeSDA(translateMinutes(minutes));
 	}
 		
 	// SEND STOP CONDITION ---------------------------------------------
@@ -650,6 +611,8 @@ void writeFunc(){
 
 // Reads the data on SDA and stores it into a 1 byte int arry
 void writeSDA(char inputString) {
+	
+	printf("What should it print in hex %d\n", inputString);
 	
 	// Writes bit 7
 	E4235_Delaymicro(clockPeriod);
