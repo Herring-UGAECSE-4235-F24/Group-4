@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Can Properly Write day of the week and date
+Push: Can Write Months and Years
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -224,76 +224,32 @@ char translateDate(int dateVar) {
 	return returnedChar;
 }
 
-int translateMonth(int monthVar) {
+char translateMonth(int monthVar) {
 	
-	int returnedVar;
-	returnedVar = 0x00; // set bit 5
+	char returnedChar = 0x00;
+	printf("\nmonthVar = %i\n", monthVar);
 	
-	if (monthVar >= 10) {
-		monthVar -= 10;
-		returnedVar += 0x10;
-	}
-	if (monthVar >= 8) {
-		monthVar -= 8;
-		returnedVar += 0x08;
-	}
-	if (monthVar >= 4) {
-		monthVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (monthVar >= 2) {
-		monthVar -= 2;
-		returnedVar += 0x02;
-	}	
-	if (monthVar >= 1) {
-		monthVar -= 1;
-		returnedVar += 0x01;
-	}	
+	// Bitwise
+	returnedChar = returnedChar | monthVar % 10; // Fill the bottom 4 bits
+	returnedChar = returnedChar | (monthVar/10 << 4); // Fill the 5th bit
+
+	printf("Quick Check %d\n", returnedChar);
 	
-	//returnedVar += 0x01;
-	
-	return returnedVar;
+	return returnedChar;
 }
 
-int translateYears(int yearVar) {
+char translateYears(int yearVar) {
 	
-	int returnedVar;
-	returnedVar = 0x00;
+	char returnedChar = 0x00;
+	printf("\nyearVar = %i\n", yearVar);
+	
+	// Bitwise
+	returnedChar = returnedChar | yearVar % 10; // Fill the bottom 4 bits
+	returnedChar = returnedChar | (yearVar/10 << 4); // Fill the 5th bit
 
-	if (yearVar >= 80) {
-		yearVar -= 80;
-		returnedVar += 0x80;//0100
-	}	
-	if (yearVar >= 40) {
-		yearVar -= 40;
-		returnedVar += 0x40;//0100
-	}
-	if (yearVar >= 20) {
-		yearVar -= 20;
-		returnedVar += 0x20;//0010
-	}
-	if (yearVar >= 10) {
-		yearVar -= 10;
-		returnedVar += 0x10;//0001 0000
-	}
-	if (yearVar >= 8) {
-		yearVar -= 8;
-		returnedVar += 0x08;//0000 1000
-	}
-	if (yearVar >= 4) {
-		yearVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (yearVar >= 2) {
-		yearVar -= 2;
-		returnedVar += 0x02;
-	}
-	if (yearVar >= 1) {
-		yearVar -= 1;
-		returnedVar += 0x01;
-	}
+	printf("Quick Check %d\n", returnedChar);
 	
-	return returnedVar;
+	return returnedChar;
 }
 
 
@@ -579,6 +535,8 @@ void writeFunc(){
 		writeSDA(translateHours(hours));
 		writeSDA(translateDays(days));
 		writeSDA(translateDate(date));
+		writeSDA(translateMonth(month));
+		writeSDA(translateYears(year));
 	}
 		
 	// SEND STOP CONDITION ---------------------------------------------
