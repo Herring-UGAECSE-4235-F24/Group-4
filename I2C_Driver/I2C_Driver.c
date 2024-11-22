@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Properly Writes the Current Time for Seconds and Minutes
+Push: Can Properly Write the Current Hours
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -112,7 +112,7 @@ int promptUserMonth(){
 char translateSeconds(int secVar) {
 	
 	char returnedChar = 0;
-	printf("secVar = %i\n", secVar);
+	printf("\nsecVar = %i\n", secVar);
 	
 	
 	// Bitwise
@@ -166,7 +166,7 @@ char translateSeconds(int secVar) {
 char translateMinutes(int minVar) {
 	
 	char returnedChar;
-	printf("minVar = %i\n", minVar);
+	printf("\nminVar = %i\n", minVar);
 	
 	// Bitwise
 	returnedChar = minVar % 10;
@@ -180,31 +180,25 @@ char translateMinutes(int minVar) {
 
 int translateHours(int hourVar) {
 	
-	int returnedVar;
-	returnedVar = 0x40; // set bit 5
+	char returnedChar = 0x40;
+	printf("\nhourVar = %i\n", hourVar);
 	
-	if (hourVar >= 10) {
-		hourVar = hourVar - 10;
-		returnedVar += 0x10;
+	if (hourVar>=12) {
+		returnedChar = returnedChar | 0x20; // set AM/PM bit
+		hourVar -= 12;
 	}
-	if (hourVar >= 8) {
-		hourVar -= 8;
-		returnedVar += 0x08;
-	}
-	if (hourVar >= 4) {
-		hourVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (hourVar >= 2) {
-		hourVar -= 2;
-		returnedVar += 0x02;
-	}	
-	if (hourVar >= 1) {
-		hourVar -= 1;
-		returnedVar += 0x01;
-	}	
-		
-	return returnedVar;
+	
+	// Bitwise
+	printf("Quick Check %d\n", returnedChar);
+	returnedChar = returnedChar | hourVar % 10; // Fill the bottom 4 bits
+	printf("Quick Check %d\n", returnedChar);
+	returnedChar = returnedChar | (hourVar/10 << 4); // Fill the 5th bit
+	printf("Quick Check %d\n", returnedChar);
+	
+	 
+	printf("Quick Check %d\n", returnedChar);
+	
+	return returnedChar;
 }
 
 int translateDate(int dateVar) {
@@ -595,6 +589,7 @@ void writeFunc(){
 	for(int i = 0; i <= 0; i++){
 		writeSDA(translateSeconds(seconds));
 		writeSDA(translateMinutes(minutes));
+		writeSDA(translateHours(hours));
 	}
 		
 	// SEND STOP CONDITION ---------------------------------------------
