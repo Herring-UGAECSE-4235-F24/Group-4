@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Can Properly Write the Current Hours
+Push: Can Properly Write day of the week and date
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -178,7 +178,7 @@ char translateMinutes(int minVar) {
 	
 }
 
-int translateHours(int hourVar) {
+char translateHours(int hourVar) {
 	
 	char returnedChar = 0x40;
 	printf("\nhourVar = %i\n", hourVar);
@@ -189,52 +189,39 @@ int translateHours(int hourVar) {
 	}
 	
 	// Bitwise
-	printf("Quick Check %d\n", returnedChar);
 	returnedChar = returnedChar | hourVar % 10; // Fill the bottom 4 bits
-	printf("Quick Check %d\n", returnedChar);
 	returnedChar = returnedChar | (hourVar/10 << 4); // Fill the 5th bit
-	printf("Quick Check %d\n", returnedChar);
-	
-	 
+
 	printf("Quick Check %d\n", returnedChar);
 	
 	return returnedChar;
 }
 
-int translateDate(int dateVar) {
+char translateDays(int dayVar) {
 	
-	int returnedVar;
-	returnedVar = 0x00;
+	char returnedChar = 0x00;
+	printf("\ndayVar = %i\n", dayVar);
 	
-	if (dateVar >= 20) {
-		dateVar = dateVar - 20;
-		returnedVar += 0x20;
-	}
-	
-	if (dateVar >= 10) {
-		dateVar = dateVar - 10;
-		returnedVar += 0x10;
-	}
-	if (dateVar >= 8) {
-		dateVar -= 8;
-		returnedVar += 0x08;
-	}
-	if (dateVar >= 4) {
-		dateVar -= 4;
-		returnedVar += 0x04;
-	}
-	if (dateVar >= 2) {
-		dateVar -= 2;
-		returnedVar += 0x02;
-	}	
-	if (dateVar >= 1) {
-		dateVar -= 1;
-		returnedVar += 0x01;
-	}	
-	printf("DateVar: %i\n", returnedVar);
-	
-	return returnedVar;
+	// Bitwise
+	returnedChar = returnedChar | dayVar % 10; // Fill the bottom 4 bits
 
+	printf("Quick Check %d\n", returnedChar);
+	
+	return returnedChar;
+}
+
+char translateDate(int dateVar) {
+	
+	char returnedChar = 0x00;
+	printf("\ndateVar = %i\n", dateVar);
+	
+	// Bitwise
+	returnedChar = returnedChar | dateVar % 10; // Fill the bottom 4 bits
+	returnedChar = returnedChar | (dateVar/10 << 4); // Fill the 5th bit
+
+	printf("Quick Check %d\n", returnedChar);
+	
+	return returnedChar;
 }
 
 int translateMonth(int monthVar) {
@@ -590,6 +577,8 @@ void writeFunc(){
 		writeSDA(translateSeconds(seconds));
 		writeSDA(translateMinutes(minutes));
 		writeSDA(translateHours(hours));
+		writeSDA(translateDays(days));
+		writeSDA(translateDate(date));
 	}
 		
 	// SEND STOP CONDITION ---------------------------------------------
