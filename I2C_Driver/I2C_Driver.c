@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Its Disgusting
+Push: Complete Hardcode is disgusting
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -108,6 +108,418 @@ int promptUserMonth(){
 	return responseList[0];
 
 } // promptUser
+
+int binaryStringSeconds(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+				
+	// Convert Seconds to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	if (binaryString[6] == 1) {
+		total += 40;
+	}
+			
+	return total;
+
+} // Binary String Seconds
+	
+int binaryStringMinutes(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+					
+	// Convert Minutes to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	if (binaryString[6] == 1) {
+		total += 40;
+	}
+		
+	return total;
+
+} // Binary String Minutes
+	
+int binaryStringHours(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+				
+	// Convert Hours to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 12;
+	}
+	//bit 6 is always going to be set to 1 in write to indicate 12-hour clock
+	
+	return total;
+
+} // Binary String Hours
+	
+int binaryStringDays(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+				
+	// Convert Days to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	
+	return total;
+
+} // Binary String Days
+	
+int binaryStringDate(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+		
+	} // for
+				
+	// Convert Date to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	
+	return total;
+
+} // Binary String Date
+
+int binaryStringMonth(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+				
+	// Convert Month to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	
+	return total;
+
+} // Binary String Month
+
+int binaryStringYear(int inputDiv) {
+	
+	int result;
+	int dividend;
+	int divisor;
+	char binaryString[8];
+
+	dividend = inputDiv;
+	divisor = 2;
+	
+	for(int i = 0; i < 8; i++) {
+			
+		result = dividend % divisor;
+		binaryString[i] = result;
+		dividend = dividend / divisor;
+	} // for
+					
+	// Convert Year to Real
+	int total;
+	total = 0;
+		
+	if (binaryString[0] == 1) {
+		total += 1;
+	}
+	if (binaryString[1] == 1) {
+		total += 2;
+	}
+	if (binaryString[2] == 1) {
+		total += 4;
+	} 
+	if (binaryString[3] == 1) {
+		total += 8;
+	}
+	if (binaryString[4] == 1) {
+		total += 10;
+	}
+	if (binaryString[5] == 1) {
+		total += 20;
+	}
+	if (binaryString[6] == 1) {
+		total += 40;
+	}
+	if (binaryString[7] == 1) {
+		total += 80;
+	}
+			
+	return total;
+
+} // Binary String Year
+
+void printDay(int dayVar) {
+	
+	if (dayVar == 0) {
+		printf("SUN ");
+	} else if (dayVar == 1) {
+		printf("MON ");
+	} else if (dayVar == 2) {
+		printf("TUE ");
+	} else if (dayVar == 3) {
+		printf("WED ");
+	} else if (dayVar == 4) {
+		printf("THU ");
+	} else if (dayVar == 5) {
+		printf("FRI ");
+	} else if (dayVar == 6) {
+		printf("SAT ");
+	} 
+	
+	return;
+}
+
+// Prints Using the Int Value Given by Int
+void printMonth(int monthVar) {
+	
+	if (monthVar == 0) {
+		printf("Jan ");
+	} else if (monthVar == 1) {
+		printf("Feb ");
+	} else if (monthVar == 2) {
+		printf("Mar ");
+	} else if (monthVar == 3) {
+		printf("Apr ");
+	} else if (monthVar == 4) {
+		printf("May ");
+	} else if (monthVar == 5) {
+		printf("Jun ");
+	} else if (monthVar == 6) {
+		printf("Jul ");
+	} else if (monthVar == 7) {
+		printf("Aug ");
+	} else if (monthVar == 8) {
+		printf("Sep ");
+	} else if (monthVar == 9) {
+		printf("Oct ");
+	} else if (monthVar == 10) {
+		printf("Nov ");
+	} else if (monthVar == 11) {
+		printf("Dec ");
+	}
+	
+	return;
+}
+
+// Changes I2C Hex to Int and Prints
+void printDate(int dateVar) {
+	
+	printf("%i ", binaryStringDate(dateVar));
+	return;
+	
+}
+
+void printHours(int hourVar) {
+
+	printf("%i", binaryStringHours(hourVar));
+	return;
+}
+
+void printMins(int minVar) {
+
+	printf("%i", binaryStringMinutes(minVar));
+	return;
+}
+
+void printSeconds(int secVar) {
+
+	printf("%i", binaryStringSeconds(secVar));
+	return;
+}
+
+void printYear(int yearVar) {
+
+	printf(" %i", 1900 + binaryStringYear(yearVar));
+	return;
+}
+
+void printAll(int weekday, int month, int date, int hour, int min, int sec, int year) {
+	
+	printDay(weekday);
+	printMonth(month);
+	printDate(date);
+	printHours(hour);
+	printf(":");
+	printMins(min);
+	printf(":");
+	printSeconds(sec);
+	
+	printYear(year);
+	printf("\n");
+	
+	return;
+}
 
 char translateSeconds(int secVar) {
 	
@@ -653,7 +1065,7 @@ void writeSDA(char inputString) {
 
 
 // Function to Read address with returned data
-void readFunc(){
+void readFunc() {
 
 	char seconds;
 	char minutes;
@@ -792,7 +1204,7 @@ void readFunc(){
 	lowSDA();
 	// -----------------------------------------------------------------
 	
-	minutes = readSDA();
+	//minutes = readSDA();
 	char minutesString;
 	
 	highSDA();
@@ -1053,25 +1465,267 @@ void readFunc(){
 	fallingClock();
 	lowSDA();
 	//-----------------------------------------------------------------
-	date = readSDA();
-	printf("date %d\n", date);
-	lowSDA();
-	risingClock();
-	E4235_Delaymicro(clockPeriod);
-	fallingClock();
-	lowSDA();
+	//date = readSDA();
+
+	char dateString;
 	
-	month = readSDA();
-	printf("month %d\n", month);
+	highSDA();
+
+	// Stores bit 7 (MSB)
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 7);
+	risingClock();
+	//inputString[7] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 6
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 6);
+	risingClock();
+	//inputString[6] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 5
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 5);
+	risingClock();
+	//inputString[5] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 4
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 4);
+	risingClock();
+	//inputString[4] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 3
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 3);
+	risingClock();
+	//inputString[3] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 2
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 2);
+	risingClock();
+	//inputString[2] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 1
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA) << 1);
+	risingClock();
+	//inputString[1] = E4235_Read(SDA);
+	printf("%d\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 0 (LSB)
+	E4235_Delaymicro(clockPeriod);
+	dateString = dateString | (E4235_Read(SDA));
+	risingClock();
+	//inputString[0] = E4235_Read(SDA);
+	printf("%d\n\n", dateString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Sends an ack to the slave
+	E4235_Delaymicro(clockPeriod);
+	
+	printf("date %d\n", dateString);
 	lowSDA();
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	lowSDA();
+	//-----------------------------------------------------------------
+	
+	//month = readSDA();
+	
+	char monthString;
+	
+	highSDA();
+
+	// Stores bit 7 (MSB)
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 7);
+	risingClock();
+	//inputString[7] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 6
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 6);
+	risingClock();
+	//inputString[6] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 5
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 5);
+	risingClock();
+	//inputString[5] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 4
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 4);
+	risingClock();
+	//inputString[4] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 3
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 3);
+	risingClock();
+	//inputString[3] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 2
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 2);
+	risingClock();
+	//inputString[2] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 1
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA) << 1);
+	risingClock();
+	//inputString[1] = E4235_Read(SDA);
+	printf("%d\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 0 (LSB)
+	E4235_Delaymicro(clockPeriod);
+	monthString = monthString | (E4235_Read(SDA));
+	risingClock();
+	//inputString[0] = E4235_Read(SDA);
+	printf("%d\n\n", monthString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Sends an ack to the slave
+	E4235_Delaymicro(clockPeriod);
+	
+	printf("month %d\n", monthString);
+	lowSDA();
+	risingClock();
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	lowSDA();
+	// -----------------------------------------------------------------
 	
 	// Last one to close it off
-	year = readSDA();
-	printf("year %d\n", year);
+	//year = readSDA();
+	
+	char yearString;
+	
+	highSDA();
+
+	// Stores bit 7 (MSB)
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 7);
+	risingClock();
+	//inputString[7] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 6
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 6);
+	risingClock();
+	//inputString[6] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 5
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 5);
+	risingClock();
+	//inputString[5] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 4
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 4);
+	risingClock();
+	//inputString[4] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 3
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 3);
+	risingClock();
+	//inputString[3] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 2
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 2);
+	risingClock();
+	//inputString[2] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 1
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA) << 1);
+	risingClock();
+	//inputString[1] = E4235_Read(SDA);
+	printf("%d\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Stores bit 0 (LSB)
+	E4235_Delaymicro(clockPeriod);
+	yearString = yearString | (E4235_Read(SDA));
+	risingClock();
+	//inputString[0] = E4235_Read(SDA);
+	printf("%d\n\n", yearString);
+	E4235_Delaymicro(clockPeriod);
+	fallingClock();
+	
+	// Sends an ack to the slave
+	E4235_Delaymicro(clockPeriod);
+	
+	printf("year %d\n", yearString);
 	highSDA();
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
@@ -1084,7 +1738,7 @@ void readFunc(){
 
 	// PRINT THE DATA --------------------------------------------------
 	
-	return;
+	printAll(binaryStringDays(daysString), binaryStringMonth(monthString), binaryStringDate(dateString), binaryStringHours(hoursString), binaryStringMinutes(minutesString), binaryStringSeconds(secondString), binaryStringYear(yearString));
 	
 	// call the I2CRTC function here
 
