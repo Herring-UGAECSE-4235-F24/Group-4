@@ -1,7 +1,7 @@
 /* I2C_Driver.c
 Property of Sam Brewster and Simline Gijo
 
-Push: Can Write Months and Years
+Push: Logic Analyzer Matches what the Program is Reading
 
 For Deliverables on ELC
 1) What value did you use for the pullup resistor?  What is the total pullup resistor that the RP4 driver sees? 
@@ -444,7 +444,6 @@ void sendAddress(char * address){
 // Function to write with address and data
 void writeFunc(){
 
-	char times[7];
 	int seconds;
 	int minutes;
 	int hours;
@@ -481,14 +480,6 @@ void writeFunc(){
 	days = local->tm_wday;
 	printf("weekday: %i\n", days);
 
-	//times[6] = "01111111";
-	//times[5] = "00111111";
-	//times[4] = "00011111";
-	//times[3] = "00001111";
-	//times[2] = "00000111";
-	//times[1] = "00000011";
-	//times[0] = translateSeconds(seconds);
-
 	char address[] = "1101000"; // address
 	
 	// START CONDITION -------------------------------------------------
@@ -500,7 +491,6 @@ void writeFunc(){
 
 	sendAddress(address); // Sends the Address
 	// SDA AND CLOCK NOW LOW, already waited
-	//printf("address sent\n");
 	
 	// READ BIT SENDING ------------------------------------------------
 	
@@ -513,12 +503,10 @@ void writeFunc(){
 	fallingClock();
 	lowSDA();
 	E4235_Delaymicro(clockPeriod);
-	//printf("rising edge so its a read sent\n");
 	
 	// RECEIVE THE ACK -------------------------------------------------
 	
 	// Extra Clock pulse to receive the Ack
-	//printf("%i: Ack received\n", E4235_Read(SDA));
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
 	
@@ -529,15 +517,13 @@ void writeFunc(){
 	// DATA READ ROUNDS 1-7 --------------------------------------------
 	
 	// iterate 7 times so to get all 7 strings of data needed
-	for(int i = 0; i <= 0; i++){
-		writeSDA(translateSeconds(seconds));
-		writeSDA(translateMinutes(minutes));
-		writeSDA(translateHours(hours));
-		writeSDA(translateDays(days));
-		writeSDA(translateDate(date));
-		writeSDA(translateMonth(month));
-		writeSDA(translateYears(year));
-	}
+	writeSDA(translateSeconds(seconds));
+	writeSDA(translateMinutes(minutes));
+	writeSDA(translateHours(hours));
+	writeSDA(translateDays(days));
+	writeSDA(translateDate(date));
+	writeSDA(translateMonth(month));
+	writeSDA(translateYears(year));
 		
 	// SEND STOP CONDITION ---------------------------------------------
 	
@@ -713,7 +699,7 @@ void readFunc(){
 	for(int i = 0; i <= 5; i++){
 		// store returned read data into an array
 		//times[i] = 
-		readSDA();
+		printf("%c\n", readSDA());
 		lowSDA();
 		risingClock();
 		E4235_Delaymicro(clockPeriod);
@@ -722,7 +708,7 @@ void readFunc(){
 		printf("iteration %i done\n", i);
 	}
 	
-	readSDA();
+	printf("%c\n", readSDA());
 	highSDA();
 	risingClock();
 	E4235_Delaymicro(clockPeriod);
@@ -735,7 +721,7 @@ void readFunc(){
 
 	// PRINT THE DATA --------------------------------------------------
 	
-	return 0;
+	return;
 	
 	// call the I2CRTC function here
 
@@ -746,81 +732,79 @@ void readFunc(){
 // Reads the data on SDA and stores it into a 1 byte int arry
 void readSDA() {
 	
-	char * inputString[8];
+	char inputString;
 	
-	printf("Inside Read\n");
-
 	highSDA();
 
 	// Stores bit 7 (MSB)
 	E4235_Delaymicro(clockPeriod);
-	inputString[7] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 7);
 	risingClock();
 	//inputString[7] = E4235_Read(SDA);
-	printf("%i", inputString[7]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 6
 	E4235_Delaymicro(clockPeriod);
-	inputString[6] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 6);
 	risingClock();
 	//inputString[6] = E4235_Read(SDA);
-	printf("%i", inputString[6]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 5
 	E4235_Delaymicro(clockPeriod);
-	inputString[5] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 5);
 	risingClock();
 	//inputString[5] = E4235_Read(SDA);
-	printf("%i", inputString[5]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 4
 	E4235_Delaymicro(clockPeriod);
-	inputString[4] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 4);
 	risingClock();
 	//inputString[4] = E4235_Read(SDA);
-	printf("%i", inputString[4]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 3
 	E4235_Delaymicro(clockPeriod);
-	inputString[3] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 3);
 	risingClock();
 	//inputString[3] = E4235_Read(SDA);
-	printf("%i", inputString[3]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 2
 	E4235_Delaymicro(clockPeriod);
-	inputString[2] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 2);
 	risingClock();
 	//inputString[2] = E4235_Read(SDA);
-	printf("%i", inputString[2]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 1
 	E4235_Delaymicro(clockPeriod);
-	inputString[1] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA) << 1);
 	risingClock();
 	//inputString[1] = E4235_Read(SDA);
-	printf("%i", inputString[1]);
+	printf("%d\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
 	// Stores bit 0 (LSB)
 	E4235_Delaymicro(clockPeriod);
-	inputString[0] = E4235_Read(SDA);
+	inputString = inputString | (E4235_Read(SDA));
 	risingClock();
 	//inputString[0] = E4235_Read(SDA);
-	printf("%i\n", inputString[0]);
+	printf("%d\n\n", inputString);
 	E4235_Delaymicro(clockPeriod);
 	fallingClock();
 	
@@ -829,7 +813,7 @@ void readSDA() {
 	
 	// will have to nack the last byte
 	
-	//return * inputString;
+	return inputString;
 	
 } // readSDA
 
